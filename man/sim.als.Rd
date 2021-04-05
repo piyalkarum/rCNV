@@ -22,6 +22,6 @@ A list of two: allele_freqs: theoretical allele frequency, simulated_freqs: simu
 This function simulates allele frequencies of a desired population size under HWE
 }
 \examples{
-alleles <- sim.als(n=500,nruns=10000,res=0.001)
+alleles <- sim.als(n=200,nrun=1000,res=0.001)
 
 }

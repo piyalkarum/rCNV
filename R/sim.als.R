@@ -1,3 +1,47 @@
+## Helper functions ##
+#1. generate simulations for one population
+sim<-function(x,nrun,n){y<-replicate(nrun,{tt<-sample(x,n,replace=F);c(sum(tt==0)/n,sum(tt==1)/n,sum(tt==2)/n)})
+c(rowMeans(y),apply(y,1,sd),apply(y,1,function(x)quantile(x,p=0.95,na.rm=T)),
+  apply(y,1,function(x)quantile(x,p=0.05,na.rm=T)),apply(y,1,function(x)quantile(x,p=0.975,na.rm=T)),
+  apply(y,1,function(x)quantile(x,p=0.025,na.rm=T)))}
+#2. generate median allele ratios for a given number of samples for one depth value
+dp.cov<-function(cov.i,nsamp){
+  if(cov.i==0){return(rep(NA,length(nsamp)))}
+  if(cov.i==1){return(rep(1,length(nsamp)))} else {
+    unlist(lapply(nsamp,function(z,cov.i){
+      reads<-replicate(z,rbinom(cov.i,1,prob=0.5))
+      tt<-apply(reads,2,table)
+      if(is.list(tt)){
+        md<-median(do.call(cbind,tt)[1,]/cov.i)
+      } else if(is.matrix(tt)){
+        md<- median(proportions(apply(reads,2,table),2)[1,],na.rm = T)
+      } else {
+        md<-NA
+      }
+      return(md)
+    },cov.i))
+  }
+}
+#3 make a given vector of colors transparent to a desired opacity
+makeTransparent = function(..., alpha=0.5) {
+  if(alpha<0 | alpha>1) stop("alpha must be between 0 and 1")
+  alpha = floor(255*alpha)
+  newColor = col2rgb(col=unlist(list(...)), alpha=FALSE)
+  .makeTransparent = function(col, alpha) {
+    rgb(red=col[1], green=col[2], blue=col[3], alpha=alpha, maxColorValue=255)
+  }
+  newColor = apply(newColor, 2, .makeTransparent, alpha=alpha)
+  return(newColor)
+}
+#4 calculate expected proportions of heterozygotes from real data
+ex.prop<-function(rs){n<-unlist(c(rs[4]))
+p<-(rs[1]+rs[2]/2)/n
+ob<-unlist(c(rs[1:3]))
+eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
+delta <- rs[2]-(2*p*(1-p) * n)
+pval<-suppressWarnings(fisher.test(cbind(ob,eX)))$p.value
+return(c(eX/n,pval,delta))}
+
 #' Simulate Allele Frequencies
 #'
 #' This function simulates allele frequencies of a desired population size under HWE
@@ -9,8 +53,10 @@
 #' @return A list of two: allele_freqs: theoretical allele frequency, simulated_freqs: simulated frequencies at different confidence intervals
 #'
 #' @examples
-#' alleles <- sim.als(n=500,nruns=10000,res=0.001)
+#' alleles <- sim.als(n=200,nrun=1000,res=0.001)
 #'
+#' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
+#' @importFrom graphics legend lines
 #' @export
 sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
   #n/(1-n(e^2))
@@ -24,13 +70,13 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
   oo <- cbind(p,q,p2,Hex,q2,0,control)
   o0<-oo[,3:5]*nsim
   pops <- apply(o0,1,function(x){unlist(mapply(rep,c(0,1,2),x))})
-  outs<-lapply(pops,sim,nrun=nrun)
+  outs<-lapply(pops,sim,nrun=nrun,n=n)
   out<-data.frame(do.call(rbind,outs))
   colnames(out)<-c("p2","het","q2","p2_sd","het_sd","q2_sd","p2_95","het_95",
                    "q2_95","p2_05","het_05","q2_05","p2_975","het_975","q2_975",
                    "p2_025","het_025","q2_025")
   if(plot){
-    plot(out2$het~out2$q2,type="n",ylim=c(0,1),xlab="Proportion of homozygote alternative",ylab="Proportion of heterozygote")
+    plot(out$het~out$q2,type="n",ylim=c(0,1),xlab="Proportion of homozygote alternative",ylab="Proportion of heterozygote")
     lines(oo[,4]~oo[,5],col="red")
     lines(smooth.spline(y=c(out$het_95),x=c(c(c(out$q2_95+ c(out$het_95/2))/c(out$het_95+out$q2_95+out$p2_95))^2)),col="green",lty=2)
     lines(smooth.spline(y=c(out$het_05),x=c(c(c(out$q2_05+ c(out$het_05/2))/c(out$het_05+out$q2_05+out$p2_05))^2)),col="green",lty=2)
@@ -55,8 +101,10 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #' @return A matrix of median allele rations where rows are the number of samples and columns are depth of coverage values
 #'
 #' @examples
-#' depthVsSample(cov.len=20,sam.len=100)
 #'
+#' depthVsSample(cov.len=10,sam.len=50)
+#'
+#' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' @export
 depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
   cov<- seq(1,cov.len,incr[1])
@@ -80,8 +128,11 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
 #' @param plot logical. Wheather to plot the identified duplicated snps with the expected values
 #'
 #' @examples
-#' duplicates<-sig.hets(dup.info,plot=T)
+#' data(dup.info)
+#' duplicates<-sig.hets(dup.info,plot=TRUE)
 #'
+#' @importFrom grDevices col2rgb rgb
+#' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' @export
 sig.hets<-function(dup.info,plot=TRUE){
   d<-dup.info[,c("NHomFreq","NumHet","NHomRare","truNsample")]

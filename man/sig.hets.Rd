@@ -15,6 +15,7 @@ sig.hets(dup.info, plot = TRUE)
 This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snips
 }
 \examples{
-duplicates<-sig.hets(dup.info,plot=T)
+data(dup.info)
+duplicates<-sig.hets(dup.info,plot=TRUE)
 
 }

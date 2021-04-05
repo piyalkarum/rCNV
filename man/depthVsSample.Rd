@@ -21,6 +21,7 @@ This function will simulate the expected median allele ratios under HWE for give
 This is useful if you need to find the cutoff values of allele ratios for different no. of samples and depth of coverage values in your dataset.
 }
 \examples{
-depthVsSample(cov.len=20,sam.len=100)
+
+depthVsSample(cov.len=10,sam.len=50)
 
 }

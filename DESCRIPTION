@@ -1,12 +1,11 @@
 Package: rCNV
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Detect copy number variants (CNV) from SNPs data
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Piyal Karunarathne, Pascal Milesi
+Maintainer: The package maintainer <piyal.karunarathne@ebc.uu.se>
+Description: Functions in this package will import filtered vcf files of snps data and generate data sets to detect, plot and do downstream analyses (e.g. Environmental association analyses).
+License: AGPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
