@@ -25,3 +25,9 @@ This is useful if you need to find the cutoff values of allele ratios for differ
 depthVsSample(cov.len=10,sam.len=50)
 
 }
+\references{
+<add reference>
+}
+\author{
+Pascal Milesi, Piyal Karunarathne
+}

@@ -50,7 +50,12 @@ return(c(eX/n,pval,delta))}
 #' @param res desired resolution of the theoretical allele frequency
 #' @param plot whether to plot the simulation
 #'
-#' @return A list of two: allele_freqs: theoretical allele frequency, simulated_freqs: simulated frequencies at different confidence intervals
+#' @return A list of two matrices: 1. allele_freqs: theoretical allele frequency, 2. simulated_freqs: simulated frequencies at different confidence intervals
+#'
+#' @author Piyal Karunarathne, Pascal Milesi
+#'
+#' @references <add reference>
+#'
 #'
 #' @examples
 #' alleles <- sim.als(n=200,nrun=1000,res=0.001)
@@ -100,6 +105,11 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #'
 #' @return A matrix of median allele rations where rows are the number of samples and columns are depth of coverage values
 #'
+#' @author Pascal Milesi, Piyal Karunarathne
+#'
+#' @references <add reference>
+#'
+#'
 #' @examples
 #'
 #' depthVsSample(cov.len=10,sam.len=50)
@@ -122,11 +132,15 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
 
 #' Identify significantly different heterozygotes from SNPs data
 #'
-#' This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snips
+#' This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 #'
 #' @param dup.info duplication info table generated from filtered vcfs using the function dup.snp.info
-#' @param plot logical. Wheather to plot the identified duplicated snps with the expected values
+#' @param plot logical. Whether to plot the identified duplicated snps with the expected values
 #'
+#' @return A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
+#' If enabled, the function also plots the recognized duplicates in red and expected (singletons) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot
+#' p2 observed homozygote reference
+#' het expected
 #' @examples
 #' data(dup.info)
 #' duplicates<-sig.hets(dup.info,plot=TRUE)

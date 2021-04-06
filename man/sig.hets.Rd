@@ -9,10 +9,16 @@ sig.hets(dup.info, plot = TRUE)
 \arguments{
 \item{dup.info}{duplication info table generated from filtered vcfs using the function dup.snp.info}
 
-\item{plot}{logical. Wheather to plot the identified duplicated snps with the expected values}
+\item{plot}{logical. Whether to plot the identified duplicated snps with the expected values}
+}
+\value{
+A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
+If enabled, the function also plots the recognized duplicates in red and expected (singletons) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot
+p2 observed homozygote reference
+het expected
 }
 \description{
-This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snips
+This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 }
 \examples{
 data(dup.info)

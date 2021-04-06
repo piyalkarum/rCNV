@@ -16,7 +16,7 @@ sim.als(n = 500, nrun = 10000, res = 0.001, plot = TRUE)
 \item{plot}{whether to plot the simulation}
 }
 \value{
-A list of two: allele_freqs: theoretical allele frequency, simulated_freqs: simulated frequencies at different confidence intervals
+A list of two matrices: 1. allele_freqs: theoretical allele frequency, 2. simulated_freqs: simulated frequencies at different confidence intervals
 }
 \description{
 This function simulates allele frequencies of a desired population size under HWE
@@ -24,4 +24,10 @@ This function simulates allele frequencies of a desired population size under HW
 \examples{
 alleles <- sim.als(n=200,nrun=1000,res=0.001)
 
+}
+\references{
+<add reference>
+}
+\author{
+Piyal Karunarathne, Pascal Milesi
 }

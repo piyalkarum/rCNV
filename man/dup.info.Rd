@@ -5,7 +5,7 @@
 \alias{dup.info}
 \title{dup.info}
 \format{
-An object of class \code{data.frame} with 19802 rows and 22 columns.
+An object of class \code{function} of length 1.
 }
 \source{
 \href{url}{dataset name}

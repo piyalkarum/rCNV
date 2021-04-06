@@ -18,3 +18,14 @@
 #' props<-dup.info[,c("PropHomRare","PropHet")]
 #' \donttest{plot(props, pch=19,cex=0.2)}
 'dup.info'
+
+
+#' hets
+#' example SNPs data of Picea abies from Chen et al. 2019
+#' The data contains only a partial snps data set of exome-capture data after filtering
+#'
+#' @docType data
+#' @usage data(hets)
+#' @references Chen et al. 2019 (add the correct reference)
+#'
+'hets'
