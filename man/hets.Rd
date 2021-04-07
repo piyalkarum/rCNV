@@ -3,9 +3,7 @@
 \docType{data}
 \name{hets}
 \alias{hets}
-\title{hets
-example SNPs data of Picea abies from Chen et al. 2019
-The data contains only a partial snps data set of exome-capture data after filtering}
+\title{hets example data}
 \format{
 An object of class \code{data.table} (inherits from \code{data.frame}) with 2018 rows and 442 columns.
 }
@@ -13,7 +11,6 @@ An object of class \code{data.table} (inherits from \code{data.frame}) with 2018
 data(hets)
 }
 \description{
-hets
 example SNPs data of Picea abies from Chen et al. 2019
 The data contains only a partial snps data set of exome-capture data after filtering
 }

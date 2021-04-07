@@ -4,14 +4,24 @@
 \alias{depthVsSample}
 \title{Simulate median allele ratios for varying no. of samples and depth coverage}
 \usage{
-depthVsSample(cov.len = 400, sam.len = 1000, incr = c(1, 1))
+depthVsSample(
+  cov.len = 400,
+  sam.len = 1000,
+  incr = c(1, 1),
+  plot = TRUE,
+  plot.cols = c("red", "cyan")
+)
 }
 \arguments{
-\item{cov.len}{Max value of depth of coverage to be simulated}
+\item{cov.len}{max value of depth of coverage to be simulated}
 
-\item{sam.len}{Maximum no. of samples to be simulated}
+\item{sam.len}{maximum no. of samples to be simulated}
 
-\item{incr}{A vector of two integers indicating ncrement size for both depth and no. samples ranges}
+\item{incr}{a vector of two integers indicating ncrement size for both depth and no. samples ranges}
+
+\item{plot}{logical. Whether to plot the output (a plot of no. samles vs median depth coverage colored with median allele ratios)}
+
+\item{plot.cols}{string. Two colors to add to the gradient}
 }
 \value{
 A matrix of median allele rations where rows are the number of samples and columns are depth of coverage values
@@ -21,8 +31,7 @@ This function will simulate the expected median allele ratios under HWE for give
 This is useful if you need to find the cutoff values of allele ratios for different no. of samples and depth of coverage values in your dataset.
 }
 \examples{
-
-depthVsSample(cov.len=10,sam.len=50)
+depthVsSample(cov.len=50,sam.len=100)
 
 }
 \references{

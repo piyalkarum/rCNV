@@ -10,15 +10,15 @@ hetTgen(vcf)
 \item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}
 }
 \description{
-getTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
+hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
 }
 \details{
 If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf")
+vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
-het.table<-getTgen(vcf)
+het.table<-hetTgen(vcf)
 
 }
 \author{

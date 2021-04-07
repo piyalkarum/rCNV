@@ -11,7 +11,7 @@
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf")
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
 #'
 #' @export
@@ -23,7 +23,7 @@ readVCF <- function(vcf.file.path){
 
 #' Generate heterozygote table (allele depth values)
 #'
-#' getTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
+#' hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
 #'
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
 #'
@@ -32,9 +32,9 @@ readVCF <- function(vcf.file.path){
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf")
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
-#' het.table<-getTgen(vcf)
+#' het.table<-hetTgen(vcf)
 #'
 #' @export
 hetTgen<-function(vcf){

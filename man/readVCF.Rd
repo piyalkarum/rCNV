@@ -17,7 +17,7 @@ Function to import raw single/multi-sample VCF files generated from GatK or VCFt
 The function required the R-package "data.table" for faster importing.
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf")
+vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
 
 }

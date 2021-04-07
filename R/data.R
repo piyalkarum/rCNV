@@ -1,4 +1,4 @@
-#' dup.info
+#' dup.info example data
 #'
 #' Semi-randomly generated data from the function dup.snp.info
 #' Data contains depth and proportion values of 19800 snps
@@ -20,7 +20,8 @@
 'dup.info'
 
 
-#' hets
+#' hets example data
+#'
 #' example SNPs data of Picea abies from Chen et al. 2019
 #' The data contains only a partial snps data set of exome-capture data after filtering
 #'

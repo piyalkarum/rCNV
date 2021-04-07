@@ -3,7 +3,7 @@
 \docType{data}
 \name{dup.info}
 \alias{dup.info}
-\title{dup.info}
+\title{dup.info example data}
 \format{
 An object of class \code{function} of length 1.
 }

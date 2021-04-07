@@ -42,6 +42,39 @@ delta <- rs[2]-(2*p*(1-p) * n)
 pval<-suppressWarnings(fisher.test(cbind(ob,eX)))$p.value
 return(c(eX/n,pval,delta))}
 
+#5 plot depth vs samples
+plot.svd <- function(MR,cols=c("red","cyan")){
+  colfunc <- colorRampPalette(cols)
+  cols<-makeTransparent(colfunc(10),alpha = 0.7)
+
+  MR2 <- MR
+  MR2[which(MR2>0.5)]<-1-MR2[which(MR2>0.5)]
+  qtt <-quantile(MR2,p=0.05,na.rm = T)
+  qtt1 <- quantile(MR2,p=0.01,na.rm = T)
+  mn <- mean(MR2,na.rm = T)
+  md <- median(MR2,na.rm = T)
+  MR3 <- MR2
+  MR3[which(MR2>=md)]<-cols[10]
+  MR3[which(MR2<md)]<-cols[10]
+  MR3[which(MR2<mn) ]<-cols[9]
+  MR3[which(MR2<qtt) ]<-cols[2]
+  MR3[which(MR2<=qtt1)]<-cols[1]
+
+  mat<-apply(t(MR3),2,rev)#rotate matrix -90
+  ld <- as.raster(mat,nrow=nrow(mat))
+  legend_image <- as.raster(matrix(rev(cols), ncol=1))
+  layout(matrix(1:2,ncol=2), widths = c(3,1),heights = c(1,1))
+  par(mar=c(4,4,3,0))
+  plot(0,type="n",xlim = range(range(as.numeric(rownames(MR)))),ylim=range(range(as.numeric(colnames(MR)))),xlab="Number of samples",ylab="Median depth coverage",frame=F)
+  rasterImage(ld,0,0,1000,200)
+  par(mar=c(3,0.5,7,1))
+  plot(c(0,2),c(0,1),type = 'n', axes = F,xlab = '', ylab = '')#, main = 'legend title'
+  text(x=0.9, y = c(0.1,1), labels = c("low confidence","high confidence"),cex=0.6)
+  rasterImage(legend_image, 0, 0.1, 0.2,1)
+}
+
+
+
 #' Simulate Allele Frequencies
 #'
 #' This function simulates allele frequencies of a desired population size under HWE
@@ -99,9 +132,11 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #' This function will simulate the expected median allele ratios under HWE for given ranges of no. of samples and depth coverage values.
 #' This is useful if you need to find the cutoff values of allele ratios for different no. of samples and depth of coverage values in your dataset.
 #'
-#' @param cov.len Max value of depth of coverage to be simulated
-#' @param sam.len Maximum no. of samples to be simulated
-#' @param incr A vector of two integers indicating ncrement size for both depth and no. samples ranges
+#' @param cov.len max value of depth of coverage to be simulated
+#' @param sam.len maximum no. of samples to be simulated
+#' @param incr a vector of two integers indicating ncrement size for both depth and no. samples ranges
+#' @param plot logical. Whether to plot the output (a plot of no. samles vs median depth coverage colored with median allele ratios)
+#' @param plot.cols string. Two colors to add to the gradient
 #'
 #' @return A matrix of median allele rations where rows are the number of samples and columns are depth of coverage values
 #'
@@ -109,14 +144,14 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #'
 #' @references <add reference>
 #'
-#'
 #' @examples
-#'
-#' depthVsSample(cov.len=10,sam.len=50)
+#' depthVsSample(cov.len=50,sam.len=100)
 #'
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
+#' @importFrom grDevices as.raster colorRampPalette
+#' @importFrom graphics layout par rasterImage text
 #' @export
-depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
+depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols=c("red","cyan")){
   cov<- seq(1,cov.len,incr[1])
   nsamp<- seq(1,sam.len,incr[2])
   MR<-NULL
@@ -126,9 +161,14 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
   }
   colnames(MR)<-cov
   rownames(MR)<-nsamp
+  if(plot){
+    plot.svd(MR,cols=plot.cols)
+  }
   return(MR)
   #saveRDS(MR,paste0(dirout,"/sim_SampVsDepth_",i,".rds"),compress = "gzip")
 }
+
+
 
 #' Identify significantly different heterozygotes from SNPs data
 #'
