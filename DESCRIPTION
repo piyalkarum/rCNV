@@ -6,7 +6,7 @@ Author: Piyal Karunarathne, Pascal Milesi
 Maintainer: The package maintainer <piyal.karunarathne@ebc.uu.se>
 Description: Functions in this package will import filtered vcf files of snps data and generate data sets to detect, plot and do downstream analyses (e.g. Environmental association analyses).
 License: AGPL-3
-Imports: methods
+Imports: methods, data.table
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

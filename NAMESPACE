@@ -2,8 +2,11 @@
 
 export(depthVsSample)
 export(dup.snp.info)
+export(hetTgen)
+export(readVCF)
 export(sig.hets)
 export(sim.als)
+importFrom(data.table,fread)
 importFrom(grDevices,col2rgb)
 importFrom(grDevices,rgb)
 importFrom(graphics,legend)

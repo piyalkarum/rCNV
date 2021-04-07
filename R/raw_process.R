@@ -1,0 +1,48 @@
+#' Import VCF file
+#'
+#' Function to import raw single/multi-sample VCF files generated from GatK or VCFtools.
+#' The function required the R-package "data.table" for faster importing.
+#'
+#' @param vcf.file.path path to the vcf file
+#'
+#' @return Returns a dataframe with scaffold/chromosome positions and depth values for individual samples
+#' @importFrom data.table fread
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf")
+#' vcf <- readVCF(vcf.file.path=vcf.file.path)
+#'
+#' @export
+readVCF <- function(vcf.file.path){
+  tt <- fread(vcf.file.path,sep="\t",skip="#CHROM")
+  return(tt)
+}
+
+
+#' Generate heterozygote table (allele depth values)
+#'
+#' getTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
+#'
+#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
+#'
+#' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf")
+#' vcf <- readVCF(vcf.file.path=vcf.file.path)
+#' het.table<-getTgen(vcf)
+#'
+#' @export
+hetTgen<-function(vcf){
+  xx <- vcf[,10:ncol(vcf)]
+  h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][2], collapse = ':'))))
+  het.table<-cbind(vcf[,1:2],h.table)
+  colnames(het.table)[1]<-"CHROM"
+  return(het.table)
+}
+
+

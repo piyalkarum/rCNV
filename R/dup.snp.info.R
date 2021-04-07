@@ -147,8 +147,8 @@ dup.info <- function(gt,nf=1){
 #' @export
 dup.snp.info<-function(het.table,normalize=FALSE){
   #HET<-het.table#data.table::fread(input_file,h=T)
-  gts<-het.table[,-c(1:8)]
-  res<-het.table[,1:8]
+  gts<-het.table[,-c(1:2)]
+  res<-het.table[,1:2]
   if(normalize){
     nf<-normz(gts)
     out<-t(apply(gts,MARGIN = 1,dup.info,nf=nf))
