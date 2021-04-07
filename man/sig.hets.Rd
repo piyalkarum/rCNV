@@ -25,3 +25,6 @@ data(dup.info)
 duplicates<-sig.hets(dup.info,plot=TRUE)
 
 }
+\author{
+Piyal Karunarathne, Pascal Milesi
+}

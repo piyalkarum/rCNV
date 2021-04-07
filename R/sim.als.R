@@ -46,7 +46,6 @@ return(c(eX/n,pval,delta))}
 plot.svd <- function(MR,cols=c("red","cyan")){
   colfunc <- colorRampPalette(cols)
   cols<-makeTransparent(colfunc(10),alpha = 0.7)
-
   MR2 <- MR
   MR2[which(MR2>0.5)]<-1-MR2[which(MR2>0.5)]
   qtt <-quantile(MR2,p=0.05,na.rm = T)
@@ -59,7 +58,6 @@ plot.svd <- function(MR,cols=c("red","cyan")){
   MR3[which(MR2<mn) ]<-cols[9]
   MR3[which(MR2<qtt) ]<-cols[2]
   MR3[which(MR2<=qtt1)]<-cols[1]
-
   mat<-apply(t(MR3),2,rev)#rotate matrix -90
   ld <- as.raster(mat,nrow=nrow(mat))
   legend_image <- as.raster(matrix(rev(cols), ncol=1))
@@ -72,7 +70,6 @@ plot.svd <- function(MR,cols=c("red","cyan")){
   text(x=0.9, y = c(0.1,1), labels = c("low confidence","high confidence"),cex=0.6)
   rasterImage(legend_image, 0, 0.1, 0.2,1)
 }
-
 
 
 #' Simulate Allele Frequencies
@@ -88,7 +85,6 @@ plot.svd <- function(MR,cols=c("red","cyan")){
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
 #' @references <add reference>
-#'
 #'
 #' @examples
 #' alleles <- sim.als(n=200,nrun=1000,res=0.001)
@@ -181,6 +177,9 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols
 #' If enabled, the function also plots the recognized duplicates in red and expected (singletons) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot
 #' p2 observed homozygote reference
 #' het expected
+#'
+#' @author Piyal Karunarathne, Pascal Milesi
+#'
 #' @examples
 #' data(dup.info)
 #' duplicates<-sig.hets(dup.info,plot=TRUE)
