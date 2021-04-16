@@ -100,7 +100,7 @@ normz<-function(dat){
 #2. generate dupinfo for each snp
 dup.info <- function(gt,nf=1){
   y<-data.frame(do.call(rbind,strsplit(as.character(gt),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2]);y<-y*nf
-  hm0 <- y[y[,1]>0 & y[,2]==0,];hm1 <- y[y[,1]==0 & y[,2]>0,];ht <- y[y[,1]>0 & y[,2]>0,];hmm<-rbind(hm0,hm1)
+  hm0 <- na.omit(y[y[,1]>0 & y[,2]==0,]);hm1 <- na.omit(y[y[,1]==0 & y[,2]>0,]);ht <- na.omit(y[y[,1]>0 & y[,2]>0,]);hmm<-rbind(hm0,hm1)
   nas<-dim(y[y[,1]==0 & y[,2]==0,])[1]
   hm0.ratio<-proportions(as.matrix(hm0),margin = 1)[,1];hm1.ratio<-proportions(as.matrix(hm1),margin = 1)[,2]
   ht.ratio<-proportions(as.matrix(ht),margin = 1)[,2]
@@ -146,19 +146,17 @@ dup.info <- function(gt,nf=1){
 #'
 #' @export
 dup.snp.info<-function(het.table,normalize=FALSE){
-  #HET<-het.table#data.table::fread(input_file,h=T)
-  gts<-het.table[,-c(1:2)]
-  res<-het.table[,1:2]
+  gts<-het.table[,-c(1:3)]
+  res<-het.table[,1:3]
   if(normalize){
     nf<-normz(gts)
-    out<-t(apply(gts,MARGIN = 1,dup.info,nf=nf))
+    suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info,nf=nf)))
   } else {
-    out<-t(apply(gts,MARGIN = 1,dup.info))
+    suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info)))
   }
-  snp.dup<-data.frame(res$CHROM,res$POS,paste0(res$CHROM,".",res$POS),out)
-  colnames(snp.dup)<-c("Scaffold","Position","ID","MedRatio","AvgRatio","MedCovHet","TotCovHet","MedCovHom","NumHet","PropHomFreq","PropHet","PropHomRare","NumRare","NHomFreq","NHomRare","Fis","truNsample","totDepFreq","totDepRare","totDepFreqHet","totDepRareHet","medDepth","numMiss")
+  snp.dup<-data.frame(res$CHROM,res$POS,res$ID,out)#
+  colnames(snp.dup)<-c("Scaffold","Position","ID","MedRatio","AvgRatio","MedCovHet","TotCovHet","MedCovHom","NumHet","PropHomFreq","PropHet","PropHomRare","NumRare","NHomFreq","NHomRare","Fis","truNsample","totDepFreq","totDepRare","totDepFreqHet","totDepRareHet","medDepth","numMiss")#
   snp.dup <- na.omit(snp.dup)
-  #saveRDS(snp.dup,paste0(sp,".",st,"_snp.dup.info.rds"))
   return(snp.dup)
 }
 

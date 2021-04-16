@@ -18,7 +18,7 @@ The function required the R-package "data.table" for faster importing.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
-vcf <- readVCF(vcf.file.path=vcf.file.path)
+vcf <- readVCF(vcf.file.path)
 
 }
 \author{

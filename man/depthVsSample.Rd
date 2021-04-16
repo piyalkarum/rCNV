@@ -24,7 +24,7 @@ depthVsSample(
 \item{plot.cols}{string. Two colors to add to the gradient}
 }
 \value{
-A matrix of median allele rations where rows are the number of samples and columns are depth of coverage values
+A matrix of median allele ratios where rows are the number of samples and columns are depth of coverage values
 }
 \description{
 This function will simulate the expected median allele ratios under HWE for given ranges of no. of samples and depth coverage values.

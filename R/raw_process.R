@@ -1,3 +1,27 @@
+# 1. wrapper for progressbar
+apply_pb <- function(X, MARGIN, FUN, ...)
+{
+  env <- environment()
+  pb_Total <- sum(dim(X)[MARGIN])
+  counter <- 0
+  pb <- txtProgressBar(min = 0, max = pb_Total,
+                       style = 3)
+
+  wrapper <- function(...)
+  {
+    curVal <- get("counter", envir = env)
+    assign("counter", curVal +1 ,envir= env)
+    setTxtProgressBar(get("pb", envir= env),
+                      curVal +1)
+    FUN(...)
+  }
+  res <- apply(X, MARGIN, wrapper, ...)
+  close(pb)
+  res
+}
+#https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
+
+
 #' Import VCF file
 #'
 #' Function to import raw single/multi-sample VCF files generated from GatK or VCFtools.
@@ -12,7 +36,7 @@
 #'
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
-#' vcf <- readVCF(vcf.file.path=vcf.file.path)
+#' vcf <- readVCF(vcf.file.path)
 #'
 #' @export
 readVCF <- function(vcf.file.path){
@@ -30,7 +54,7 @@ readVCF <- function(vcf.file.path){
 #' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
 #'
 #' @author Piyal Karunarathne
-#'
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
@@ -39,8 +63,9 @@ readVCF <- function(vcf.file.path){
 #' @export
 hetTgen<-function(vcf){
   xx <- vcf[,10:ncol(vcf)]
-  h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][2], collapse = ':'))))
-  het.table<-cbind(vcf[,1:2],h.table)
+  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="AD")
+  h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
+  het.table<-cbind(vcf[,1:3],h.table)
   colnames(het.table)[1]<-"CHROM"
   return(het.table)
 }

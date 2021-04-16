@@ -5,7 +5,7 @@
 \alias{hets}
 \title{hets example data}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 2018 rows and 442 columns.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 10000 rows and 194 columns.
 }
 \usage{
 data(hets)
