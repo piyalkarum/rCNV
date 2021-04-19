@@ -4,10 +4,10 @@
 \alias{sig.hets}
 \title{Identify significantly different heterozygotes from SNPs data}
 \usage{
-sig.hets(dup.info, plot = TRUE)
+sig.hets(d.info, plot = TRUE)
 }
 \arguments{
-\item{dup.info}{duplication info table generated from filtered vcfs using the function dup.snp.info}
+\item{d.info}{duplication info table generated from filtered vcfs using the function dup.snp.info}
 
 \item{plot}{logical. Whether to plot the identified duplicated snps with the expected values}
 }
@@ -21,8 +21,9 @@ het expected
 This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 }
 \examples{
-data(dup.info)
-duplicates<-sig.hets(dup.info,plot=TRUE)
+data(hets)
+d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
+duplicates<-sig.hets(d.info,plot=TRUE)
 
 }
 \author{

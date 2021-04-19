@@ -186,7 +186,7 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols
 #'
 #' This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 #'
-#' @param dup.info duplication info table generated from filtered vcfs using the function dup.snp.info
+#' @param d.info duplication info table generated from filtered vcfs using the function dup.snp.info
 #' @param plot logical. Whether to plot the identified duplicated snps with the expected values
 #'
 #' @return A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
@@ -197,15 +197,16 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
 #' @examples
-#' data(dup.info)
-#' duplicates<-sig.hets(dup.info,plot=TRUE)
+#' data(hets)
+#' d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
+#' duplicates<-sig.hets(d.info,plot=TRUE)
 #'
 #' @importFrom grDevices col2rgb rgb
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @export
-sig.hets<-function(dup.info,plot=TRUE){
-  d<-dup.info[,c("NHomFreq","NumHet","NHomRare","truNsample")]
+sig.hets<-function(d.info,plot=TRUE){
+  d<-d.info[,c("NHomFreq","NumHet","NHomRare","truNsample")]
   colnames(d)<-c("h1","het","h2","truNsample")
   df<-data.frame(t(apply_pb(d,1,ex.prop)))
   colnames(df)<-c("p2","het","q2","pval","delta")
@@ -214,12 +215,12 @@ sig.hets<-function(dup.info,plot=TRUE){
     cols<-makeTransparent(c("red","black"),alpha=0.2)
     d$Color <- cols[2]
     d$Color [which(df$dup.stats=="duplicates")]<- cols[1]#& df$delta > 0
-    plot(dup.info$PropHet~dup.info$PropHomRare, pch=19, cex=0.2,col=d$Color,xlim=c(0,1),ylim=c(0,1),
+    plot(d.info$PropHet~d.info$PropHomRare, pch=19, cex=0.2,col=d$Color,xlim=c(0,1),ylim=c(0,1),
          xlab="Proportion of Alternate Homozygotes",ylab="Proportion of Heterozygotes")
     #lines(smooth.spline(y=out2$`1`,x=out2$`2`,spar = spar),col="green") # expected from HWE with simulation
     lines((smm<-smooth.spline(df$het~df$q2)),col="blue")
   }
-  return(data.frame(cbind(dup.info[,c(1:4,10:12)],df[,c(4:6)])))
+  return(data.frame(cbind(d.info[,c(1:4,10:12)],df[,c(4:6)])))
 }
 
 #' Detect duplicated snps from depth of coverage and number of heterozygotes
