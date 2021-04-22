@@ -150,7 +150,7 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
   oo <- cbind(p,q,p2,Hex,q2,0,control)
   o0<-oo[,3:5]*nsim
   pops <- apply(o0,1,function(x){unlist(mapply(rep,c(0,1,2),x))})
-  outs<-lapply(pops,sim,nrun=nrun,n=n)
+  outs<-lapply_pb(pops,sim,nrun=nrun,n=n)
   out<-data.frame(do.call(rbind,outs))
   colnames(out)<-c("p2","het","q2","p2_sd","het_sd","q2_sd","p2_95","het_95",
                    "q2_95","p2_05","het_05","q2_05","p2_975","het_975","q2_975",
@@ -241,9 +241,9 @@ sig.hets<-function(d.info,plot=TRUE){
   colnames(df)<-c("p2","het","q2","pval","delta")
   df$dup.stats<-"singleton";df$dup.stats[which(df$pval < 0.05 & df$delta > 0 )]<-"duplicated"
   if(plot){
-    cols<-makeTransparent(c("red","black"),alpha=0.2)
-    d$Color <- cols[2]
-    d$Color [which(df$dup.stats=="duplicated")]<- cols[1]#& df$delta > 0
+    cols<-makeTransparent(c("black","red"),alpha=0.2)
+    d$Color <- cols[1]
+    d$Color [which(df$dup.stats=="duplicated")]<- cols[2]#& df$delta > 0
     plot(d.info$PropHet~d.info$PropHomRare, pch=19, cex=0.2,col=d$Color,xlim=c(0,1),ylim=c(0,1),
          xlab="Proportion of Alternate Homozygotes",ylab="Proportion of Heterozygotes")
     #lines(smooth.spline(y=out2$`1`,x=out2$`2`,spar = spar),col="green") # expected from HWE with simulation
@@ -270,12 +270,16 @@ sig.hets<-function(d.info,plot=TRUE){
 #'
 #' @export
 sig.snps<-function(d.info,stringency=c("95","99","max"),plot=TRUE){
-  sts<-apply_pb(d.info,1,dupsvd,stringency=stringency)
+  sts<-apply_pb(d.info,1,dupsvd,stringency=match.arg(stringency))
   d<-cbind(d.info[,c(1:4,10:12)],dup.stat=sts)
+  d$dup.stat[d.info$NoRareAllele<2*0.01*0.99*d.info$truNsample]<-"low MAF"
+  d$dup.stat[d.info$MedCovHet<=5]<-"low coverage"
   if(plot){
-    cols<-makeTransparent(c("red","black"),alpha=0.2)
-    d$Color <- cols[2]
-    d$Color [which(d$dup.stat=="duplicated")]<- cols[1]
+    cols<-makeTransparent(c("black","red","cyan","magenta"),alpha=0.2)
+    d$Color <- cols[1]
+    d$Color [d$dup.stat=="duplicated"]<- cols[2]
+    d$Color [d$dup.stat=="low MAF"]<- cols[3]
+    d$Color [d$dup.stat=="low coverage"]<- cols[4]
     plot(d$MedRatio~d$PropHet, pch=19, cex=0.2,col=d$Color,xlim=c(0,1),ylim=c(0,1),
          ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
   }
@@ -299,19 +303,21 @@ sig.snps<-function(d.info,stringency=c("95","99","max"),plot=TRUE){
 #'
 #' @export
 dup.detect<-function(d.info,stringency=c("95","99","max"),plot=TRUE){
-  print("Assessing excess of heterozygotes")
+  message("Assessing excess of heterozygotes")
   d2<-sig.hets(d.info,plot=FALSE)
-  print("Assessing snp deviates")
-  ds<-sig.snps(d.info,stringency=stringency,plot=FALSE)
+  message("Assessing snp deviates")
+  ds<-sig.snps(d.info,stringency=match.arg(stringency),plot=FALSE)
   ds$dup.stat[d2$dup.stats=="duplicated"]<-"duplicated"
   if(plot){
-    cols<-makeTransparent(c("red","black"),alpha=0.2)
-    ds$Color<-cols[2]
-    ds$Color[ds$dup.stat=="duplicated"]<-cols[1]
+    cols<-makeTransparent(c("black","red","cyan","magenta"),alpha=0.2)
+    ds$Color <- cols[1]
+    ds$Color [ds$dup.stat=="duplicated"]<- cols[2]
+    ds$Color [ds$dup.stat=="low MAF"]<- cols[3]
+    ds$Color [ds$dup.stat=="low coverage"]<- cols[4]
     plot(ds$MedRatio~ds$PropHet, pch=19, cex=0.2,col=ds$Color,xlim=c(0,1),ylim=c(0,1),
          ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
   }
-  return(ds[,-9])
+  return(ds)
 }
 
 

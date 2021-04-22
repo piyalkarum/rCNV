@@ -113,7 +113,9 @@ dup.info <- function(gt,nf=1){
   tot.dp.hm0<-sum(coverage.hm0);tot.dp.hm1<-sum(coverage.hm1);tot.dp.0<-tot.dp.hm0+tot.dp.ht0
   tot.dp.1<-tot.dp.hm1+tot.dp.ht1;med_depth<-median(c(coverage.ht,coverage.hmm))
   dps<-c(tot.dp.0,tot.dp.1,tot.dp.ht0,tot.dp.ht1,med_depth)
-  num.rare <- length(coverage.hm1)+length(coverage.ht)
+  n.ref<- length(coverage.hm0)+(length(coverage.ht)/2)
+  n.alt<- length(coverage.hm1)+(length(coverage.ht)/2)
+  num.rare.al <- pmin(n.ref,n.alt)
   num_sample <- length(coverage.ht)+length(coverage.hmm)
   num.het <- length(coverage.ht);num.hm <- dim(hm0)[1]
   med.hmm <- median(coverage.hmm)
@@ -121,7 +123,7 @@ dup.info <- function(gt,nf=1){
   prop_hm1 <- length(coverage.hm1)/num_sample
   Hobs <- prop_ht;p<-prop_hm+(prop_ht/2);q<-prop_hm1+(prop_ht/2);Hexp<-2*p*q;fis<-1-Hobs/Hexp
 
-  c(ht.rts,med.hmm, num.het, prop_hm, prop_ht, prop_hm1, num.rare,num.hm,length(coverage.hm1),fis,num_sample,dps,nas)
+  c(ht.rts,med.hmm, num.het, prop_hm, prop_ht, prop_hm1, num.rare.al,num.hm,length(coverage.hm1),fis,num_sample,dps,nas)
 }
 
 
@@ -155,7 +157,7 @@ dup.snp.info<-function(het.table,normalize=FALSE){
     suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info)))
   }
   snp.dup<-data.frame(res$CHROM,res$POS,res$ID,out)#
-  colnames(snp.dup)<-c("Scaffold","Position","ID","MedRatio","AvgRatio","MedCovHet","TotCovHet","MedCovHom","NumHet","PropHomFreq","PropHet","PropHomRare","NumRare","NHomFreq","NHomRare","Fis","truNsample","totDepFreq","totDepRare","totDepFreqHet","totDepRareHet","medDepth","numMiss")#
+  colnames(snp.dup)<-c("Scaffold","Position","ID","MedRatio","AvgRatio","MedCovHet","TotCovHet","MedCovHom","NumHet","PropHomFreq","PropHet","PropHomRare","NoRareAllele","NHomFreq","NHomRare","Fis","truNsample","totDepFreq","totDepRare","totDepFreqHet","totDepRareHet","medDepth","numMiss")#
   snp.dup <- na.omit(snp.dup)
   return(snp.dup)
 }

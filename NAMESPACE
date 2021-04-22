@@ -3,6 +3,7 @@
 export(depthVsSample)
 export(dup.detect)
 export(dup.snp.info)
+export(get.miss)
 export(hetTgen)
 export(readVCF)
 export(sig.hets)

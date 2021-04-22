@@ -19,6 +19,26 @@ apply_pb <- function(X, MARGIN, FUN, ...)
   close(pb)
   res
 }
+
+lapply_pb <- function(X, FUN, ...)
+{
+  env <- environment()
+  pb_Total <- length(X)
+  counter <- 0
+  pb <- txtProgressBar(min = 0, max = pb_Total, style = 3)
+
+  # wrapper around FUN
+  wrapper <- function(...){
+    curVal <- get("counter", envir = env)
+    assign("counter", curVal +1 ,envir=env)
+    setTxtProgressBar(get("pb", envir=env), curVal +1)
+    FUN(...)
+  }
+  res <- lapply(X, wrapper, ...)
+  close(pb)
+  res
+}
+
 #https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
 
 
@@ -50,8 +70,10 @@ readVCF <- function(vcf.file.path){
 #' hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
 #'
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
+#' @param info.type character. "AD"=allele depth value, "GT"=genotype. Default "AD". See details.
 #'
 #' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
+#' For info.type "GT" option is provided to extract the genotypes of individuals by snp. However to obtain the heterozygosity data necessary for getting the duplication information with the function dup.snp.info, info.type needs to be set to "AD", the default argument.
 #'
 #' @author Piyal Karunarathne
 #' @importFrom utils setTxtProgressBar txtProgressBar
@@ -61,13 +83,43 @@ readVCF <- function(vcf.file.path){
 #' het.table<-hetTgen(vcf)
 #'
 #' @export
-hetTgen<-function(vcf){
+hetTgen<-function(vcf,info.type=c("AD","GT")){
   xx <- vcf[,10:ncol(vcf)]
-  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="AD")
+  info.type<-match.arg(info.type)
+  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==info.type)
   h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
   het.table<-cbind(vcf[,1:3],h.table)
   colnames(het.table)[1]<-"CHROM"
   return(het.table)
 }
 
+
+#' Get missingness of individuals in raw vcf
+#'
+#' A function to get missingness of snps data on a per-individual basis similar to --missing-indiv option in vcftools
+#'
+#' @param vcf data frame of imported vcf file using readVCF
+#' @param plot logical. Whether to plot the missingness density with a suggested cut-off.
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' vcf <- readVCF(vcf.file.path=vcf.file.path)
+#' missing<-get.miss(vcf,plot=TRUE)
+#'
+#' @export
+get.miss<-function(vcf,plot=TRUE){
+  ndat<-hetTgen(vcf,"GT")
+  ll<-t(apply(ndat[,-c(1:3)],2,function(x)cbind(length(which(x=="./.")),length(which(x=="./."))/length(x))))
+  ll<-data.frame(indiv=colnames(vcf)[-c(1:9)],n_miss=ll[,1],f_miss=ll[,2])
+  rownames(ll)<-NULL
+  if(plot){
+    plot(density(ll$f_miss),type="n",main="Missingness %")
+    polygon(density(ll$f_miss),border="red",col="lightblue")
+    abline(v=quantile(ll$f_miss,p=0.95),lty=3,col="blue")
+    legend("topright",lty=3,col="blue",legend="suggested cut-off",bty="n",cex=0.8)
+  }
+  return(ll)
+}
 
