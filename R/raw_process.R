@@ -87,12 +87,14 @@ hetTgen<-function(vcf,info.type=c("AD","GT")){
   xx <- vcf[,10:ncol(vcf)]
   info.type<-match.arg(info.type)
   AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==info.type)
+  if(length(AD)==0){
+    AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="DPR")
+  }
   h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
   het.table<-cbind(vcf[,1:3],h.table)
   colnames(het.table)[1]<-"CHROM"
   return(het.table)
 }
-
 
 #' Get missingness of individuals in raw vcf
 #'
@@ -102,6 +104,8 @@ hetTgen<-function(vcf,info.type=c("AD","GT")){
 #' @param plot logical. Whether to plot the missingness density with a suggested cut-off.
 #'
 #' @author Piyal Karunarathne
+#' @importFrom graphics abline polygon
+#' @importFrom stats density
 #'
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
