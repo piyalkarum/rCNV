@@ -2,8 +2,7 @@
 % Please edit documentation in R/detect.R
 \name{dup.detect}
 \alias{dup.detect}
-\title{Detect and plot duplicated snps
-This function uses excess of heterozygotes under HWE depth of coverage vs. no. of heterozygotes dependent expected allele ratios to determine the duplicated snps from singletons.}
+\title{Detect and plot duplicated snps}
 \usage{
 dup.detect(d.info, stringency = c("95", "99", "max"), plot = TRUE)
 }
@@ -18,7 +17,6 @@ dup.detect(d.info, stringency = c("95", "99", "max"), plot = TRUE)
 a data frame of snps categorized into duplicates and singletons along with allele median ratio and heterozygote and homozygote proportions.
 }
 \description{
-Detect and plot duplicated snps
 This function uses excess of heterozygotes under HWE depth of coverage vs. no. of heterozygotes dependent expected allele ratios to determine the duplicated snps from singletons.
 }
 \examples{

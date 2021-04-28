@@ -41,7 +41,9 @@ het.sity<-function(ind){
 #'
 #' @export
 h.zygosity<-function(vcf,plot=FALSE,pops=NA){
-  gtt<-hetTgen(vcf,"GT",verbose=FALSE)
+  message("reading genotypes")
+  gtt<-hetTgen(vcf,"GT",verbose=TRUE)
+  message("assessing per sample homozygosity")
   hh<-t(apply_pb(gtt[,-c(1:3)],2,het.sity))
   hh<-data.frame(rownames(hh),hh)
   colnames(hh)<-c("ind","O(Hom)","E(Hom)","total","Fis")
