@@ -71,6 +71,7 @@ readVCF <- function(vcf.file.path){
 #'
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
 #' @param info.type character. "AD"=allele depth value, "GT"=genotype. Default "AD". See details.
+#' @param verbose logical. whether to show the progress of the analysis
 #'
 #' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
 #' For info.type "GT" option is provided to extract the genotypes of individuals by snp. However to obtain the heterozygosity data necessary for getting the duplication information with the function dup.snp.info, info.type needs to be set to "AD", the default argument.

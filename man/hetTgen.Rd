@@ -10,6 +10,8 @@ hetTgen(vcf, info.type = c("AD", "GT"), verbose = TRUE)
 \item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}
 
 \item{info.type}{character. "AD"=allele depth value, "GT"=genotype. Default "AD". See details.}
+
+\item{verbose}{logical. whether to show the progress of the analysis}
 }
 \description{
 hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)

@@ -26,5 +26,5 @@ hzygots<-h.zygosity(vcf,plot=TRUE,pops=c("FR_PA","RU_PA"))
 
 }
 \author{
-Piyal Karunarathne
+Piyal Karunarathne Pascal Milesi
 }
