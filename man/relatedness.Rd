@@ -2,7 +2,7 @@
 % Please edit documentation in R/statistics.R
 \name{relatedness}
 \alias{relatedness}
-\title{Determine per sample relatedness}
+\title{Determine pairwise relatedness}
 \usage{
 relatedness(vcf, plot = TRUE, threshold = 0.5)
 }

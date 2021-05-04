@@ -91,7 +91,7 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA){
 }
 
 
-#' Determine per sample relatedness
+#' Determine pairwise relatedness
 #'
 #' Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 (doi:10.1038/ng.608) equation 6, on a per sample basis (with itself and others), using SNPs.
 #'
@@ -131,7 +131,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5){
   XX})
 
   comb<-expand.grid(1:ncol(gg),1:ncol(gg))
-  message("assessing per sample relatedness")
+  message("assessing pairwise relatedness")
   T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
   T2<-data.frame(t(T2))
   T2[,3]<-as.numeric(T2[,3])

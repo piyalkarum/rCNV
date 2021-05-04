@@ -41,6 +41,17 @@ lapply_pb <- function(X, FUN, ...)
 
 #https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
 
+#2. remove non-biallelic snps
+non_bi_rm<-function(vcf){
+  nbal<-which(apply(vcf[,5],1,nchar)>1)
+  vcf<-vcf[!nbal,]
+  gtyp<-hetTgen(vcf,"GT")
+  alcount<-apply(gtyp[,-c(1:3)],1,function(x){y=unique(x);y=y[y!="./."];return(length(y))})
+  vcf<-vcf[!which(alcount<2),]
+}
+
+
+
 
 #' Import VCF file
 #'
@@ -85,6 +96,16 @@ readVCF <- function(vcf.file.path){
 #'
 #' @export
 hetTgen<-function(vcf,info.type=c("AD","GT"),verbose=TRUE){
+  if(length(which(apply(vcf[,5],1,nchar)>1))>1){
+    message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed")
+    ans<-readline(prompt="Remove non-biallelic SNPs (y/n) ?: ")
+    if(ans=="y"){
+      vcf<-non_bi_rm(vcf)
+    }
+    if(ans=="n"){
+      stop("Non-bi-allelic variant file: 0nly bi-allelic SNPs allowed so far")
+    }
+  }
   xx <- vcf[,10:ncol(vcf)]
   info.type<-match.arg(info.type)
   AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==info.type)
@@ -92,14 +113,17 @@ hetTgen<-function(vcf,info.type=c("AD","GT"),verbose=TRUE){
     AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="DPR")
   }
   if(verbose) {
+    message("generating heterozygotes table")
     h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
   } else {
     h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
-    }
+  }
   het.table<-cbind(vcf[,1:3],h.table)
   colnames(het.table)[1]<-"CHROM"
+  het.table[het.table=="NA"]<-"0,0"
   return(het.table)
 }
+
 
 #' Get missingness of individuals in raw vcf
 #'
