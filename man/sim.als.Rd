@@ -22,7 +22,7 @@ A list of two matrices: 1. allele_freqs: theoretical allele frequency, 2. simula
 This function simulates allele frequencies of a desired population size under HWE
 }
 \examples{
-alleles <- sim.als(n=200,nrun=1000,res=0.001)
+alleles <- sim.als(n=200,nrun=1000,res=0.001,plot=TRUE)
 
 }
 \references{

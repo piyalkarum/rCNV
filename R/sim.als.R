@@ -125,7 +125,7 @@ dupsvd_sd<-function(inx,sdd,mn){
 #' @references <add reference>
 #'
 #' @examples
-#' alleles <- sim.als(n=200,nrun=1000,res=0.001)
+#' alleles <- sim.als(n=200,nrun=1000,res=0.001,plot=TRUE)
 #'
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' @importFrom graphics legend lines

@@ -4,12 +4,14 @@
 \alias{sig.hets}
 \title{Identify significantly different heterozygotes from SNPs data}
 \usage{
-sig.hets(d.info, plot = TRUE)
+sig.hets(d.info, plot = TRUE, ...)
 }
 \arguments{
 \item{d.info}{duplication info table generated from filtered vcfs using the function dup.snp.info}
 
 \item{plot}{logical. Whether to plot the identified duplicated snps with the expected values}
+
+\item{...}{other arguments passed to plot}
 }
 \value{
 A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
