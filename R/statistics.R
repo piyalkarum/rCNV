@@ -161,6 +161,73 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5){
   return(T2)
 }
 
+#' Get sequencing quality statistics of raw VCF files
+#'
+#' This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details).
+#'
+#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
+#' @param plot logical. Whether to plot the (12) parameters
+#' @param ... other arguments passed on to plot (e.g. col,border)
+#'
+#' @importFrom stats density
+#' @importFrom graphics polygon
+#'
+#' @return returns a data frame with quality parameters from the info. field of the vcf
+#' QUAL   The Phred-scaled probability that a REF/ALT polymorphism exists at this site given sequencing data
+#' AC     Allele count
+#' AF     Allele frequencey
+#' DP     unfiltered depth
+#' MQ     .....
+#' QD     QualByDepth - This is the variant confidence (from the QUAL field) divided by the unfiltered depth of non-hom-ref samples
+#' FS     FisherStrand - This is the Phred-scaled probability that there is strand bias at the site.
+#' SOR    StrandOddsRatio - This is another way to estimate strand bias using a test similar to the symmetric odds ratio test
+#' MQ     RMSMappingQuality - This is the root mean square mapping quality over all the reads at the site
+#' MQRankSum  MappingQualityRankSumTest - This is the u-based z-approximation from the Rank Sum Test for mapping qualities
+#' ReadPosRankSum ReadPosRankSumTest - This is the u-based z-approximation from the Rank Sum Test for site position within reads
+#' ...
+#'
+#' @details
+#' For more details see https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' vcf <- readVCF(vcf.file.path=vcf.file.path)
+#' statistics<-vcf.stat(vcf,plot=TRUE)
+#'
+#' @export
+vcf.stat<-function(vcf,plot=TRUE,...){
+  tbb<-apply(vcf[,8],1,function(xx){
+    tmp<-unlist(strsplit(as.character(xx),";"))
+    AC<-gsub(".*=","\\1",tmp[grep("^AC\\=",tmp)])
+    AF<-gsub(".*=","\\1",tmp[grep("^AF\\=",tmp)])
+    DP<-gsub(".*=","\\1",tmp[grep("^DP\\=",tmp)])
+    MQ<-gsub(".*=","\\1",tmp[grep("^MQ\\=",tmp)])
+    QD<-gsub(".*=","\\1",tmp[grep("^QD\\=",tmp)])
+    FS<-gsub(".*=","\\1",tmp[grep("^FS\\=",tmp)])
+    SOR<-gsub(".*=","\\1",tmp[grep("^SOR\\=",tmp)])
+    HET<-gsub(".*=","\\1",tmp[grep("^ExcessHet\\=",tmp)])
+    MQRankSum<-gsub(".*=","\\1",tmp[grep("^MQRankSum\\=",tmp)])
+    ReadPosRankSum<-gsub(".*=","\\1",tmp[grep("^ReadPosRankSum\\=",tmp)])
+    InbrCo<-gsub(".*=","\\1",tmp[grep("^InbreedingCoeff\\=",tmp)])
+    ll<-list(AC,AF,DP,MQ,QD,FS,SOR,HET,MQRankSum,ReadPosRankSum,InbrCo)
+    ll<-unlist(lapply(ll,function(x){if(length(x)==0)x<-NA else x<-x}))
+    return(ll)
+  })
+  tbb<-t(tbb)
+  colnames(tbb)<-c("AC","AF","DP","MQ","QD","FS","SOR","HET","MQRankSum","ReadPosRankSum","InbrCo")
+  tbb<-data.frame(cbind(vcf[,c(1:3,6)],tbb))
+  if(plot){
+    par(mfrow=c(4,3))
+    pl<-list(...)
+    if(is.null(pl$col)) pl$col<-"lightblue"
+    if(is.null(pl$border)) pl$border<-"firebrick"
+    pp<-sapply(colnames(tbb[,-c(1:3)]),function(x,pl){plot((dd<-density(as.numeric(tbb[,x]),na.rm = T)),main = x,typ="n",xlab=NA)
+      polygon(dd,col=pl$col,border=pl$border)},pl=pl)
+  }
+  return(tbb)
+}
 
 
 
