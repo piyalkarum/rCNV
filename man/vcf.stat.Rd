@@ -2,7 +2,7 @@
 % Please edit documentation in R/statistics.R
 \name{vcf.stat}
 \alias{vcf.stat}
-\title{Get sequencing quality statistics of raw VCF files}
+\title{Get sequencing quality statistics of raw VCF files (with GatK generated vcf files only)}
 \usage{
 vcf.stat(vcf, plot = TRUE, ...)
 }

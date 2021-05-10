@@ -161,7 +161,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5){
   return(T2)
 }
 
-#' Get sequencing quality statistics of raw VCF files
+#' Get sequencing quality statistics of raw VCF files (with GatK generated vcf files only)
 #'
 #' This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details).
 #'

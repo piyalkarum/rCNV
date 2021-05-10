@@ -51,8 +51,6 @@ non_bi_rm<-function(vcf){
 }
 
 
-
-
 #' Import VCF file
 #'
 #' Function to import raw single/multi-sample VCF files generated from GatK or VCFtools.
@@ -120,7 +118,8 @@ hetTgen<-function(vcf,info.type=c("AD","GT"),verbose=TRUE){
   }
   het.table<-cbind(vcf[,1:3],h.table)
   colnames(het.table)[1]<-"CHROM"
-  het.table[het.table=="NA"]<-"0,0"
+  het.table[het.table=="NA" | het.table==".,."]<-"0,0"
+  het.table <- data.frame(het.table)[,colSums(het.table=="0,0")<nrow(het.table)]
   return(het.table)
 }
 

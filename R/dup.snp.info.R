@@ -1,61 +1,31 @@
 #helpers
-#1. TTM normalization
-####### from edgeR #######
-
+#1. TTM normalization (modified from edgeR)
 #' @importFrom methods is
 #' @keywords internal
-TMM<-function (object, method = c("TMM", "RLE", "upperquartile", "none"),
-               refColumn = NULL, logratioTrim = 0.3, sumTrim = 0.05, doWeighting = TRUE,
-               Acutoff = -1e+10, p = 0.75)
+TMM<-function (object, p = 0.75)
 {
-  if (is(object, "DGEList")) {
-    x <- as.matrix(object$counts)
-    lib.size <- object$samples$lib.size
-  }
-  else {
-    x <- as.matrix(object)
-    lib.size <- colSums(x)
-  }
-  method <- match.arg(method)
+  x <- as.matrix(object)
   allzero <- rowSums(x > 0) == 0
   if (any(allzero))
     x <- x[!allzero, , drop = FALSE]
-  if (nrow(x) == 0 || ncol(x) == 1)
-    method = "none"
-  f <- switch(method, TMM = {
-    f75 <- .calcFactorQuantile(data = x, lib.size = lib.size,
-                               p = 0.75)
-    if (is.null(refColumn)) refColumn <- which.min(abs(f75 -
-                                                         mean(f75)))
-    if (length(refColumn) == 0 | refColumn < 1 | refColumn >
-        ncol(x)) refColumn <- 1
+  allzero <- colSums(x > 0) == 0
+  if (any(allzero))
+    {message(paste0("removed ",colnames(x)[which(allzero)]," (no depth data)"))
+    x <- x[,!allzero, drop = FALSE]}
+  lib.size <- colSums(x)
+  if (nrow(x) == 0 || ncol(x) == 1) {
+    f<-rep(1, ncol(x))
+  } else {
+    f75<-t(t(x)/lib.size);f75<-apply(f75, 2, function(x) quantile(x, p = 0.75,na.rm=TRUE))
+    refColumn <- which.min(abs(f75 -mean(f75,na.rm=T)))
+    if (length(refColumn) == 0 | refColumn < 1 | refColumn >ncol(x)) refColumn <- 1
     f <- rep(NA, ncol(x))
-    for (i in 1:ncol(x)) f[i] <- .calcFactorWeighted(obs = x[,
-                                                             i], ref = x[, refColumn], libsize.obs = lib.size[i],
-                                                     libsize.ref = lib.size[refColumn], logratioTrim = logratioTrim,
-                                                     sumTrim = sumTrim, doWeighting = doWeighting, Acutoff = Acutoff)
-    f
-  }, RLE = .calcFactorRLE(x)/lib.size, upperquartile = .calcFactorQuantile(x,
-                                                                           lib.size, p = p), none = rep(1, ncol(x)))
-  f <- f/exp(mean(log(f)))
-  if (is(object, "DGEList")) {
-    object$samples$norm.factors <- f
-    return(object)
-  }
-  else {
-    return(f)
-  }
-}
+    for (i in 1:ncol(x)){ f[i] <- .calcFactorWeighted(obs = x[,i], ref = x[, refColumn], libsize.obs = lib.size[i],
+                                                      libsize.ref = lib.size[refColumn])}
 
-.calcFactorQuantile <- function (data, lib.size, p = 0.75)
-{
-  y <- t(t(data)/lib.size)
-  f <- apply(y, 2, function(x) quantile(x, p = p))
-}
-.calcFactorRLE<-function (data)
-{
-  gm <- exp(rowMeans(log(data)))
-  apply(data, 2, function(u) median((u/gm)[gm > 0]))
+    f <- f/exp(mean(log(f),na.rm=T))
+    f
+  }
 }
 
 .calcFactorWeighted <- function (obs, ref, libsize.obs = NULL, libsize.ref = NULL, logratioTrim = 0.3,
@@ -90,11 +60,12 @@ TMM<-function (object, method = c("TMM", "RLE", "upperquartile", "none"),
                                                  na.rm = TRUE))
   else 2^(mean(logR[keep], na.rm = TRUE))
 }
-##########################
-normz<-function(dat){
-  DD<-apply(dat,2,function(xx){(dd<-do.call(rbind,lapply(xx,function(x){yy<-strsplit(x,",");sum(as.numeric(unlist(yy)))})))})
+
+#apply normalization
+norm.fact<-function(dat){
+  DD<-apply(dat,2,function(xx){(dd<-do.call(rbind,lapply(xx,function(x){yy<-strsplit(x,",");sum(as.numeric(unlist(yy)),na.rm=TRUE)})))})
   colnames(DD)<-gsub(".AD","",colnames(DD))
-  return(TMM(DD))### consider avoiding package dependency
+  return(TMM(DD))
 }
 
 #2. generate dupinfo for each snp
@@ -151,7 +122,7 @@ dup.snp.info<-function(het.table,normalize=FALSE){
   gts<-het.table[,-c(1:3)]
   res<-het.table[,1:3]
   if(normalize){
-    nf<-normz(gts)
+    suppressWarnings(nf<-norm.fact(gts))
     suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info,nf=nf)))
   } else {
     suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info)))
