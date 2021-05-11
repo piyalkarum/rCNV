@@ -2,7 +2,7 @@
 #1. TTM normalization (modified from edgeR)
 #' @importFrom methods is
 #' @keywords internal
-TMM<-function (object, p = 0.75)
+TMM<-function (object, p = 0.75,verbose=TRUE)
 {
   x <- as.matrix(object)
   allzero <- rowSums(x > 0) == 0
@@ -16,7 +16,11 @@ TMM<-function (object, p = 0.75)
   if (nrow(x) == 0 || ncol(x) == 1) {
     f<-rep(1, ncol(x))
   } else {
-    f75<-t(t(x)/lib.size);f75<-apply(f75, 2, function(x) quantile(x, p = 0.75,na.rm=TRUE))
+    if(verbose){
+      f75<-t(t(x)/lib.size);f75<-apply_pb(f75, 2, function(x) quantile(x, p = 0.75,na.rm=TRUE))
+    } else {
+      f75<-t(t(x)/lib.size);f75<-apply(f75, 2, function(x) quantile(x, p = 0.75,na.rm=TRUE))
+    }
     refColumn <- which.min(abs(f75 -mean(f75,na.rm=T)))
     if (length(refColumn) == 0 | refColumn < 1 | refColumn >ncol(x)) refColumn <- 1
     f <- rep(NA, ncol(x))

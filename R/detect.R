@@ -1,17 +1,21 @@
 #1 calculate expected proportions of heterozygotes from real data
-ex.prop<-function(rs){n<-unlist(c(rs[4]))
-p<-(rs[1]+rs[2]/2)/n
-ob<-unlist(c(rs[1:3]))
-eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
-delta <- rs[2]-(2*p*(1-p) * n)
-pval<-suppressWarnings(fisher.test(cbind(ob,eX)))$p.value
-return(c(eX/n,pval,delta))}
+ex.prop<-function(rs,method=c("fisher","chi.sq")){
+  n<-unlist(c(rs[4]))
+  p<-(rs[1]+rs[2]/2)/n
+  ob<-unlist(c(rs[1:3]))
+  eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
+  delta <- rs[2]-(2*p*(1-p) * n)
+  stat<-match.arg(method)
+  pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX)))$p.value,chi.sq=suppressWarnings(chisq.test(cbind(ob,eX)))$p.value)
+  return(c(eX/n,pval,delta))
+}
 
 #' Identify significantly different heterozygotes from SNPs data
 #'
 #' This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 #'
 #' @param d.info duplication info table generated from filtered vcfs using the function dup.snp.info
+#' @param method character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
 #' @param plot logical. Whether to plot the identified duplicated snps with the expected values
 #' @param ... other arguments passed to plot
 #'
@@ -28,13 +32,14 @@ return(c(eX/n,pval,delta))}
 #' duplicates<-sig.hets(d.info,plot=TRUE)
 #'
 #' @importFrom grDevices col2rgb rgb
-#' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
+#' @importFrom stats fisher.test median quantile rbinom sd smooth.spline chisq.test
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @export
-sig.hets<-function(d.info,plot=TRUE,...){
+sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
   d<-d.info[,c("NHomFreq","NumHet","NHomRare","truNsample")]
   colnames(d)<-c("h1","het","h2","truNsample")
-  df<-data.frame(t(apply_pb(d,1,ex.prop)))
+  method<-match.arg(method)
+  df<-data.frame(t(apply_pb(d,1,ex.prop,method=method)))
   colnames(df)<-c("p2","het","q2","pval","delta")
   df$dup.stats<-"singleton";df$dup.stats[which(df$pval < 0.05 & df$delta > 0 )]<-"duplicated"
   if(plot){

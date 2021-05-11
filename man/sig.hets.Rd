@@ -4,10 +4,12 @@
 \alias{sig.hets}
 \title{Identify significantly different heterozygotes from SNPs data}
 \usage{
-sig.hets(d.info, plot = TRUE, ...)
+sig.hets(d.info, method = c("fisher", "chi.sq"), plot = TRUE, ...)
 }
 \arguments{
 \item{d.info}{duplication info table generated from filtered vcfs using the function dup.snp.info}
+
+\item{method}{character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
 
 \item{plot}{logical. Whether to plot the identified duplicated snps with the expected values}
 
