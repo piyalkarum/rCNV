@@ -42,12 +42,18 @@ lapply_pb <- function(X, FUN, ...)
 #https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
 
 #2. remove non-biallelic snps
-non_bi_rm<-function(vcf){
+non_bi_rm<-function(vcf,GT.table=NULL){
+  vcf<-vcf$vcf
   nbal<-which(apply(vcf[,5],1,nchar)>1)
   vcf<-vcf[!nbal,]
-  gtyp<-hetTgen(vcf,"GT")
+  if(!is.null(GT.table)){
+    gtyp<-GT.table
+  } else {
+    gtyp<-hetTgen(vcf,"GT")
+  }
   alcount<-apply(gtyp[,-c(1:3)],1,function(x){y=unique(x);y=y[y!="./."];return(length(y))})
   vcf<-vcf[!which(alcount<2),]
+  return(list(vcf=vcf))
 }
 
 
@@ -70,7 +76,7 @@ non_bi_rm<-function(vcf){
 #' @export
 readVCF <- function(vcf.file.path){
   tt <- fread(vcf.file.path,sep="\t",skip="#CHROM")
-  return(tt)
+  return(list(vcf=tt))
 }
 
 
@@ -94,6 +100,7 @@ readVCF <- function(vcf.file.path){
 #'
 #' @export
 hetTgen<-function(vcf,info.type=c("AD","GT"),verbose=TRUE){
+  if(inherits(vcf,"list")){vcf<-vcf$vcf}
   if(length(which(apply(vcf[,5],1,nchar)>1))>1){
     message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed")
     ans<-readline(prompt="Remove non-biallelic SNPs (y/n) ?: ")
@@ -142,6 +149,7 @@ hetTgen<-function(vcf,info.type=c("AD","GT"),verbose=TRUE){
 #'
 #' @export
 get.miss<-function(vcf,plot=TRUE){
+  vcf<-vcf$vcf
   ndat<-hetTgen(vcf,"GT")
   ll<-t(apply(ndat[,-c(1:3)],2,function(x)cbind(length(which(x=="./.")),length(which(x=="./."))/length(x))))
   ll<-data.frame(indiv=colnames(vcf)[-c(1:9)],n_miss=ll[,1],f_miss=ll[,2])

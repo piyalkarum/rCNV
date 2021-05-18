@@ -66,8 +66,13 @@ return(V)}
 #'
 #' @export
 h.zygosity<-function(vcf,plot=FALSE,pops=NA){
-  message("reading genotypes")
-  gtt<-hetTgen(vcf,"GT",verbose=TRUE)
+  if(inherits(vcf,"list")) {
+    vcf<-vcf$vcf
+    message("reading genotypes")
+    gtt<-hetTgen(vcf,"GT",verbose=TRUE)
+  } else {
+    gtt <-vcf
+  }
   message("assessing per sample homozygosity")
   hh<-t(apply_pb(gtt[,-c(1:3)],2,het.sity))
   hh<-data.frame(rownames(hh),hh)
@@ -118,8 +123,13 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA){
 #'
 #' @export
 relatedness<-function(vcf,plot=TRUE,threshold=0.5){
-  message("generating genotype table")
-  gtt<-hetTgen(vcf,"GT")
+  if(!inherits(vcf,"list")) {
+    gtt <-vcf
+  } else {
+    vcf<-vcf$vcf
+    message("reading genotypes")
+    gtt<-hetTgen(vcf,"GT",verbose=TRUE)
+  }
   gt<-gtt[,-c(1:3)]
   freq<-apply(gt,1,function(xx){aal<-unlist(strsplit(as.character(xx),"/"))
   return(length(which(aal=="1"))/(length(which(aal=="0"))+length(which(aal=="1"))))})
@@ -198,6 +208,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5){
 #'
 #' @export
 vcf.stat<-function(vcf,plot=TRUE,...){
+  vcf<-vcf$vcf
   tbb<-apply(vcf[,8],1,function(xx){
     tmp<-unlist(strsplit(as.character(xx),";"))
     AC<-gsub(".*=","\\1",tmp[grep("^AC\\=",tmp)])

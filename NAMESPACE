@@ -3,6 +3,7 @@
 export(depthVsSample)
 export(dup.detect)
 export(dup.snp.info)
+export(dup.validate)
 export(get.miss)
 export(h.zygosity)
 export(hetTgen)
