@@ -43,7 +43,7 @@ lapply_pb <- function(X, FUN, ...)
 
 #2. remove non-biallelic snps
 non_bi_rm<-function(vcf,GT.table=NULL){
-  vcf<-vcf$vcf
+  if(inherits(vcf,"list")){vcf<-vcf$vcf}
   nbal<-which(apply(vcf[,5],1,nchar)>1)
   vcf<-vcf[!nbal,]
   if(!is.null(GT.table)){
