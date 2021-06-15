@@ -34,6 +34,7 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @importFrom grDevices col2rgb rgb
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline chisq.test
 #' @importFrom utils setTxtProgressBar txtProgressBar
+#' @importFrom colorspace rainbow_hcl
 #' @export
 sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
   d<-d.info[,c("NHomFreq","NumHet","NHomRare","truNsample")]
@@ -43,20 +44,24 @@ sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
   colnames(df)<-c("p2","het","q2","pval","delta")
   df$dup.stats<-"singleton";df$dup.stats[which(df$pval < 0.05 & df$delta > 0 )]<-"duplicated"
   if(plot){
-    cols<-makeTransparent(c("black","red"),alpha=0.2)
-    d$Color <- cols[1]
-    d$Color [which(df$dup.stats=="duplicated")]<- cols[2]#& df$delta > 0
     l<-list(...)
     if(is.null(l$cex)) l$cex=0.2
     if(is.null(l$pch)) l$pch=19
     if(is.null(l$xlim)) l$xlim=c(0,1)
     if(is.null(l$ylim)) l$ylim=c(0,1)
+    if(is.null(l$col)) cols<-makeTransparent(rainbow_hcl(2),alpha=0.2) else cols<-makeTransparent(l$col)
+
+    d$Color <- cols[1]
+    d$Color [which(df$dup.stats=="duplicated")]<- cols[2]#& df$delta > 0
     plot(d.info$PropHet~d.info$PropHomRare, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
          xlab="Proportion of Alternate Homozygotes",ylab="Proportion of Heterozygotes")
     lines((smm<-smooth.spline(df$het~df$q2)),col="blue")
+    legend("bottomright", c("singleton","duplicate","expected"), col = c(cols,"blue"), lty = c(0, 0, 1), lwd = c(0, 0, 1),pch = c(l$pch, l$pch, NA),
+           cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
   }
   return(data.frame(cbind(d.info[,c(1:4,10:12)],df[,c(4:6)])))
 }
+
 
 #' Detect duplicated snps from depth of coverage and number of heterozygotes
 #'
@@ -82,18 +87,7 @@ sig.snps<-function(d.info,stringency=c("95","99","max"),plot=TRUE,...){
   d$dup.stat[d.info$NoRareAllele<2*0.01*0.99*d.info$truNsample]<-"low MAF"
   d$dup.stat[d.info$MedCovHet<=5]<-"low coverage"
   if(plot){
-    cols<-makeTransparent(c("black","red","cyan","magenta"),alpha=0.2)
-    d$Color <- cols[1]
-    d$Color [d$dup.stat=="duplicated"]<- cols[2]
-    d$Color [d$dup.stat=="low MAF"]<- cols[3]
-    d$Color [d$dup.stat=="low coverage"]<- cols[4]
-    l<-list(...)
-    if(is.null(l$cex)) l$cex=0.2
-    if(is.null(l$pch)) l$pch=19
-    if(is.null(l$xlim)) l$xlim=c(0,1)
-    if(is.null(l$ylim)) l$ylim=c(0,1)
-    plot(d$MedRatio~d$PropHet, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
-         ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+    dup.plot(d,...)
   }
   return(d[,-9])
 }
@@ -123,20 +117,54 @@ dup.detect<-function(d.info,stringency=c("95","99","max"),plot=TRUE,...){
   ds<-sig.snps(d.info,stringency=match.arg(stringency),plot=FALSE)
   ds$dup.stat[d2$dup.stats=="duplicated"]<-"duplicated"
   if(plot){
-    cols<-makeTransparent(c("black","red","cyan","magenta"),alpha=0.2)
-    ds$Color <- cols[1]
-    ds$Color [ds$dup.stat=="duplicated"]<- cols[2]
-    ds$Color [ds$dup.stat=="low MAF"]<- cols[3]
-    ds$Color [ds$dup.stat=="low coverage"]<- cols[4]
-    l<-list(...)
-    if(is.null(l$cex)) l$cex=0.2
-    if(is.null(l$pch)) l$pch=19
-    if(is.null(l$xlim)) l$xlim=c(0,1)
-    if(is.null(l$ylim)) l$ylim=c(0,1)
-    plot(ds$MedRatio~ds$PropHet, pch=l$pch, cex=l$cex,col=ds$Color,xlim=l$xlim,ylim=l$ylim,
-         ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+    dup.plot(ds,...)
   }
   return(ds)
 }
+
+
+
+#' Plot duplicates
+#'
+#' The function plots detected duplicates from functions "sig.snps", and "dup.detect"
+#'
+#' @param ds a data frame of detected duplicates
+#' @param ... other graphical parameters to be passed to the function plot
+#'
+#' @importFrom colorspace rainbow_hcl
+#'
+#' @return plots duplicates on proportion of heterozygotes vs allele median ratio
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples
+#' data(hets)
+#' d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
+#' duplicated<-dup.detect(d.info,stringency="max",plot=FALSE)
+#' dup.plot(duplicated)
+#'
+#' @export
+dup.plot<-function(ds,...){
+  l<-list(...)
+  if(is.null(l$cex)) l$cex=0.2
+  if(is.null(l$pch)) l$pch=19
+  if(is.null(l$xlim)) l$xlim=c(0,1)
+  if(is.null(l$ylim)) l$ylim=c(0,1)
+  if(is.null(l$col)) cols<-makeTransparent(c("black",rainbow_hcl(16)[c(16,7,10)]),alpha=0.3) else cols<-makeTransparent(l$col,alpha = 0.3)
+  ds$Color <- cols[1]
+  ds$Color [ds$dup.stat=="duplicated"]<- cols[2]
+  ds$Color [ds$dup.stat=="low MAF"]<- cols[3]
+  ds$Color [ds$dup.stat=="low coverage"]<- cols[4]
+  plot(ds$MedRatio~ds$PropHet, pch=l$pch, cex=l$cex,col=ds$Color,xlim=l$xlim,ylim=l$ylim,frame=F,
+       ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+  legend("bottomright", c("singleton","duplicate","low MAF","low coverage"), col = cols, pch=l$pch,
+         cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
+
+}
+
+
+
+
+
 
 
