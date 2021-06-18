@@ -169,7 +169,7 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #' @param cov.len max value of depth of coverage to be simulated
 #' @param sam.len maximum no. of samples to be simulated
 #' @param incr a vector of two integers indicating ncrement size for both depth and no. samples ranges
-#' @param plot logical. Whether to plot the output (a plot of no. samles vs median depth coverage colored with median allele ratios)
+#' @param plot logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)
 #' @param plot.cols string. Two colors to add to the gradient
 #'
 #' @return A matrix of median allele ratios where rows are the number of samples and columns are depth of coverage values
@@ -188,11 +188,11 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols=c("red","cyan")){
   cov<- seq(1,cov.len,incr[1])
   nsamp<- seq(1,sam.len,incr[2])
-  MR<-NULL
-  for(i in cov){
-    tmp<-dp.cov(cov.i=i,nsamp)
-    MR <- cbind(MR,tmp)
-  }
+  MR<-lapply_pb(cov,function(x,nsamp){
+    tmp<-dp.cov(cov.i=x,nsamp)
+    return(tmp)
+  },nsamp=nsamp)
+  MR<-do.call(cbind,MR)
   colnames(MR)<-cov
   rownames(MR)<-nsamp
   if(plot){

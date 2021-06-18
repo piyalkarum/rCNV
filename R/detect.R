@@ -49,7 +49,7 @@ sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
     if(is.null(l$pch)) l$pch=19
     if(is.null(l$xlim)) l$xlim=c(0,1)
     if(is.null(l$ylim)) l$ylim=c(0,1)
-    if(is.null(l$col)) cols<-makeTransparent(rainbow_hcl(2),alpha=0.2) else cols<-makeTransparent(l$col)
+    if(is.null(l$col)) cols<-makeTransparent(rainbow_hcl(2),alpha=0.3) else cols<-makeTransparent(l$col,alpha=0.3)
 
     d$Color <- cols[1]
     d$Color [which(df$dup.stats=="duplicated")]<- cols[2]#& df$delta > 0

@@ -19,7 +19,7 @@ depthVsSample(
 
 \item{incr}{a vector of two integers indicating ncrement size for both depth and no. samples ranges}
 
-\item{plot}{logical. Whether to plot the output (a plot of no. samles vs median depth coverage colored with median allele ratios)}
+\item{plot}{logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)}
 
 \item{plot.cols}{string. Two colors to add to the gradient}
 }
