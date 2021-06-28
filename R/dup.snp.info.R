@@ -2,7 +2,7 @@
 #1. TTM normalization (modified from edgeR)
 #' @importFrom methods is
 #' @keywords internal
-TMM<-function (object, p = 0.75,verbose=TRUE)
+TMM<-function (object, p = 0.75,verbose=FALSE)
 {
   x <- as.matrix(object)
   allzero <- rowSums(x > 0) == 0
@@ -67,7 +67,7 @@ TMM<-function (object, p = 0.75,verbose=TRUE)
 
 #apply normalization
 norm.fact<-function(dat){
-  DD<-apply(dat,2,function(xx){(dd<-do.call(rbind,lapply(xx,function(x){yy<-strsplit(x,",");sum(as.numeric(unlist(yy)),na.rm=TRUE)})))})
+  DD<-apply_pb(dat,2,function(xx){(dd<-do.call(rbind,lapply(xx,function(x){yy<-strsplit(x,",");sum(as.numeric(unlist(yy)),na.rm=TRUE)})))})
   colnames(DD)<-gsub(".AD","",colnames(DD))
   return(TMM(DD))
 }
@@ -126,6 +126,7 @@ dup.snp.info<-function(het.table,normalize=FALSE){
   gts<-het.table[,-c(1:3)]
   res<-het.table[,1:3]
   if(normalize){
+    message("normalizing depth of coverage")
     suppressWarnings(nf<-norm.fact(gts))
     suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info,nf=nf)))
   } else {
