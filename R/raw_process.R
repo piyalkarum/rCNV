@@ -209,7 +209,7 @@ gt.format <- function(gt,info,snp.subset=TRUE,verbose=FALSE) {
   rownames(gts)<-paste(gts$CHROM,gts$POS,sep=".")
   pp<-na.omit(unique(info$population))
 
-  infos<-info$population
+  infos<-as.character(info$population)
  if(verbose){
    pgt.h<-lapply_pb(pp,function(x,gts,info){
      tm <- as.data.frame(gts[,which(info==x)])
@@ -245,7 +245,7 @@ gt.format <- function(gt,info,snp.subset=TRUE,verbose=FALSE) {
       return(tmp0)
     },pgt.h=pgt.h,snps=snps,rn=rn)
   } else { chu <- NULL}
-  return(list(hor=pgt.h,ver=t(pgt.h),subsets=chu))
+  return(list(hor=pgt.h,ver=t(pgt.h),subsets=chu,pop=as.character(pp)))
 }
 
 
