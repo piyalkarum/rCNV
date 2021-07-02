@@ -233,9 +233,10 @@ gt.format <- function(gt,info,snp.subset=TRUE,verbose=FALSE) {
   pgt.h <- as.matrix(pgt.h)
   pgt.h[which(is.na(pgt.h))] <- 0
   if(snp.subset){
+    message("subsetting")
     rn<-sample(1:10,nrow(gts),replace = T)
     snps<-rownames(gts)
-    chu<-lapply(1:10,function(nn,pgt.h,snps,rn){
+    chu<-lapply_pb(1:10,function(nn,pgt.h,snps,rn){
       sset<-snps[rn==nn]
       tmp0<-NULL
       for(k in seq_along(sset)){
