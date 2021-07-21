@@ -195,9 +195,10 @@ get.miss<-function(vcf,plot=TRUE){
 #' @export
 gt.format <- function(gt,info,snp.subset=TRUE,verbose=FALSE) {
   if(is.character(gt)){
-    gts <-as.data.frame(fread(gt))
+    gt <-as.data.frame(fread(gt))
+    gts <-gt[,-c(1,2)]
   } else {
-    gts<-gt
+    gts<-gt[,-c(1,2)]
   }
   if(is.character(info)){
     pop.col<-NULL
@@ -206,7 +207,7 @@ gt.format <- function(gt,info,snp.subset=TRUE,verbose=FALSE) {
     }
     info<-data.frame(population=pop.col)
   }
-  rownames(gts)<-paste(gts$CHROM,gts$POS,sep=".")
+  rownames(gts)<-paste(gt$CHROM,gt$POS,sep=".")
   pp<-na.omit(unique(info$population))
 
   infos<-as.character(info$population)

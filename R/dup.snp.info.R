@@ -1,5 +1,5 @@
 #helpers
-#1. TTM normalization (modified from edgeR)
+#1. TMM normalization (modified from edgeR)
 #' @importFrom methods is
 #' @keywords internal
 TMM<-function (object, p = 0.75,verbose=FALSE)
@@ -110,6 +110,7 @@ dup.info <- function(gt,nf=1){
 #'
 #' @param het.table tab-delimited depth value by sample/population (output of hetTgen)
 #' @param normalize logical. Whether to apply normalization to depth values using trimmed mean of M-values. See ref.
+#' @param verbose logical. if TRUE, shows the progress
 #' @importFrom stats na.omit
 #'
 #' @author Piyal Karunarathne
@@ -122,7 +123,7 @@ dup.info <- function(gt,nf=1){
 #' dup.info <- dup.snp.info(het.table=hets,normalize=FALSE)
 #'
 #' @export
-dup.snp.info<-function(het.table,normalize=FALSE){
+dup.snp.info<-function(het.table,normalize=FALSE,verbose=TRUE){
   gts<-het.table[,-c(1:3)]
   res<-het.table[,1:3]
   if(normalize){
@@ -130,7 +131,11 @@ dup.snp.info<-function(het.table,normalize=FALSE){
     suppressWarnings(nf<-norm.fact(gts))
     suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info,nf=nf)))
   } else {
-    suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info)))
+    if(verbose){
+      suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info)))
+    } else {
+      suppressWarnings(out<-t(apply(gts,MARGIN = 1,dup.info)))
+    }
   }
   snp.dup<-data.frame(res$CHROM,res$POS,res$ID,out)#
   colnames(snp.dup)<-c("Scaffold","Position","ID","MedRatio","AvgRatio","MedCovHet","TotCovHet","MedCovHom","NumHet","PropHomFreq","PropHet","PropHomRare","NoRareAllele","NHomFreq","NHomRare","Fis","truNsample","totDepFreq","totDepRare","totDepFreqHet","totDepRareHet","medDepth","numMiss")#
