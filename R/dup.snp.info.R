@@ -127,9 +127,13 @@ dup.snp.info<-function(het.table,normalize=FALSE,verbose=TRUE){
   gts<-het.table[,-c(1:3)]
   res<-het.table[,1:3]
   if(normalize){
-    message("normalizing depth of coverage")
     suppressWarnings(nf<-norm.fact(gts))
-    suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info,nf=nf)))
+    if(verbose){
+      message("normalizing depth of coverage")
+      suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info,nf=nf)))
+    } else {
+      suppressWarnings(out<-t(apply(gts,MARGIN = 1,dup.info,nf=nf)))
+    }
   } else {
     if(verbose){
       suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info)))
