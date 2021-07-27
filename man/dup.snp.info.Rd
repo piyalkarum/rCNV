@@ -4,12 +4,14 @@
 \alias{dup.snp.info}
 \title{Generate SNPs duplication information}
 \usage{
-dup.snp.info(het.table, normalize = FALSE)
+dup.snp.info(het.table, normalize = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{het.table}{tab-delimited depth value by sample/population (output of hetTgen)}
 
 \item{normalize}{logical. Whether to apply normalization to depth values using trimmed mean of M-values. See ref.}
+
+\item{verbose}{logical. if TRUE, shows the progress}
 }
 \description{
 This function generates duplication information of all the SNPs provided in the data set.

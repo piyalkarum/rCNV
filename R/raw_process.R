@@ -193,7 +193,7 @@ get.miss<-function(vcf,plot=TRUE){
 #' GT<-gt.format(het.table,info)
 #'
 #' @export
-gt.format <- function(gt,info,snp.subset=TRUE,verbose=FALSE) {
+gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
   if(is.character(gt)){
     gt <-as.data.frame(fread(gt))
     gts <-gt[,-c(1,2)]

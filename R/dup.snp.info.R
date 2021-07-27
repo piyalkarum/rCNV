@@ -1,78 +1,5 @@
 #helpers
-#1. TMM normalization (modified from edgeR)
-#' @importFrom methods is
-#' @keywords internal
-TMM<-function (object, p = 0.75,verbose=FALSE)
-{
-  x <- as.matrix(object)
-  allzero <- rowSums(x > 0) == 0
-  if (any(allzero))
-    x <- x[!allzero, , drop = FALSE]
-  allzero <- colSums(x > 0) == 0
-  if (any(allzero))
-    {message(paste0("removed ",colnames(x)[which(allzero)]," (no depth data)"))
-    x <- x[,!allzero, drop = FALSE]}
-  lib.size <- colSums(x)
-  if (nrow(x) == 0 || ncol(x) == 1) {
-    f<-rep(1, ncol(x))
-  } else {
-    if(verbose){
-      f75<-t(t(x)/lib.size);f75<-apply_pb(f75, 2, function(x) quantile(x, p = 0.75,na.rm=TRUE))
-    } else {
-      f75<-t(t(x)/lib.size);f75<-apply(f75, 2, function(x) quantile(x, p = 0.75,na.rm=TRUE))
-    }
-    refColumn <- which.min(abs(f75 -mean(f75,na.rm=T)))
-    if (length(refColumn) == 0 | refColumn < 1 | refColumn >ncol(x)) refColumn <- 1
-    f <- rep(NA, ncol(x))
-    for (i in 1:ncol(x)){ f[i] <- .calcFactorWeighted(obs = x[,i], ref = x[, refColumn], libsize.obs = lib.size[i],
-                                                      libsize.ref = lib.size[refColumn])}
-
-    f <- f/exp(mean(log(f),na.rm=T))
-    f
-  }
-}
-
-.calcFactorWeighted <- function (obs, ref, libsize.obs = NULL, libsize.ref = NULL, logratioTrim = 0.3,
-                                 sumTrim = 0.05, doWeighting = TRUE, Acutoff = -1e+10)
-{
-  if (all(obs == ref))
-    return(1)
-  obs <- as.numeric(obs)
-  ref <- as.numeric(ref)
-  if (is.null(libsize.obs))
-    nO <- sum(obs)
-  else nO <- libsize.obs
-  if (is.null(libsize.ref))
-    nR <- sum(ref)
-  else nR <- libsize.ref
-  logR <- log2((obs/nO)/(ref/nR))
-  absE <- (log2(obs/nO) + log2(ref/nR))/2
-  v <- (nO - obs)/nO/obs + (nR - ref)/nR/ref
-  fin <- is.finite(logR) & is.finite(absE) & (absE > Acutoff)
-  logR <- logR[fin]
-  absE <- absE[fin]
-  v <- v[fin]
-  n <- sum(fin)
-  loL <- floor(n * logratioTrim) + 1
-  hiL <- n + 1 - loL
-  loS <- floor(n * sumTrim) + 1
-  hiS <- n + 1 - loS
-  keep <- (rank(logR) >= loL & rank(logR) <= hiL) & (rank(absE) >=
-                                                       loS & rank(absE) <= hiS)
-  if (doWeighting)
-    2^(sum(logR[keep]/v[keep], na.rm = TRUE)/sum(1/v[keep],
-                                                 na.rm = TRUE))
-  else 2^(mean(logR[keep], na.rm = TRUE))
-}
-
-#apply normalization
-norm.fact<-function(dat){
-  DD<-apply_pb(dat,2,function(xx){(dd<-do.call(rbind,lapply(xx,function(x){yy<-strsplit(x,",");sum(as.numeric(unlist(yy)),na.rm=TRUE)})))})
-  colnames(DD)<-gsub(".AD","",colnames(DD))
-  return(TMM(DD))
-}
-
-#2. generate dupinfo for each snp
+#1. generate dupinfo for each snp
 dup.info <- function(gt,nf=1){
   y<-data.frame(do.call(rbind,strsplit(as.character(gt),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2]);y<-y*nf
   hm0 <- na.omit(y[y[,1]>0 & y[,2]==0,]);hm1 <- na.omit(y[y[,1]==0 & y[,2]>0,]);ht <- na.omit(y[y[,1]>0 & y[,2]>0,]);hmm<-rbind(hm0,hm1)
@@ -127,7 +54,7 @@ dup.snp.info<-function(het.table,normalize=FALSE,verbose=TRUE){
   gts<-het.table[,-c(1:3)]
   res<-het.table[,1:3]
   if(normalize){
-    suppressWarnings(nf<-norm.fact(gts))
+    suppressWarnings(nf<-norm.fact(gts,ifelse(nrow(gts)>100000,"TMMex","TMM")))
     if(verbose){
       message("normalizing depth of coverage")
       suppressWarnings(out<-t(apply_pb(gts,MARGIN = 1,dup.info,nf=nf)))
