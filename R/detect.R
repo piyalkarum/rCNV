@@ -6,7 +6,7 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
   eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
   delta <- rs[2]-(2*p*(1-p) * n)
   stat<-match.arg(method)
-  pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX)))$p.value,chi.sq=suppressWarnings(chisq.test(cbind(ob,eX)))$p.value)
+  pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq.test(cbind(ob,eX)))$p.value)
   return(c(eX/n,pval,delta))
 }
 
@@ -102,6 +102,7 @@ sig.snps<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),p
 #' @param plot logical. If proportion of heterozygotes vs. allele median ratio should be plotted to visualize the detected duplicates
 #' @param ... other arguments passed to plot
 #' @param rat ratio med/median
+#' @param method haracter. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
 #'
 #' @return a data frame of snps categorized into duplicates and singletons along with allele median ratio and heterozygote and homozygote proportions.
 #'
@@ -113,10 +114,11 @@ sig.snps<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),p
 #' duplicated<-dup.detect(d.info,stringency="max",plot=TRUE)
 #'
 #' @export
-dup.detect<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),plot=TRUE,...){
+dup.detect<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),method=c("fisher","chi.sq"),plot=TRUE,...){
   rat<-match.arg(rat)
+  method<-match.arg(method)
   message("Assessing excess of heterozygotes")
-  d2<-sig.hets(d.info,plot=FALSE)
+  d2<-sig.hets(d.info,plot=FALSE,method=method)
   message("Assessing snp deviates")
   ds<-sig.snps(d.info,stringency=match.arg(stringency),rat=rat,plot=FALSE)
   ds$dup.stat[d2$dup.stats=="duplicated"]<-"duplicated"

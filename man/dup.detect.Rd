@@ -8,6 +8,7 @@ dup.detect(
   d.info,
   stringency = c("95", "99", "max"),
   rat = c("median", "mean"),
+  method = c("fisher", "chi.sq"),
   plot = TRUE,
   ...
 )
@@ -18,6 +19,8 @@ dup.detect(
 \item{stringency}{character. Confidence interval to be used in filtering duplicates}
 
 \item{rat}{ratio med/median}
+
+\item{method}{haracter. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
 
 \item{plot}{logical. If proportion of heterozygotes vs. allele median ratio should be plotted to visualize the detected duplicates}
 
