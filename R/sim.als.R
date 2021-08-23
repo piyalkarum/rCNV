@@ -64,8 +64,10 @@ plot.svd <- function(MR,cols=c("red","cyan")){
 }
 
 #6 categorize snps into duplicates or singletons based on depth coverage and number of samples
-dupsvd<-function(inx,stringency=c("95","99","max")){
-  val<-as.numeric(unlist(inx[4]))
+dupsvd<-function(inx,stringency=c("95","99","max"),rat=c("median","mean")){
+  rat<-match.arg(rat)
+  if(rat=="median") val<-as.numeric(unlist(inx[4]))
+  if(rat=="mean") val<-as.numeric(unlist(inx[5]))
   coords<-round(as.numeric(unlist(inx[c(9,6)])),0)
   if(coords[1]>1000){
     coords[1]<-1000
@@ -89,6 +91,7 @@ dupsvd<-function(inx,stringency=c("95","99","max")){
   }
   dps
 }
+
 ## not used
 dupsvd_sd<-function(inx,sdd,mn){
   val<-as.numeric(unlist(inx[4]))

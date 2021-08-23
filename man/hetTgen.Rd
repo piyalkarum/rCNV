@@ -4,7 +4,7 @@
 \alias{hetTgen}
 \title{Generate heterozygote table (allele depth values)}
 \usage{
-hetTgen(vcf, info.type = c("AD", "GT"), verbose = TRUE)
+hetTgen(vcf, info.type = c("AD", "GT", "GT-012", "GT-AB"), verbose = TRUE)
 }
 \arguments{
 \item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}

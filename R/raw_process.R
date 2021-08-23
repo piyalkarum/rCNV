@@ -107,7 +107,7 @@ readVCF <- function(vcf.file.path){
 #' het.table<-hetTgen(vcf)
 #'
 #' @export
-hetTgen<-function(vcf,info.type=c("AD","GT"),verbose=TRUE){
+hetTgen<-function(vcf,info.type=c("AD","GT","GT-012","GT-AB"),verbose=TRUE){
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
   if(length(which(apply(vcf[,5],1,nchar)>1))>1){
     message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed")
@@ -121,20 +121,35 @@ hetTgen<-function(vcf,info.type=c("AD","GT"),verbose=TRUE){
   }
   xx <- vcf[,10:ncol(vcf)]
   info.type<-match.arg(info.type)
-  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==info.type)
+  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==substr(info.type,1,2))
   if(length(AD)==0){
     AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="DPR")
   }
   if(verbose) {
-    message("generating heterozygotes table")
+    message("generating genotypes table")
     h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
   } else {
     h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
   }
-  het.table<-cbind(vcf[,1:3],h.table)
+
+  h.table[is.na(h.table) | h.table==".,."]<-"./."
+
+  if(info.type=="GT-012"){
+    h.table[h.table=="0/0"]<-0
+    h.table[h.table=="1/1"]<-1
+    h.table[h.table=="1/0" | h.table=="0/1"] <- 2
+    h.table[h.table=="./."]<-NA
+  }
+  if(info.type=="GT-AB"){
+    h.table[h.table=="0/0"]<-"AA"
+    h.table[h.table=="1/1"]<-"BB"
+    h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
+    h.table[h.table=="./."]<--9
+  }
+
+  het.table<-as.data.frame(cbind(vcf[,1:3],h.table))
   colnames(het.table)[1]<-"CHROM"
-  het.table[het.table=="NA" | het.table==".,."]<-"0,0"
-  het.table <- data.frame(het.table)[,colSums(het.table=="0,0")<nrow(het.table)]
+  #het.table <- data.frame(het.table)[,colSums(het.table=="0,0")<nrow(het.table)]
   return(het.table)
 }
 

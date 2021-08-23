@@ -70,6 +70,7 @@ sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
 #' @param stringency character. Confidence interval to be used in filtering duplicates
 #' @param plot logical. whether to plot the duplicated and singleton snps
 #' @param ... other arguments passed to plot
+#' @param rat ratio med/median
 #'
 #' @return a dataframe of snps with their status of duplication. If plot=TRUE, plot depicting duplicated and non-duplicated (singleton) alleles
 #'
@@ -81,8 +82,9 @@ sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
 #' duplicated<-sig.snps(d.info,stringency="max")
 #'
 #' @export
-sig.snps<-function(d.info,stringency=c("95","99","max"),plot=TRUE,...){
-  sts<-apply_pb(d.info,1,dupsvd,stringency=match.arg(stringency))
+sig.snps<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),plot=TRUE,...){
+  rat<-match.arg(rat)
+  sts<-apply_pb(d.info,1,dupsvd,stringency=match.arg(stringency),rat=rat)
   d<-cbind(d.info[,c(1:4,10:12)],dup.stat=sts)
   d$dup.stat[d.info$NoRareAllele<2*0.01*0.99*d.info$truNsample]<-"low MAF"
   d$dup.stat[d.info$MedCovHet<=5]<-"low coverage"
@@ -99,6 +101,7 @@ sig.snps<-function(d.info,stringency=c("95","99","max"),plot=TRUE,...){
 #' @param stringency character. Confidence interval to be used in filtering duplicates
 #' @param plot logical. If proportion of heterozygotes vs. allele median ratio should be plotted to visualize the detected duplicates
 #' @param ... other arguments passed to plot
+#' @param rat ratio med/median
 #'
 #' @return a data frame of snps categorized into duplicates and singletons along with allele median ratio and heterozygote and homozygote proportions.
 #'
@@ -110,11 +113,12 @@ sig.snps<-function(d.info,stringency=c("95","99","max"),plot=TRUE,...){
 #' duplicated<-dup.detect(d.info,stringency="max",plot=TRUE)
 #'
 #' @export
-dup.detect<-function(d.info,stringency=c("95","99","max"),plot=TRUE,...){
+dup.detect<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),plot=TRUE,...){
+  rat<-match.arg(rat)
   message("Assessing excess of heterozygotes")
   d2<-sig.hets(d.info,plot=FALSE)
   message("Assessing snp deviates")
-  ds<-sig.snps(d.info,stringency=match.arg(stringency),plot=FALSE)
+  ds<-sig.snps(d.info,stringency=match.arg(stringency),rat=rat,plot=FALSE)
   ds$dup.stat[d2$dup.stats=="duplicated"]<-"duplicated"
   if(plot){
     dup.plot(ds,...)
