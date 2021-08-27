@@ -205,5 +205,43 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols
   #saveRDS(MR,paste0(dirout,"/sim_SampVsDepth_",i,".rds"),compress = "gzip")
 }
 
+#'
+#' @noRd
+dp.cov2<-function(cov.i,nsamp){
+  if(cov.i==0){return(matrix(NA,nrow=length(nsamp),ncol = 5))}
+  if(cov.i==1){return(matrix(1,nrow=length(nsamp),ncol = 5))} else {
+    tl<-lapply(nsamp,function(z,cov.i){
+      mat<-NULL
+      for(i in 1:10000){
+        reads<-replicate(z,rbinom(cov.i,1,prob=0.5))
+        tt<-apply(reads,2,function(x)sum(x==0)/length(x))
+        #tt<-apply(reads,2,function(x)((length(x)/2)-sum(x==1))/(sqrt(length(x)*.25)))
+        mat<-rbind(mat,tt)
+      }
+      q95<-median(apply(mat,1,quantile,p=.95))
+      q05<-median(apply(mat,1,quantile,p=.05))
+      mx<-median(apply(mat,1,max))
+      mm<-median(apply(mat,1,median))
+      mn<-median(apply(mat,1,min))
+      return(c(mx,mn,mm,q95,q05))
+    },cov.i)
+    tl<-do.call(rbind,tl)
+    colnames(tl)<-c("max","min","med","q95","q05")
+    rownames(tl)<-nsamp
+    return(tl)
+  }
+}
+
+
+depthVsSample2<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
+  cov<- seq(1,cov.len,incr[1])
+  nsamp<- seq(1,sam.len,incr[2])
+  MR<-lapply_pb(cov,function(x,nsamp){
+    tmp<-dp.cov2(cov.i=x,nsamp)
+    return(tmp)
+  },nsamp=nsamp)
+  names(MR)<-cov
+  return(MR)
+}
 
 
