@@ -29,7 +29,7 @@ dup.info <- function(gt,nf=1){
 }
 
 dup.info2 <- function(gt,nf=1,l.size=NULL){
-  y<-data.frame(do.call(rbind,strsplit(as.character(gt),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2]);if(!is.null(l.size)) y<-(y/nf*l.size)*1e6
+  y<-data.frame(do.call(rbind,strsplit(as.character(gt),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2]);if(!is.null(l.size)) y<-(y/(nf*l.size))*1e6
   hm0 <- na.omit(y[y[,1]>0 & y[,2]==0,]);hm1 <- na.omit(y[y[,1]==0 & y[,2]>0,]);ht <- na.omit(y[y[,1]>0 & y[,2]>0,]);hmm<-rbind(hm0,hm1)
   nas<-dim(y[y[,1]==0 & y[,2]==0,])[1]
   hm0.ratio<-proportions(as.matrix(hm0),margin = 1)[,1];hm1.ratio<-proportions(as.matrix(hm1),margin = 1)[,2]
