@@ -157,7 +157,6 @@ TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutof
 #' @export
 norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10){
   method<-match.arg(method)
-
   if(method=="TMM"){
     f75 <- suppressWarnings(calcFactorQuantile(data=as.matrix(df), lib.size=colSums(as.matrix(df)), p=0.75))
     if(median(f75) < 1e-20) {
@@ -170,6 +169,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
     ref<-which.max(colSums(sqrt(as.matrix(df))))
     out<-apply(df,2,FUN=TMMex,ref=df[,ref],logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
   }
+  out<-data.frame(lib.size=colSums(df),norm.factor=out)
   return(out)
 }
 

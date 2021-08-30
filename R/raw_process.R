@@ -93,7 +93,7 @@ readVCF <- function(vcf.file.path){
 #' hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
 #'
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
-#' @param info.type character. "AD"=allele depth value, "GT"=genotype. Default "AD". See details.
+#' @param info.type character. "AD"=allele depth value, "AD-tot"=allele total depth, "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.
 #' @param verbose logical. whether to show the progress of the analysis
 #'
 #' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
@@ -107,7 +107,7 @@ readVCF <- function(vcf.file.path){
 #' het.table<-hetTgen(vcf)
 #'
 #' @export
-hetTgen<-function(vcf,info.type=c("AD","GT","GT-012","GT-AB"),verbose=TRUE){
+hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=TRUE){
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
   if(length(which(apply(vcf[,5],1,nchar)>1))>1){
     message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed")
@@ -134,6 +134,14 @@ hetTgen<-function(vcf,info.type=c("AD","GT","GT-012","GT-AB"),verbose=TRUE){
 
   h.table[is.na(h.table) | h.table==".,."]<-"./."
 
+  if(info.type=="AD-tot"){
+    if(verbose){
+      message("generating total depth values")
+      h.table<-apply_pb(h.table,2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+    } else {
+      h.table<-apply(h.table,2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+    }
+  }
   if(info.type=="GT-012"){
     h.table[h.table=="0/0"]<-0
     h.table[h.table=="1/1"]<-1
@@ -146,12 +154,11 @@ hetTgen<-function(vcf,info.type=c("AD","GT","GT-012","GT-AB"),verbose=TRUE){
     h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
     h.table[h.table=="./."]<--9
   }
-
   het.table<-as.data.frame(cbind(vcf[,1:3],h.table))
   colnames(het.table)[1]<-"CHROM"
-  #het.table <- data.frame(het.table)[,colSums(het.table=="0,0")<nrow(het.table)]
   return(het.table)
 }
+
 
 
 #' Get missingness of individuals in raw vcf

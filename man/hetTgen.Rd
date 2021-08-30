@@ -4,12 +4,16 @@
 \alias{hetTgen}
 \title{Generate heterozygote table (allele depth values)}
 \usage{
-hetTgen(vcf, info.type = c("AD", "GT", "GT-012", "GT-AB"), verbose = TRUE)
+hetTgen(
+  vcf,
+  info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB"),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}
 
-\item{info.type}{character. "AD"=allele depth value, "GT"=genotype. Default "AD". See details.}
+\item{info.type}{character. "AD"=allele depth value, "AD-tot"=allele total depth, "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
