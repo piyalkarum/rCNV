@@ -211,8 +211,9 @@ depthVsSample<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols
 
 foo<-function(z,cov.i){
   reads<-replicate(z,rbinom(cov.i,1,prob=0.5))
-  tt<-apply(reads,2,function(x)sum(x==0)/length(x))
-  return(tt)
+  #tt<-apply(reads,2,function(x)sum(x==0)/length(x))
+  tt<-apply(reads,2,function(x)((length(x)/2)-sum(x==1))/(sqrt(length(x)*.25)))
+    return(tt)
 }
 
 dp.cov2<-function(cov.i,nsamp){
@@ -220,8 +221,8 @@ dp.cov2<-function(cov.i,nsamp){
   if(cov.i==1){return(matrix(1,nrow=length(nsamp),ncol = 5))} else {
     tl<-lapply(nsamp,function(z,cov.i){
       mat<-t(replicate(10000,foo(z,cov.i)))
-      q95<-median(apply(mat,1,quantile,p=.95))
-      q05<-median(apply(mat,1,quantile,p=.05))
+      q95<-median(apply(mat,1,quantile,p=.995))
+      q05<-median(apply(mat,1,quantile,p=.025))
       mx<-median(apply(mat,1,max))
       mm<-median(apply(mat,1,median))
       mn<-median(apply(mat,1,min))

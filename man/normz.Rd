@@ -2,7 +2,7 @@
 % Please edit documentation in R/TMM_normalz.R
 \name{normz}
 \alias{normz}
-\title{Calculate normalized depth values}
+\title{Calculate normalized depth for total depth}
 \usage{
 normz(
   df,

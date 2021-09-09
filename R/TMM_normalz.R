@@ -173,7 +173,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
   return(out)
 }
 
-#' Calculate normalized depth values
+#' Calculate normalized depth for total depth
 #'
 #' This function outputs the normalized depth values calculated using normalization factor with trimmed mean of M-values of sample libraries. See details.
 #'
@@ -206,3 +206,61 @@ normz<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weight
   colnames(cpm)<-colnames(df)
   return(cpm)
 }
+
+
+
+#' Calculate normalized depth for alleles
+#'
+#' This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries. See details.
+#'
+#' @param df a data frame or matrix of count values (total counts per snp per sample)
+#' @param method character. method to be used (see detials). Default="TMM"
+#' @param logratioTrim numeric. percentage value (0 - 1) of variation to be trimmed in log transformation
+#' @param sumTrim numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"
+#' @param Weighting logical, whether to compute (asymptotic binomial precision) weights
+#' @param Acutoff numeric, cutoff on "A" values to use before trimming
+#'
+#' @details This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth.
+#'
+#' @return Returns a data frame of normalized depth values similar to the output of hetTgen function
+#'
+#' @author Piyal Karunarathne
+#'
+#' @references Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25
+#' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
+#'
+#' @examples
+#' print("to be added")
+#'
+#'
+#' @export
+cpm.normal<-function(het.table, method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE){
+  method<-match.arg(method)
+  if(verbose){
+    message("calculating normalization factor")
+    tdep<-apply_pb(het.table[,-c(1:3)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+  } else {
+    tdep<-apply(het.table[,-c(1:3)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+  }
+  nf<-norm.fact(tdep,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
+  if(verbose){
+    message("calculating normalized depth")
+    out<-apply_pb(het.table[,-c(1:3)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+    y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+    nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
+    paste0(nt[,1],",",nt[,2])})
+  } else {
+    out<-apply(het.table[,-c(1:3)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+    y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+    nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
+    paste0(nt[,1],",",nt[,2])})
+  }
+  out<-data.frame(het.table[,c(1:3)],t(out))
+  colnames(out)<-colnames(het.table)
+  return(out)
+}
+
+
+
+
+
