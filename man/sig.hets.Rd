@@ -34,8 +34,8 @@ This function will recognize the SNPs that are significantly different from the 
 }
 \examples{
 data(hets)
-d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-duplicates<-sig.hets(d.info,plot=TRUE)
+AI <- allele.info(hets,plot=FALSE)
+duplicates<-sig.hets(AI,plot=TRUE)
 
 }
 \author{

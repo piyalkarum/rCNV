@@ -18,11 +18,7 @@ a data frame of scaffold names and their average presence in the scaffold.
 This function will validate the detected duplicated-SNPs using a moving window approach (see details)
 }
 \examples{
-data(hets)
-d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-duplicated<-dup.detect(d.info,stringency="max",plot=TRUE)
-dup.vals<-dup.validate(duplicated,window.size=100)
-
+print("to be added")
 }
 \author{
 Piyal Karunarathne

@@ -74,8 +74,7 @@ dup.info2 <- function(gt,nf=1,l.size=NULL){
 #' Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25.
 #'
 #' @examples
-#' data(hets)
-#' dup.info <- dup.snp.info(het.table=hets,normalize=FALSE)
+#' print("deprecated")
 #'
 #' @export
 dup.snp.info<-function(het.table,normalize=FALSE,verbose=TRUE){

@@ -14,6 +14,36 @@ dupGet(
   ...
 )
 }
+\arguments{
+\item{data}{data frame of the output of allele.info()}
+
+\item{test}{character. type of test to be used for significance. See detials}
+
+\item{intersection}{logical, whether to use the intersection of the methods specified in test (if more than one)}
+
+\item{method}{character. method for testing excess of heterozygotes. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
+
+\item{plot}{logical. whether to plot the detected singletons and duplicates on allele ratio vs. proportion of heterozygotes plot.}
+
+\item{verbose}{logical. show progress}
+
+\item{...}{additional parameters to be passed on to plot}
+}
+\value{
+Returs a data frame of snps/alles with their duplication status
+}
 \description{
-Detect duplicates from SNPs
+Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.
+}
+\details{
+to be added
+}
+\examples{
+data(hets)
+AI<-allele.info(hets,plot=FALSE)
+DD<-dupGet(AI)
+
+}
+\author{
+Piyal Karunarathne
 }

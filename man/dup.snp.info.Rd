@@ -19,8 +19,7 @@ dup.snp.info takes a tab separated depth values Vs. SNPs by sample/population ta
 The resulting table is used in the downstream analysis such as CNV/duplication detection.
 }
 \examples{
-data(hets)
-dup.info <- dup.snp.info(het.table=hets,normalize=FALSE)
+print("deprecated")
 
 }
 \references{

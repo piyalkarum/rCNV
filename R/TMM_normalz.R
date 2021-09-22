@@ -213,12 +213,13 @@ normz<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weight
 #'
 #' This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries. See details.
 #'
-#' @param df a data frame or matrix of count values (total counts per snp per sample)
+#' @param het.table a data frame or matrix of coverage (output of hetTgen with "AD")
 #' @param method character. method to be used (see detials). Default="TMM"
 #' @param logratioTrim numeric. percentage value (0 - 1) of variation to be trimmed in log transformation
 #' @param sumTrim numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"
 #' @param Weighting logical, whether to compute (asymptotic binomial precision) weights
 #' @param Acutoff numeric, cutoff on "A" values to use before trimming
+#' @param verbose logical. show progress
 #'
 #' @details This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth.
 #'

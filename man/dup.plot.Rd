@@ -18,10 +18,7 @@ plots duplicates on proportion of heterozygotes vs allele median ratio
 The function plots detected duplicates from functions "sig.snps", and "dup.detect"
 }
 \examples{
-data(hets)
-d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-duplicated<-dup.detect(d.info,stringency="max",plot=FALSE)
-dup.plot(duplicated)
+print("to be added with new ones")
 
 }
 \author{

@@ -19,11 +19,8 @@ wind<-function(xx,dd){
 #'
 #' @author Piyal Karunarathne
 #'
-#' @examples data(hets)
-#' d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-#' duplicated<-dup.detect(d.info,stringency="max",plot=TRUE)
-#' dup.vals<-dup.validate(duplicated,window.size=100)
-#'
+#' @examples
+#' print("to be added")
 #' @export
 dup.validate<-function(d.detect,window.size=100){
   nm<-unique(d.detect$Scaffold)

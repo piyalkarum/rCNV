@@ -53,13 +53,18 @@ get.pvals<-function(x,df,p.cal){
 #' @param verbose logical, whether to print progress
 #' @param ... further arguments to be passed to plot
 #'
+#' @importFrom stats pchisq pnorm
+#'
 #' @details
+#' print("to be added")
 #'
 #' @return Returns a data frame of median allele ratio, proportion of heterozygotes, number of heterozygotes, and allele probability at different assumptions with their chi-square significance
 #'
 #' @author Piyal Karunarathne, Pascal Milesi, Qiujie Zhou
 #'
-#' @examples <to be added>
+#' @examples
+#' data(hets)
+#' AI<-allele.info(hets)
 #'
 #' @export
 allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
@@ -119,7 +124,7 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,
     p.list<-list(...)
     if(is.null(p.list$pch)) p.list$pch=19
     if(is.null(p.list$cex)) p.list$cex=0.6
-    if(is.null(p.list$col)) p.list$col<-rCNV:::makeTransparent(colorspace::heat_hcl(12,h=c(0,-100),c=c(40,80),l=c(75,40),power=1)[11])
+    if(is.null(p.list$col)) p.list$col<-makeTransparent(colorspace::heat_hcl(12,h=c(0,-100),c=c(40,80),l=c(75,40),power=1)[11])
     if(is.null(p.list$lcol)) p.list$lcol="tomato"
     par(mfrow=c(2,2))
     par(mar=c(4,5,2,2))

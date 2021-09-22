@@ -29,8 +29,8 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #'
 #' @examples
 #' data(hets)
-#' d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-#' duplicates<-sig.hets(d.info,plot=TRUE)
+#' AI <- allele.info(hets,plot=FALSE)
+#' duplicates<-sig.hets(AI,plot=TRUE)
 #'
 #' @importFrom grDevices col2rgb rgb
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline chisq.test
@@ -81,13 +81,10 @@ sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
 #' @return a dataframe of snps with their status of duplication. If plot=TRUE, plot depicting duplicated and non-duplicated (singleton) alleles
 #'
 #' @author Piyal Karunarathne
-#'
+#' @noRd
 #' @examples
-#' data(hets)
-#' d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-#' duplicated<-sig.snps(d.info,stringency="max")
+#' print("deprecated")
 #'
-#' @export
 sig.snps<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),plot=TRUE,...){
   rat<-match.arg(rat)
   sts<-apply_pb(d.info,1,dupsvd,stringency=match.arg(stringency),rat=rat)
@@ -115,11 +112,9 @@ sig.snps<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),p
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' data(hets)
-#' d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-#' duplicated<-dup.detect(d.info,stringency="max",plot=TRUE)
+#' print("deprecated")
 #'
-#' @export
+#' @noRd
 dup.detect<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean"),method=c("fisher","chi.sq"),plot=TRUE,...){
   rat<-match.arg(rat)
   method<-match.arg(method)
@@ -150,10 +145,7 @@ dup.detect<-function(d.info,stringency=c("95","99","max"),rat=c("median","mean")
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' data(hets)
-#' d.info <- dup.snp.info(het.table=hets,normalize=FALSE)
-#' duplicated<-dup.detect(d.info,stringency="max",plot=FALSE)
-#' dup.plot(duplicated)
+#' print("to be added with new ones")
 #'
 #' @export
 dup.plot<-function(ds,...){
@@ -178,8 +170,28 @@ dup.plot<-function(ds,...){
 
 #' Detect duplicates from SNPs
 #'
+#' Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.
 #'
+#' @param data data frame of the output of allele.info()
+#' @param test character. type of test to be used for significance. See detials
+#' @param intersection logical, whether to use the intersection of the methods specified in test (if more than one)
+#' @param method character. method for testing excess of heterozygotes. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
+#' @param plot logical. whether to plot the detected singletons and duplicates on allele ratio vs. proportion of heterozygotes plot.
+#' @param verbose logical. show progress
+#' @param ... additional parameters to be passed on to plot
 #'
+#' @importFrom colorspace terrain_hcl
+#'
+#' @return Returs a data frame of snps/alles with their duplication status
+#'
+#' @details to be added
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples
+#' data(hets)
+#' AI<-allele.info(hets,plot=FALSE)
+#' DD<-dupGet(AI)
 #'
 #' @export
 dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),intersection=FALSE,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
@@ -218,14 +230,12 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
       if(is.null(l$xlim)) l$xlim=c(0,1)
       if(is.null(l$ylim)) l$ylim=c(0,1)
       if(is.null(l$alpha)) l$alpha=0.3
-      #if(is.null(l$col)) p.list$col<-makeTransparent(c(colorspace::heat_hcl(12,h=c(0,-100),c=c(40,80),l=c(75,40),power=1)[10],
-                                                              #colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]))
-      if(is.null(l$col)) p.list$col<-makeTransparent(c("tomato",colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]))
-      Color <- rep(p.list$col[2],nrow(pp))
-      Color[pp$dup.stat=="duplicated"]<- p.list$col[1]
+      if(is.null(l$col)) l$col<-makeTransparent(c("tomato",colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]))
+      Color <- rep(l$col[2],nrow(pp))
+      Color[pp$dup.stat=="duplicated"]<- l$col[1]
       plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
            ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
-      legend("bottomright", c("duplicate","singleton"), col = makeTransparent(p.list$col,alpha=1), pch=l$pch,
+      legend("bottomright", c("duplicate","singleton"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
              cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
     }
   }

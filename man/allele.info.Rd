@@ -45,10 +45,11 @@ Returns a data frame of median allele ratio, proportion of heterozygotes, number
 The function to calculate allele median ratios, proportion of heterozygotes and allele probability values under different assumptions (see details), and their chi-square significance values for duplicate detection
 }
 \details{
-
+print("to be added")
 }
 \examples{
-<to be added>
+data(hets)
+AI<-allele.info(hets)
 
 }
 \author{

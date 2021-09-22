@@ -15,6 +15,8 @@ cpm.normal(
 )
 }
 \arguments{
+\item{het.table}{a data frame or matrix of coverage (output of hetTgen with "AD")}
+
 \item{method}{character. method to be used (see detials). Default="TMM"}
 
 \item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be trimmed in log transformation}
@@ -25,7 +27,7 @@ cpm.normal(
 
 \item{Acutoff}{numeric, cutoff on "A" values to use before trimming}
 
-\item{df}{a data frame or matrix of count values (total counts per snp per sample)}
+\item{verbose}{logical. show progress}
 }
 \value{
 Returns a data frame of normalized depth values similar to the output of hetTgen function
