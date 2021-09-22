@@ -17,6 +17,7 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @param d.info duplication info table generated from filtered vcfs using the function dup.snp.info
 #' @param method character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
 #' @param plot logical. Whether to plot the identified duplicated snps with the expected values
+#' @param verbose logical, if TRUE, the progress is shown
 #' @param ... other arguments passed to plot
 #'
 #' @return A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
@@ -36,11 +37,16 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom colorspace rainbow_hcl
 #' @export
-sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
-  d<-d.info[,c("NHomFreq","NumHet","NHomRare","truNsample")]
+sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
+  d<-d.info[,c("NHomRef","NHet","NHomAlt","Nsamp")]
   colnames(d)<-c("h1","het","h2","truNsample")
   method<-match.arg(method)
-  df<-data.frame(t(apply_pb(d,1,ex.prop,method=method)))
+  if(verbose){
+    message("assessing excess of heterozygotes")
+    df<-data.frame(t(apply_pb(d,1,ex.prop,method=method)))
+  } else {
+    df<-data.frame(t(apply(d,1,ex.prop,method=method)))
+  }
   colnames(df)<-c("p2","het","q2","pval","delta")
   df$dup.stats<-"singleton";df$dup.stats[which(df$pval < 0.05 & df$delta > 0 )]<-"duplicated"
   if(plot){
@@ -53,13 +59,13 @@ sig.hets<-function(d.info,method=c("fisher","chi.sq"),plot=TRUE,...){
 
     d$Color <- cols[1]
     d$Color [which(df$dup.stats=="duplicated")]<- cols[2]#& df$delta > 0
-    plot(d.info$PropHet~d.info$PropHomRare, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
+    plot(d.info$propHet~d.info$propHomAlt, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
          xlab="Proportion of Alternate Homozygotes",ylab="Proportion of Heterozygotes")
     lines((smm<-smooth.spline(df$het~df$q2)),col="blue")
     legend("bottomright", c("singleton","duplicate","expected"), col = c(cols,"blue"), lty = c(0, 0, 1), lwd = c(0, 0, 1),pch = c(l$pch, l$pch, NA),
            cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
   }
-  return(data.frame(cbind(d.info[,c(1:4,10:12)],df[,c(4:6)])))
+  return(data.frame(cbind(d.info[,c(1:3)],df[,c(4:6)]),row.names = NULL))
 }
 
 
@@ -167,6 +173,63 @@ dup.plot<-function(ds,...){
   legend("bottomright", c("singleton","duplicate","low MAF","low coverage"), col = makeTransparent(cols,alpha=1), pch=l$pch,
          cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
 
+}
+
+
+#' Detect duplicates from SNPs
+#'
+#'
+#'
+#'
+#' @export
+dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),intersection=FALSE,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
+  #data check
+  data<-as.data.frame(data)
+  if(!any(colnames(data)=="propHet")){
+    stop("please provide the data with the output of allele.info()")
+  } else {
+    ht<-sig.hets(data,plot=F,verbose=verbose)
+    test<-match.arg(test,several.ok = TRUE)
+    if(length(test)==6){
+      pp<-data[,c("z.all","chi.all")]
+    } else {
+      pp<-data.frame(data[,test])
+    }
+    if(intersection){
+      df<-matrix(NA,nrow = nrow(pp),ncol = ncol(pp))
+      for(i in 1:ncol(pp)){
+        df[which(pp[,i]<0.05/nrow(pp)),i]<-1
+      }
+      pp$dup.stat<-"singleton"
+      pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"duplicated"
+    } else {
+      pp$dup.stat<-"singleton"
+      for(i in 1:ncol(pp)){
+        pp$dup.stat[pp[,i]<0.05/nrow(pp)]<-"duplicated"
+      }
+    }
+    pp$dup.stat[which(ht$dup.stats=="duplicated")]<-"duplicated"
+    pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
+
+    if(plot){
+      l<-list(...)
+      if(is.null(l$cex)) l$cex=0.2
+      if(is.null(l$pch)) l$pch=19
+      if(is.null(l$xlim)) l$xlim=c(0,1)
+      if(is.null(l$ylim)) l$ylim=c(0,1)
+      if(is.null(l$alpha)) l$alpha=0.3
+      #if(is.null(l$col)) p.list$col<-makeTransparent(c(colorspace::heat_hcl(12,h=c(0,-100),c=c(40,80),l=c(75,40),power=1)[10],
+                                                              #colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]))
+      if(is.null(l$col)) p.list$col<-makeTransparent(c("tomato",colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]))
+      Color <- rep(p.list$col[2],nrow(pp))
+      Color[pp$dup.stat=="duplicated"]<- p.list$col[1]
+      plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
+           ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+      legend("bottomright", c("duplicate","singleton"), col = makeTransparent(p.list$col,alpha=1), pch=l$pch,
+             cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
+    }
+  }
+  return(pp)
 }
 
 
