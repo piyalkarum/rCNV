@@ -109,6 +109,7 @@ readVCF <- function(vcf.file.path){
 #' @export
 hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=TRUE){
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
+  else if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
   if(length(which(apply(vcf[,5],1,nchar)>1))>1){
     message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed")
     ans<-readline(prompt="Remove non-biallelic SNPs (y/n) ?: ")
@@ -121,12 +122,13 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=T
   }
   xx <- vcf[,10:ncol(vcf)]
   info.type<-match.arg(info.type)
-  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==substr(info.type,1,2))
+  itype<-substr(info.type,1,2)
+  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==itype)
   if(length(AD)==0){
     AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="DPR")
   }
   if(verbose) {
-    message("generating genotypes table")
+    if(itype=="AD"){message("generating allele depth table")} else if(itype=="GT"){message("generating genotypes table")}
     h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
   } else {
     h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
@@ -154,6 +156,9 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=T
     h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
     h.table[h.table=="./."]<--9
   }
+  if(info.type=="AD"){
+    h.table[h.table=="./."]<-"0,0"
+  }
   het.table<-as.data.frame(cbind(vcf[,1:3],h.table))
   colnames(het.table)[1]<-"CHROM"
   return(het.table)
@@ -165,8 +170,11 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=T
 #'
 #' A function to get missingness of snps data on a per-individual basis similar to --missing-indiv option in vcftools
 #'
-#' @param vcf data frame of imported vcf file using readVCF
-#' @param plot logical. Whether to plot the missingness density with a suggested cut-off.
+#' @param data a list containing imported vcf file using readVCF or genotype table generated using hetTgen
+#' @param type character. Get the missing percentages per sample or per SNP."samples" or "snps", default both
+#' @param plot logical. Whether to plot the missingness density with a suggested cut-off
+#' @param verbose logical. Whether to show progress
+#'
 #'
 #' @author Piyal Karunarathne
 #' @importFrom graphics abline polygon
@@ -178,20 +186,54 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=T
 #' missing<-get.miss(vcf,plot=TRUE)
 #'
 #' @export
-get.miss<-function(vcf,plot=TRUE){
-  vcf<-vcf$vcf
-  ndat<-hetTgen(vcf,"GT")
-  ll<-t(apply(ndat[,-c(1:3)],2,function(x)cbind(length(which(x=="./.")),length(which(x=="./."))/length(x))))
-  ll<-data.frame(indiv=colnames(vcf)[-c(1:9)],n_miss=ll[,1],f_miss=ll[,2])
-  rownames(ll)<-NULL
-  if(plot){
-    plot(density(ll$f_miss),type="n",main="Missingness %")
-    polygon(density(ll$f_miss),border="red",col="lightblue")
-    abline(v=quantile(ll$f_miss,p=0.95),lty=3,col="blue")
-    legend("topright",lty=3,col="blue",legend="suggested cut-off",bty="n",cex=0.8)
+get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
+  if(inherits(data,"list")){
+    vcf<-data$vcf
+    ndat<-hetTgen(vcf,"GT",verbose=verbose)
+  } else {ndat<-data}
+  type<-match.arg(type,several.ok = T)
+  if(any(type=="samples")){
+    ll<-t(apply(ndat[,-c(1:3)],2,function(x){
+      cbind(length(which(x=="./." | is.na(x) | x=="0,0" | x==".,.")),length(which(x=="./." | is.na(x) | x=="0,0" | x==".,."))/length(x))
+    }))
+    ll<-data.frame(indiv=colnames(ndat)[-c(1:3)],n_miss=ll[,1],f_miss=ll[,2])
+    rownames(ll)<-NULL
   }
-  return(ll)
+  if(any(type=="snps")){
+    L<-apply(ndat[,-c(1:3)],1,function(x){
+      cbind(length(which(x=="./." | is.na(x) | x=="0,0" | x==".,.")),length(which(x=="./." | is.na(x) | x=="0,0" | x==".,."))/length(x))
+    })
+    if(is.list(L)){
+      L<-do.call(rbind,L)
+    } else { L<-t(L)}
+    colnames(L)<-c("n_miss","f_miss")
+    L<-data.frame(ndat[,1:3],L)
+  }
+  if(plot){
+    if(length(type)==2){par(mfrow=c(1,2))}
+    #missing samples
+    if(any(type=="samples")){
+      plot(density(ll$f_miss),type="n",main="Missing % per sample", xlim = c(0,1))
+      polygon(density(ll$f_miss),border="red",col="lightblue")
+      abline(v=quantile(ll$f_miss,p=0.95),lty=3,col="blue")
+      text(x=quantile(ll$f_miss,p=0.95)+0.02,y=max(density(ll$f_miss)$y)/2,round(quantile(ll$f_miss,p=0.95),3),offset=10,col=2)
+      legend("topright",lty=3,col="blue",legend="95% quantile",bty="n",cex=0.8)
+    }
+    #missing snps
+    if(any(type=="snps")){
+      plot(density(L$f_miss),type="n",main="Missing % per SNP", xlim = c(0,1))
+      polygon(density(L$f_miss),border="red",col="lightblue")
+      abline(v=quantile(L$f_miss,p=0.95),lty=3,col="blue")
+      text(x=quantile(L$f_miss,p=0.95)+0.02,y=max(density(L$f_miss)$y)/2,round(quantile(L$f_miss,p=0.95),3),offset=10,col=2)
+      legend("topright",lty=3,col="blue",legend="95% quantile",bty="n",cex=0.8)
+    }
+    par(mfrow=c(1,1))
+  }
+  if(!exists("ll")){ll<-NULL}
+  if(!exists("L")){L<-NULL}
+  return(list(perSample=ll,perSNP=L))
 }
+
 
 
 #' Format genotype for BayEnv and BayPass
@@ -271,7 +313,5 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
   } else { chu <- NULL}
   return(list(hor=pgt.h,ver=t(pgt.h),subsets=chu,pop=as.character(pp)))
 }
-
-
 
 

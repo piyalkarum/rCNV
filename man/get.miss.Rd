@@ -4,12 +4,16 @@
 \alias{get.miss}
 \title{Get missingness of individuals in raw vcf}
 \usage{
-get.miss(vcf, plot = TRUE)
+get.miss(data, type = c("samples", "snps"), plot = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{vcf}{data frame of imported vcf file using readVCF}
+\item{data}{a list containing imported vcf file using readVCF or genotype table generated using hetTgen}
 
-\item{plot}{logical. Whether to plot the missingness density with a suggested cut-off.}
+\item{type}{character. Get the missing percentages per sample or per SNP."samples" or "snps", default both}
+
+\item{plot}{logical. Whether to plot the missingness density with a suggested cut-off}
+
+\item{verbose}{logical. Whether to show progress}
 }
 \description{
 A function to get missingness of snps data on a per-individual basis similar to --missing-indiv option in vcftools

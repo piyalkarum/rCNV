@@ -24,7 +24,7 @@ get.pvals<-function(x,df,p.cal){
     z.all<- (n*p.all-snp1het[,2])/sqrt(n*p.all*(1-p.all))
     z.all<-pnorm(sum(z.all),0,sqrt(nrow(snp1het)))
     ll<-data.frame(NHet=nrow(snp1het),propHet,medRatio,NHomRef=homref,NHomAlt=homalt,propHomAlt=homalt/Nsamp,Nsamp,
-                   pAll=p.all,pHet=p.sum,
+                   pAll=p.all,pHet=p.sum,fis=1-(nrow(snp1het)/(2*(homref+(nrow(snp1het)/2))*(homalt+(nrow(snp1het)/2)))),
                    z.het=ifelse(z>0.5, (1-z)*2, z*2),
                    z.05=ifelse(z.05>0.5, (1-z.05)*2, z.05*2),
                    z.all=ifelse(z.all>0.5, (1-z.all)*2, z.all*2),

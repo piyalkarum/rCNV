@@ -9,6 +9,6 @@ License: AGPL-3
 Imports: methods, data.table, graphics, colorspace, R.utils
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Depends: 
     R (>= 3.6.0)

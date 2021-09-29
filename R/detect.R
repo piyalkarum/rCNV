@@ -230,7 +230,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
       if(is.null(l$xlim)) l$xlim=c(0,1)
       if(is.null(l$ylim)) l$ylim=c(0,1)
       if(is.null(l$alpha)) l$alpha=0.3
-      if(is.null(l$col)) l$col<-makeTransparent(c("tomato",colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]))
+      if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
       Color <- rep(l$col[2],nrow(pp))
       Color[pp$dup.stat=="duplicated"]<- l$col[1]
       plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
