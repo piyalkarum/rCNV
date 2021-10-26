@@ -155,14 +155,12 @@ dup.plot<-function(ds,...){
   if(is.null(l$xlim)) l$xlim=c(0,1)
   if(is.null(l$ylim)) l$ylim=c(0,1)
   if(is.null(l$alpha)) l$alpha=0.3
-  if(is.null(l$col)) cols<-makeTransparent(c("black",rainbow_hcl(16)[c(16,10,7)]),alpha=l$alpha) else cols<-makeTransparent(l$col,alpha = l$alpha)
-  ds$Color <- cols[1]
-  ds$Color [ds$dup.stat=="duplicated"]<- cols[2]
-  ds$Color [ds$dup.stat=="low MAF"]<- cols[3]
-  ds$Color [ds$dup.stat=="low coverage"]<- cols[4]
-  plot(ds$MedRatio~ds$PropHet, pch=l$pch, cex=l$cex,col=ds$Color,xlim=l$xlim,ylim=l$ylim,frame=F,
+  if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
+  ds$Color <- l$col[2]
+  ds$Color [ds$dup.stat=="duplicated"]<- l$col[1]
+  plot(ds$medRatio~ds$propHet, pch=l$pch, cex=l$cex,col=ds$Color,xlim=l$xlim,ylim=l$ylim,frame=F,
        ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
-  legend("bottomright", c("singleton","duplicate","low MAF","low coverage"), col = makeTransparent(cols,alpha=1), pch=l$pch,
+  legend("bottomright", c("duplicate","singleton"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
          cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
 
 }
