@@ -120,6 +120,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=T
       stop("Non-bi-allelic variant file: 0nly bi-allelic SNPs allowed so far")
     }
   }
+  if(inherits(vcf,"list")){vcf<-vcf$vcf}
   xx <- vcf[,10:ncol(vcf)]
   info.type<-match.arg(info.type)
   itype<-substr(info.type,1,2)
