@@ -107,7 +107,7 @@ readVCF <- function(vcf.file.path){
 #' het.table<-hetTgen(vcf)
 #'
 #' @export
-hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=TRUE){
+hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verbose=TRUE){
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
   else if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
   if(length(which(apply(vcf[,5],1,nchar)>1))>1){
@@ -129,7 +129,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB"),verbose=T
     AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="DPR")
   }
   if(verbose) {
-    if(itype=="AD"){message("generating allele depth table")} else if(itype=="GT"){message("generating genotypes table")}
+    if(itype=="AD" | itype=="DP"){message("generating allele depth table")} else if(itype=="GT"){message("generating genotypes table")}
     h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
   } else {
     h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))

@@ -201,7 +201,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 normz<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10, tot.count=1e6){
   df<-as.matrix(df)
   nf<-norm.fact(df,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
-  cpm <- lapply(1:ncol(df), function(x,df,nf) {(df[,x]/(sum(df[,x]))*nf[x])*tot.count},df=df,nf=nf)
+  cpm <- lapply(1:ncol(df), function(x,df,nf) {(df[,x]/(sum(df[,x]))*nf[x,2])*tot.count},df=df,nf=nf)
   cpm<-do.call(cbind,cpm)
   colnames(cpm)<-colnames(df)
   return(cpm)

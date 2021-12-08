@@ -6,7 +6,7 @@
 \usage{
 hetTgen(
   vcf,
-  info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB"),
+  info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", "DP"),
   verbose = TRUE
 )
 }

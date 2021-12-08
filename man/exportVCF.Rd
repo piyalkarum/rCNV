@@ -4,12 +4,12 @@
 \alias{exportVCF}
 \title{Export VCF files}
 \usage{
-exportVCF(out.vcf, outpath, compress = TRUE)
+exportVCF(out.vcf, out.path, compress = TRUE)
 }
 \arguments{
 \item{out.vcf}{a matrix or data frame in vcf file format to be exported}
 
-\item{outpath}{a character string of output path for the vcf file; should end in the name of the vcf file and .vcf. see examples}
+\item{out.path}{a character string of output path for the vcf file; should end in the name of the vcf file and .vcf. see examples}
 
 \item{compress}{logical. wthether to compress the output file. If true, the file will be .gz compressed}
 }
