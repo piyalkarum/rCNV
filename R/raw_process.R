@@ -129,13 +129,19 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
     AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="DPR")
   }
   if(verbose) {
-    if(itype=="AD" | itype=="DP"){message("generating allele depth table")} else if(itype=="GT"){message("generating genotypes table")}
-    h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
+    if(itype=="AD"){message("generating allele depth table")
+      h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
+    } else if(itype=="GT"){message("generating genotypes table")
+      h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
+      }
+    else if(itype=="DP"){message("generating unfiltered allele depth table")
+      h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) suppressWarnings(as.numeric(strsplit(x, ":")[[1]][AD])))))}
   } else {
-    h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
+    if(itype=="AD"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))}
+    else if(itype=="DP"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) suppressWarnings(as.numeric(strsplit(x, ":")[[1]][AD])))))}
   }
 
-  h.table[is.na(h.table) | h.table==".,."]<-"./."
+  if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}
 
   if(info.type=="AD-tot"){
     if(verbose){
@@ -157,14 +163,17 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
     h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
     h.table[h.table=="./."]<--9
   }
-  if(info.type=="AD"){
+  if(info.type=="AD" ){
     h.table[h.table=="./."]<-"0,0"
+  }
+  if(info.type=="DP"){
+    h.table[is.character(h.table)]<-0
+    h.table[is.na(h.table)]<-0
   }
   het.table<-as.data.frame(cbind(vcf[,1:3],h.table))
   colnames(het.table)[1]<-"CHROM"
   return(het.table)
 }
-
 
 
 #' Get missingness of individuals in raw vcf

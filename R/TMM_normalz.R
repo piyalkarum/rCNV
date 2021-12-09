@@ -247,19 +247,20 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex"),logratioTrim=.3, sumTrim
   if(verbose){
     message("calculating normalized depth")
     out<-apply_pb(het.table[,-c(1:3)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
-    y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+    y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
     nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
-    paste0(nt[,1],",",nt[,2])})
+    if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
   } else {
     out<-apply(het.table[,-c(1:3)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
-    y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+    y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
     nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
-    paste0(nt[,1],",",nt[,2])})
+    if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
   }
   out<-data.frame(het.table[,c(1:3)],t(out))
   colnames(out)<-colnames(het.table)
   return(out)
 }
+
 
 
 
