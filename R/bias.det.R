@@ -53,7 +53,7 @@ get.pvals<-function(x,df,p.cal){
 #' @param verbose logical, whether to print progress
 #' @param ... further arguments to be passed to plot
 #'
-#' @importFrom stats pchisq pnorm
+#' @importFrom stats pchisq pnorm na.omit
 #'
 #' @details
 #' print("to be added")
@@ -63,8 +63,8 @@ get.pvals<-function(x,df,p.cal){
 #' @author Piyal Karunarathne, Pascal Milesi, Qiujie Zhou
 #'
 #' @examples
-#' data(hets)
-#' AI<-allele.info(hets)
+#' data(ADtable)
+#' AI<-allele.info(ADtable)
 #'
 #' @export
 allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){

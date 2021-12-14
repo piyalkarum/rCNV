@@ -1,11 +1,11 @@
-#' Duplication info example data
+#' Allele info example data
 #'
 #' Semi-randomly generated data from the function dup.snp.info
 #' Data contains depth and proportion values of 19800 snps
 #'
 #' @docType data
 #'
-#' @usage data(dup.info)
+#' @usage data(alleleINF)
 #'
 #' @keywords datasets
 #'
@@ -14,19 +14,18 @@
 #' @source \href{url}{dataset name}
 #'
 #' @examples
-#' data(dup.info)
-#' props<-dup.info[,c("PropHomRare","PropHet")]
-#' \donttest{plot(props, pch=19,cex=0.2)}
-'dup.info'
+#' data(alleleINF)
+#' with(alleleINF,plot(medRatio~propHet))
+'alleleINF'
 
 
-#' Heterozygosity example data
+#' Allele Depth (AD) example data
 #'
 #' example SNPs data of Picea abies from Chen et al. 2019
 #' The data contains only a partial snps data set of exome-capture data after filtering
 #'
 #' @docType data
-#' @usage data(hets)
-#' @references Chen et al. 2019 (add the correct reference)
+#' @usage data(ADtable)
+#' @references McKinney et al. 2017
 #'
-'hets'
+'ADtable'

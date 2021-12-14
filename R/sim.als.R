@@ -63,55 +63,6 @@ plot.svd <- function(MR,cols=c("red","cyan")){
   rasterImage(legend_image, 0, 0.1, 0.2,1)
 }
 
-#6 categorize snps into duplicates or singletons based on depth coverage and number of samples
-dupsvd<-function(inx,stringency=c("95","99","max"),rat=c("median","mean")){
-  rat<-match.arg(rat)
-  if(rat=="median") val<-as.numeric(unlist(inx[4]))
-  if(rat=="mean") val<-as.numeric(unlist(inx[5]))
-  coords<-round(as.numeric(unlist(inx[c(9,6)])),0)
-  if(coords[1]>1000){
-    coords[1]<-1000
-  }
-  if(coords[2]>400){
-    coords[2]<-400
-  }
-  if(stringency=="95"){
-    hi<-v95;lo<-v05
-  }else if(stringency=="99"){
-    hi<-v99;lo<-v01
-  }else if(stringency=="max"){
-    hi<-maxx;lo<-mins
-  } else {
-    hi<-maxx;lo<-mins
-  }
-  if(val>hi[coords[1],coords[2]] | val<lo[coords[1],coords[2]]){
-    dps<-"duplicated"
-  } else {
-    dps<-"singleton"
-  }
-  dps
-}
-
-## not used
-dupsvd_sd<-function(inx,sdd,mn){
-  val<-as.numeric(unlist(inx[4]))
-  coords<-round(as.numeric(unlist(inx[c(9,6)])),0)
-  if(coords[1]>1000){
-    coords[1]<-1000
-  }
-  if(coords[2]>400){
-    coords[2]<-400
-  }
-  vsd<-sdd[coords[1],coords[2]]
-  mn<-mn[coords[1],coords[2]]
-  if(val>mn+2.5*vsd | val<mn-2.5*vsd){
-    dps<-"duplicated"
-  } else {
-    dps<-"singleton"
-  }
-  dps
-}
-
 
 #' Simulate Allele Frequencies
 #'

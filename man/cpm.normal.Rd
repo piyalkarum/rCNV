@@ -39,7 +39,8 @@ This function outputs the normalized depth values separately for each allele, ca
 This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth.
 }
 \examples{
-print("to be added")
+data(ADtable)
+ADnormalized<-cpm.normal(ADtable)
 
 
 }

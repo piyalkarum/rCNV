@@ -48,8 +48,8 @@ The function to calculate allele median ratios, proportion of heterozygotes and 
 print("to be added")
 }
 \examples{
-data(hets)
-AI<-allele.info(hets)
+data(ADtable)
+AI<-allele.info(ADtable)
 
 }
 \author{

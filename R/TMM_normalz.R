@@ -152,11 +152,17 @@ TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutof
 #' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
 #'
 #' @examples
-#' print("to be added")
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' vcf <- readVCF(vcf.file.path)
+#' df<-hetTgen(vcf,"AD-tot",verbose=FALSE)
+#' norm.fact(df)
+#'
 #'
 #' @export
 norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10){
-  method<-match.arg(method)
+  if(setequal(c("CHROM","POS","ID"),colnames(df)[1:3])){df<-df[,-c(1:3)]}
+  method<-match.arg(method,several.ok = TRUE)
+  if(length(method)>1){ifelse(nrow(df)<10001, assign("method","TMM"),assign("method","TMMex"))}
   if(method=="TMM"){
     f75 <- suppressWarnings(calcFactorQuantile(data=as.matrix(df), lib.size=colSums(as.matrix(df)), p=0.75))
     if(median(f75) < 1e-20) {
@@ -171,40 +177,6 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
   }
   out<-data.frame(lib.size=colSums(df),norm.factor=out)
   return(out)
-}
-
-#' Calculate normalized depth for total depth
-#'
-#' This function outputs the normalized depth values calculated using normalization factor with trimmed mean of M-values of sample libraries. See details.
-#'
-#' @param df a data frame or matrix of count values (total counts per snp per sample)
-#' @param method character. method to be used (see detials). Default="TMM"
-#' @param logratioTrim numeric. percentage value (0 - 1) of variation to be trimmed in log transformation
-#' @param sumTrim numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"
-#' @param Weighting logical, whether to compute (asymptotic binomial precision) weights
-#' @param Acutoff numeric, cutoff on "A" values to use before trimming
-#' @param tot.count numeric, a total library size that depth values to be normalized to, default=1000000
-#'
-#' @details This function converts an observed depth value table to an effective depth vallue table using TMM normalization. See the original publication for more information.
-#'
-#' @return Returns a data frame of normalized depth values
-#'
-#' @author Piyal Karunarathne
-#'
-#' @references Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25
-#' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
-#'
-#' @examples
-#' print("to be added")
-#'
-#' @export
-normz<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10, tot.count=1e6){
-  df<-as.matrix(df)
-  nf<-norm.fact(df,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
-  cpm <- lapply(1:ncol(df), function(x,df,nf) {(df[,x]/(sum(df[,x]))*nf[x,2])*tot.count},df=df,nf=nf)
-  cpm<-do.call(cbind,cpm)
-  colnames(cpm)<-colnames(df)
-  return(cpm)
 }
 
 
@@ -231,7 +203,8 @@ normz<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weight
 #' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
 #'
 #' @examples
-#' print("to be added")
+#' data(ADtable)
+#' ADnormalized<-cpm.normal(ADtable)
 #'
 #'
 #' @export

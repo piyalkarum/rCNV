@@ -36,7 +36,11 @@ This function calculates the normalization factor for each sample using trimmed 
 Originally described for normalization of RNA sequences (Robinson & Oshlack 2010), this function computes normalization (scaling) factors to convert observed library sizes into effective library sizes. It uses the method trimmed means of M-values proposed by Robinson & Oshlack (2010). See the original publication and edgeR package for more information.
 }
 \examples{
-print("to be added")
+vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+vcf <- readVCF(vcf.file.path)
+df<-hetTgen(vcf,"AD-tot",verbose=FALSE)
+norm.fact(df)
+
 
 }
 \references{

@@ -93,7 +93,7 @@ readVCF <- function(vcf.file.path){
 #' hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
 #'
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
-#' @param info.type character. "AD"=allele depth value, "AD-tot"=allele total depth, "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.
+#' @param info.type character. "AD"=allele depth value, "AD-tot"=allele total depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.
 #' @param verbose logical. whether to show the progress of the analysis
 #'
 #' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.

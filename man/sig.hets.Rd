@@ -5,7 +5,7 @@
 \title{Identify significantly different heterozygotes from SNPs data}
 \usage{
 sig.hets(
-  d.info,
+  a.info,
   method = c("fisher", "chi.sq"),
   plot = TRUE,
   verbose = TRUE,
@@ -13,7 +13,7 @@ sig.hets(
 )
 }
 \arguments{
-\item{d.info}{duplication info table generated from filtered vcfs using the function dup.snp.info}
+\item{a.info}{allele info table generated from filtered vcfs using the function 'allele.info()'}
 
 \item{method}{character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
 
@@ -33,8 +33,8 @@ het expected
 This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 }
 \examples{
-data(hets)
-AI <- allele.info(hets,plot=FALSE)
+data(ADtable)
+AI <- allele.info(ADtable,plot=FALSE)
 duplicates<-sig.hets(AI,plot=TRUE)
 
 }

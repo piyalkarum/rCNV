@@ -27,13 +27,18 @@
 #'
 #' @author Piyal Karunarathne
 #'
-#' @examples #tba
+#' @examples
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' vcf <- readVCF(vcf.file.path)
+#' exportVCF(vcf,"../exVcf.vcf")
+#'
 #' @export
 exportVCF<-function(out.vcf, out.path, compress=TRUE){
+  if(inherits(out.vcf,"list")){out.vcf<-out.vcf$vcf}
   out.vcf<-as.matrix(out.vcf)
   fcon<-out.path
   header<-colnames(out.vcf)
-  hr<-header[1:8]
+  hr<-header[1:9]
   if(!setequal(c("#CHROM",	"POS",	"ID",	"REF",	"ALT",	"QUAL",	"FILTER",	"INFO",	"FORMAT"),hr)){
     stop("input vcf header incorrect\n
          must have #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT, followed by samples")

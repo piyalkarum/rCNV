@@ -20,7 +20,10 @@ export a vcf file
 A function to export tables/matrices in VCF format to VCF files
 }
 \examples{
-#tba
+vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+vcf <- readVCF(vcf.file.path)
+exportVCF(vcf,"../exVcf.vcf")
+
 }
 \author{
 Piyal Karunarathne
