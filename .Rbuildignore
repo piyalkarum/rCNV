@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^tests$
 ^\.RDataTmp$
+^\.github$
+^LICENSE\.md$

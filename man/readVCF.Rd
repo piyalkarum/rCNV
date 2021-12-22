@@ -4,10 +4,12 @@
 \alias{readVCF}
 \title{Import VCF file}
 \usage{
-readVCF(vcf.file.path)
+readVCF(vcf.file.path, verbose = FALSE)
 }
 \arguments{
 \item{vcf.file.path}{path to the vcf file}
+
+\item{verbose}{logical. show progress}
 }
 \value{
 Returns a dataframe with scaffold/chromosome positions and depth values for individual samples

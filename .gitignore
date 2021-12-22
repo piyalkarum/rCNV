@@ -5,3 +5,5 @@
 .DS_Store
 .RDataTmp
 tests
+inst/doc
+testData

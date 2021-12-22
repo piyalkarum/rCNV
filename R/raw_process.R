@@ -41,6 +41,16 @@ lapply_pb <- function(X, FUN, ...)
 
 #https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
 
+#(extra) generate colors for Rmarkdown docs [extracted from Rmarkdown guide book]
+colorize <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color,
+            x)
+  } else x
+}
+
 #2. remove non-biallelic snps
 non_bi_rm<-function(vcf,GT.table=NULL){
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
@@ -71,6 +81,7 @@ gg<-function(x){
 #' The function required the R-package "data.table" for faster importing.
 #'
 #' @param vcf.file.path path to the vcf file
+#' @param verbose logical. show progress
 #'
 #' @return Returns a dataframe with scaffold/chromosome positions and depth values for individual samples
 #' @importFrom data.table fread
@@ -82,8 +93,8 @@ gg<-function(x){
 #' vcf <- readVCF(vcf.file.path)
 #'
 #' @export
-readVCF <- function(vcf.file.path){
-  tt <- fread(vcf.file.path,sep="\t",skip="#CHROM")
+readVCF <- function(vcf.file.path,verbose=FALSE){
+  tt <- fread(vcf.file.path,sep="\t",skip="#CHROM",verbose=verbose)
   return(list(vcf=tt))
 }
 
@@ -139,6 +150,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
   } else {
     if(itype=="AD"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))}
     else if(itype=="DP"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) suppressWarnings(as.numeric(strsplit(x, ":")[[1]][AD])))))}
+    else if(itype=="GT"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))}
   }
 
   if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}

@@ -4,7 +4,7 @@
 \alias{relatedness}
 \title{Determine pairwise relatedness}
 \usage{
-relatedness(vcf, plot = TRUE, threshold = 0.5)
+relatedness(vcf, plot = TRUE, threshold = 0.5, verbose = TRUE)
 }
 \arguments{
 \item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}
@@ -12,6 +12,8 @@ relatedness(vcf, plot = TRUE, threshold = 0.5)
 \item{plot}{logical. Whether to plot relatedness of samples against themselves, among themselves and outliers}
 
 \item{threshold}{numerical. A value indicating to filter the individuals of relatedness among themselves. Default=0.5 (siblings)}
+
+\item{verbose}{logical. Show progress.}
 }
 \value{
 A data frame of individuals and relatedness score Ajk

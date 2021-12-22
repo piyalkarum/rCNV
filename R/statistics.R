@@ -65,16 +65,20 @@ return(V)}
 #' hzygots<-h.zygosity(vcf,plot=TRUE,pops=c("FR_PA","RU_PA"))
 #'
 #' @export
-h.zygosity<-function(vcf,plot=FALSE,pops=NA){
+h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
   if(inherits(vcf,"list")) {
     vcf<-vcf$vcf
-    message("reading genotypes")
-    gtt<-hetTgen(vcf,"GT",verbose=TRUE)
+    gtt<-hetTgen(vcf,"GT",verbose=verbose)
   } else {
-    gtt <-vcf
+    if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
+    else {gtt <-vcf}
   }
-  message("assessing per sample homozygosity")
-  hh<-t(apply_pb(gtt[,-c(1:3)],2,het.sity))
+  if(verbose){
+    message("assessing per sample homozygosity")
+    hh<-t(apply_pb(gtt[,-c(1:3)],2,het.sity))
+  } else {
+    hh<-t(apply(gtt[,-c(1:3)],2,het.sity))
+  }
   hh<-data.frame(rownames(hh),hh)
   colnames(hh)<-c("ind","O(Hom)","E(Hom)","total","Fis")
   rownames(hh)<-NULL
@@ -103,6 +107,7 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA){
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
 #' @param plot logical. Whether to plot relatedness of samples against themselves, among themselves and outliers
 #' @param threshold numerical. A value indicating to filter the individuals of relatedness among themselves. Default=0.5 (siblings)
+#' @param verbose logical. Show progress.
 #' @importFrom graphics hist
 #'
 #' @return
@@ -122,13 +127,13 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA){
 #' relate<-relatedness(vcf)
 #'
 #' @export
-relatedness<-function(vcf,plot=TRUE,threshold=0.5){
+relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
   if(!inherits(vcf,"list")) {
-    gtt <-vcf
+    if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
+    else {gtt <-vcf}
   } else {
     vcf<-vcf$vcf
-    message("reading genotypes")
-    gtt<-hetTgen(vcf,"GT",verbose=TRUE)
+    gtt<-hetTgen(vcf,"GT",verbose=verbose)
   }
   gt<-gtt[,-c(1:3)]
   freq<-apply(gt,1,function(xx){aal<-unlist(strsplit(as.character(xx),"/"))
@@ -141,8 +146,12 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5){
   XX})
 
   comb<-expand.grid(1:ncol(gg),1:ncol(gg))
-  message("assessing pairwise relatedness")
-  T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
+  if(verbose){
+    message("assessing pairwise relatedness")
+    T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
+  } else {
+    T2<-apply(comb,1,gt2,gg=gg,freq=freq)
+  }
   T2<-data.frame(t(T2))
   T2[,3]<-as.numeric(T2[,3])
   colnames(T2)<-c("indv1","indv2","relatedness_Ajk")
