@@ -174,8 +174,11 @@ The rCNV function *dupGet()* delivers easy to pick model selections to detect th
 
 The detection of duplicates is based on the **heterozygosity** within populations (or among all samples) and **allelic ratios** within such heterozygotes.
 As such, *dupGet()* function implements two methods to flag the duplicated alleles; They are a) Excess of heterozygotes and b) SNP deviants.
+
 |   The proportion of heterozygotes in a population according to HWE is 2pq where as homozygotes is q<sup>2</sup>. In duplicates heterozygozity is expected to be higher indicating excess of heterozygosity and thus flagged as putatively-duplicated.
+
 |   In non-duplicated alleles (singlets), median allele ratio must be ~0.5, however, in duplicates it varies between 1:3 and 3:1. These SNP deviants are also flagged as putative duplicates. To determine the deviation, we use the Z-score values and Chi-square significance calculated in the previous step.
+
 |   **NOTE: users can select the occurrence probability of the alternative allele based on the sequencing method and the probe bias therein. 
 
 ```{r,eval=FALSE}
@@ -193,6 +196,7 @@ The function also plots the putative duplicates with Allele median ratio Vs Prop
 
 
 ## 3. POST-DETECTION
+|       TBA
 ### 3.1 Duplicate list and validation
 
 ### 3.2 Relative copy number

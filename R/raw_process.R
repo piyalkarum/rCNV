@@ -120,7 +120,7 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' @export
 hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verbose=TRUE){
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
-  else if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
+  if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
   if(length(which(apply(vcf[,5],1,nchar)>1))>1){
     message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed")
     ans<-readline(prompt="Remove non-biallelic SNPs (y/n) ?: ")
