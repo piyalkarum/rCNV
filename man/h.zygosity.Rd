@@ -4,7 +4,7 @@
 \alias{h.zygosity}
 \title{Determine per sample heterozygosity and inbreeding coefficient}
 \usage{
-h.zygosity(vcf, plot = FALSE, pops = NA)
+h.zygosity(vcf, plot = FALSE, pops = NA, verbose = TRUE)
 }
 \arguments{
 \item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}
@@ -12,6 +12,8 @@ h.zygosity(vcf, plot = FALSE, pops = NA)
 \item{plot}{logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided}
 
 \item{pops}{character. A list of population names}
+
+\item{verbose}{logical. Show progress}
 }
 \value{
 Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with their inbreeding coefficients.

@@ -54,6 +54,7 @@ return(V)}
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
 #' @param plot logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided
 #' @param pops character. A list of population names
+#' @param verbose logical. Show progress
 #' @importFrom graphics boxplot
 #' @return Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with their inbreeding coefficients.
 #'

@@ -31,7 +31,7 @@ library(rCNV)
 
 This tutorial will provide and A-Z guide to detecting CNVs from SNPs data. This includes importing raw VCF files, filtering VCFs, normalization of read depth, categorization of SNPs into "duplicates" and "singlets".
 
-All the data used in this tutorial is available either withing the package or from the GitHub repository at <link>.
+All the data used in this tutorial is available either withing the package or from the GitHub repository at **link**.
 
 ## 1. PRE-DETECTION
 ### 1.1 Importing data
@@ -81,7 +81,7 @@ dim(parrot)
 We have removed 5 samples that were undesired for the analysis due to their missing data.
 Undesired SNPs can also be removed the same way; Hint: now they are in rows.
 
-## 1.3 Assessing the relatedness among samples and heterozygosity withing
+### 1.3 Assessing the relatedness among samples and heterozygosity withing
 
 The function *relatedness()* in the rCNV package will generate the relatedness index between pairs of samples according to *Yang et al. (2010)*.
 The output is a data frame with pairs of samples and the relatedness score *Ajk*. Please read *Yang et al. (2010)* for more information on the calculation of *Ajk*.
@@ -132,6 +132,74 @@ ad.nor<-cpm.normal(ADtable,verbose = F)
 ad.nor[1:6,1:6]
 ```
 Compare the allele depth values between tables 1.4.0 and 1.4.1.
+
+## 2. DETECTION
+### 2.1 Generating allele information table
+In this step, all the statistics necessary for detecting duplicates are calculated. They include the following:
+|   a. Allele ratios (across all samples)
+|   b. Proportions of homo-/heterozygotes per SNP
+|   c. Depth ratios (alternative/sum)
+|   d. Z-score
+|   e. Chi-square significance
+
+Alternative allele ratio is calculated across all the samples from depth values;Proportion of homo/hetero-zygotes are also calculated all the samples per SNP; Depth ratio is calculated per individual per SNP by dividing the alternative allele depth value by the sum depth value of both alleles. This is calculated for both heterozygotes and homozygotes; Z-score per SNP is calculated according to the following equation:
+
+![](eq.svg)
+
+![](eq2.svg)
+
+Where N is the total depth summed for all heterozygotes, N<sub>A</sub> is the depth of allele A summed for all the heterozygotes,
+*P* is the occurrence probability of allele A in heterozygotes - for unbiased sequencing this is 0.5. *allele.info()* function calculates this for both 0.5 and biased probability using the ratio between reference and alternative alleles.
+
+The Chi-squared values per SNP per sample were calculated using the following equation:
+![](eq.chi.svg)
+
+Where *N<sub>jk</sub>* is the total depth value of SNP *k* for individual *j*, *D<sub>jk</sub>* is the depth value of the alternative allele of SNP *k*, *P<sub>j</sub>* is the occurrence probability of alternative allele at SNP *k* in heterozygotes - in unbiased sequencing, this is 0.5.  
+
+```{r,eval=FALSE}
+A.info<-allele.info(ADtable, plot.allele.cov = TRUE)
+head(A.info)
+```
+```{r,echo=FALSE}
+head(alleleINF)
+```
+
+In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the *allele.info()* output. See below.
+ADD MORE ABOUT THE PROBE BIASE PLOTS****
+
+### 2.2 Duplicate detection
+
+In this step, we use the allele information table generated in the previous step to detect duplicated SNPs based different models.
+The rCNV function *dupGet()* delivers easy to pick model selections to detect the duplicates with a plotting (similar to HD plots in *McKinney et al. 2017*) option to visualize the detection.
+
+The detection of duplicates is based on the **heterozygosity** within populations (or among all samples) and **allelic ratios** within such heterozygotes.
+As such, *dupGet()* function implements two methods to flag the duplicated alleles; They are a) Excess of heterozygotes and b) SNP deviants.
+|   The proportion of heterozygotes in a population according to HWE is 2pq where as homozygotes is q<sup>2</sup>. In duplicates heterozygozity is expected to be higher indicating excess of heterozygosity and thus flagged as putatively-duplicated.
+|   In non-duplicated alleles (singlets), median allele ratio must be ~0.5, however, in duplicates it varies between 1:3 and 3:1. These SNP deviants are also flagged as putative duplicates. To determine the deviation, we use the Z-score values and Chi-square significance calculated in the previous step.
+|   **NOTE: users can select the occurrence probability of the alternative allele based on the sequencing method and the probe bias therein. 
+
+```{r,eval=FALSE}
+duplicates<-dupGet(alleleINF,test = c("z.all","chi.all"),plot=TRUE,verbose = TRUE)
+head(duplicates)
+```
+```{r,echo=FALSE}
+duplicates<-dupGet(alleleINF,plot=FALSE,verbose = FALSE)
+head(duplicates)
+```
+
+The function also plots the putative duplicates with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of *dupGet()* using *dup.plot()* fucntion.
+
+![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates](dupPlot.png)
+
+
+## 3. POST-DETECTION
+### 3.1 Duplicate list and validation
+
+### 3.2 Relative copy number
+
+
+
+
 
 
 

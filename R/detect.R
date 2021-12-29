@@ -100,7 +100,7 @@ dup.plot<-function(ds,...){
   ds$Color [ds$dup.stat=="duplicated"]<- l$col[1]
   plot(ds$medRatio~ds$propHet, pch=l$pch, cex=l$cex,col=ds$Color,xlim=l$xlim,ylim=l$ylim,frame=F,
        ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
-  legend("bottomright", c("duplicate","singleton"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+  legend("bottomright", c("duplicates","singlets"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
          cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
 
 }
@@ -172,7 +172,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
       Color[pp$dup.stat=="duplicated"]<- l$col[1]
       plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
            ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
-      legend("bottomright", c("duplicate","singleton"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+      legend("bottomright", c("duplicates","singlets"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
              cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
     }
   }
