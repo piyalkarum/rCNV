@@ -1,6 +1,6 @@
 ---
-title: "rCNV: An R package for detecting CNV from SNPs"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+title: "Detecting CNV from SNPs: a quick guide to rCNV"
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y')`"
 author: "Piyal Karunarathne"
 output: rmarkdown::html_vignette
 header-includes:
@@ -21,17 +21,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rCNV)
-```
-
 # **rCNV: An R package for detecting copy number variants from SNPs data**
 `r rCNV:::colorize("Piyal Karunarathne, Qiujie Zhou, and Pascal Milesi","dodgerblue")`
 
 
-This tutorial will provide and A-Z guide to detecting CNVs from SNPs data. This includes importing raw VCF files, filtering VCFs, normalization of read depth, categorization of SNPs into "duplicates" and "singlets".
+This tutorial will provide and A-Z guide to detecting CNVs from SNPs data using rCNV package. This includes importing raw VCF files, filtering VCFs, normalization of read depth, categorization of SNPs into "duplicates" and "singlets". A brief workflow is presented in Fig 1. below.
+
+![Fig. 1. Workflow of detecting CNVs with rCNV](workflow1.png){width=400}
 
 All the data used in this tutorial is available either withing the package or from the GitHub repository at **link**.
+
+We provide here a complete workflow of detecting CNVs from SNPs, starting with raw (unfiltered) VCF as in the number 1 of the workflow chart. However, if one believes that they have filtered VCFs for the parameters we've mentioned (see Fig.1 and sub-sections 1.2 and 1.3), they can start from the number 2 in the workflow shown above.
 
 ## 1. PRE-DETECTION
 ### 1.1 Importing data
@@ -44,6 +44,7 @@ devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
 ```
 
 ```{r, echo=T,eval=TRUE}
+library(rCNV)
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path,verbose = FALSE)
 ```
@@ -51,7 +52,7 @@ vcf <- readVCF(vcf.file.path,verbose = FALSE)
 #print the first 10 rows and columns of the imported VCF
 vcf$vcf[1:10,1:10]
 ```
-```{r, echo=FALSE}
+```{r, echo=FALSE, tidy=TRUE,tidy.opts=list(width.cutoff=60)}
 vcf$vcf[1:6,c(1:7,9,10)]
 ```
 
@@ -118,7 +119,7 @@ ad.tab[1:10,1:6]
 
 Table 1.4.0 Allele depth table (generated from a different data set than parrotfish data)
 ```{r,echo=FALSE}
-ADtable[1:6,1:6]
+knitr::kable(ADtable[1:6,1:6],format="html")
 ```
 
 ```{r,eval=FALSE}
@@ -127,20 +128,16 @@ ad.nor<-cpm.normal(ad.tab)
 ad.nor[1:6,1:6]
 ```
 Table 1.4.1 Normalized allele depth table
-```{r, echo=FALSE}
+```{r, echo=FALSE,cache=FALSE}
 ad.nor<-cpm.normal(ADtable,verbose = F)
-ad.nor[1:6,1:6]
+knitr::kable(ad.nor[1:6,1:6],format = "html")
 ```
 Compare the allele depth values between tables 1.4.0 and 1.4.1.
 
 ## 2. DETECTION
 ### 2.1 Generating allele information table
 In this step, all the statistics necessary for detecting duplicates are calculated. They include the following:
-|   a. Allele ratios (across all samples)
-|   b. Proportions of homo-/heterozygotes per SNP
-|   c. Depth ratios (alternative/sum)
-|   d. Z-score
-|   e. Chi-square significance
+a. Allele ratios (across all samples), b. Proportions of homo-/heterozygotes per SNP, c. Depth ratios (alternative/sum), d. Z-score, e. Chi-square significance
 
 Alternative allele ratio is calculated across all the samples from depth values;Proportion of homo/hetero-zygotes are also calculated all the samples per SNP; Depth ratio is calculated per individual per SNP by dividing the alternative allele depth value by the sum depth value of both alleles. This is calculated for both heterozygotes and homozygotes; Z-score per SNP is calculated according to the following equation:
 
@@ -192,7 +189,7 @@ head(duplicates)
 
 The function also plots the putative duplicates with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of *dupGet()* using *dup.plot()* fucntion.
 
-![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates](dupPlot.png)
+![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates](dupPlot.png){width=400}
 
 
 ## 3. POST-DETECTION

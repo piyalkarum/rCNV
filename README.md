@@ -6,23 +6,26 @@
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of rCNV is to ...
+**rCNV** was designed to identify duplicates (CNV) from SNPs data with ease.
 
-## Installation
+![](dupPlot.png){width=400}
+
+***For a comprehensive tutorial on the package, go to
+<link> and navigate to “Get started”
+where all the functions and usage are explained with ample examples.***
+
+**Installation**
+CRAN link to be added
 
 You can install the development version of rCNV from [GitHub](https://github.com/) with:
 
-``` r
-# install.packages("devtools")
-devtools::install_github("piyalkarum/rCNV")
-```
+    if (!requireNamespace("devtools", quietly = TRUE)) 
+        install.packages("devtools") 
+    devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
 
-## Example
+Please don’t forget to cite us if you use the package.
 
-This is a basic example which shows you how to solve a common problem:
+**How to cite**
 
-``` r
-library(rCNV)
-## basic example code
-```
+\*Publication to be added
 
