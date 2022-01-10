@@ -240,12 +240,13 @@ vcf.stat<-function(vcf,plot=TRUE,...){
   colnames(tbb)<-c("AC","AF","DP","MQ","QD","FS","SOR","HET","MQRankSum","ReadPosRankSum","InbrCo")
   tbb<-data.frame(cbind(vcf[,c(1:3,6)],tbb))
   if(plot){
-    par(mfrow=c(4,3))
+    #par(mfrow=c(4,3))
     pl<-list(...)
     if(is.null(pl$col)) pl$col<-"lightblue"
     if(is.null(pl$border)) pl$border<-"firebrick"
     pp<-sapply(colnames(tbb[,-c(1:3)]),function(x,pl){plot((dd<-density(as.numeric(tbb[,x]),na.rm = T)),main = x,typ="n",xlab=NA)
       polygon(dd,col=pl$col,border=pl$border)},pl=pl)
+    #par(mfrow=c(1,1))
   }
   return(tbb)
 }
