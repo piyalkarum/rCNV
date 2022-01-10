@@ -10,11 +10,13 @@ ease.
 
 <img src="vignettes/dupPlot.png" width="400" />
 
-***For a comprehensive tutorial on the package, go to <link> and
-navigate to “Get started” where all the functions and usage are
-explained with ample examples.***
+***For a comprehensive tutorial on the package, go to
+<https://piyalkarum.github.io/rCNV/> and navigate to “Get started” where
+all the functions and usage are explained with ample examples.***
 
-**Installation** CRAN link to be added
+**Installation**
+
+CRAN link to be added
 
 You can install the development version of rCNV from
 [GitHub](https://github.com/) with:
