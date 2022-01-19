@@ -75,6 +75,42 @@ gg<-function(x){
   return(tl)
 }
 
+#' Remove MAF allele
+#'
+#' A function to remove the alleles with minimum allele frequency and keep only a biallelic matrix
+#'
+#' @param h.table a data frame of allele depth values generated from hetTgen
+#' @param AD logical. If TRUE a allele depth table similar to hetTgen output will be returns; If FALSE, individual AD values per SNP will be returned in a list.
+#'
+#' @return a data frame or a list
+#'
+#' @author Piyal Karunarathne
+#'
+#' @export
+maf<-function(h.table,AD=TRUE,verbose=TRUE){
+  htab<-h.table[,-c(1:3)]
+  if(verbose){
+    glt<-apply_pb(htab,1,function(X){
+      gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
+      pp<-proportions(gg,1)
+      if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(pp,na.rm=T))]
+      if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
+    })
+  }else{
+    glt<-apply(htab,1,function(X){
+      gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
+      pp<-proportions(gg,1)
+      if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(pp,na.rm=T))]
+      if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
+    })
+  }
+  glt<-data.frame(h.table[,1:3],t(glt))
+  colnames(glt)<-colnames(h.table)
+  return(glt)
+}
+
+
+
 #' Import VCF file
 #'
 #' Function to import raw single/multi-sample VCF files generated from GatK or VCFtools.
@@ -127,31 +163,28 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
     if(ans=="y"){
       vcf<-non_bi_rm(vcf)
     }
-    if(ans=="n"){
-      stop("Non-bi-allelic variant file: 0nly bi-allelic SNPs allowed so far")
-    }
   }
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
-  xx <- vcf[,10:ncol(vcf)]
+
   info.type<-match.arg(info.type)
   itype<-substr(info.type,1,2)
-  AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]==itype)
-  if(length(AD)==0){
-    AD<-which(strsplit(as.character(vcf[1,9]),":")[[1]]=="DPR")
-  }
+  adn<-unname(unlist(lapply(unlist(vcf[,"FORMAT"]),function(i){which(strsplit(i,":")[[1]]==itype)})))
+  xx<-data.frame(as.numeric(adn),vcf[,-c(1:9)])
+
   if(verbose) {
     if(itype=="AD"){message("generating allele depth table")
-      h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
+      h.table<-t(apply_pb(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))
     } else if(itype=="GT"){message("generating genotypes table")
-      h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))
-      }
+      h.table<-t(apply_pb(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))
+    }
     else if(itype=="DP"){message("generating unfiltered allele depth table")
-      h.table<-apply_pb(xx,2,function(X)do.call(rbind,lapply(X,function(x) suppressWarnings(as.numeric(strsplit(x, ":")[[1]][AD])))))}
+      h.table<-t(apply_pb(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))}
   } else {
-    if(itype=="AD"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))}
-    else if(itype=="DP"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) suppressWarnings(as.numeric(strsplit(x, ":")[[1]][AD])))))}
-    else if(itype=="GT"){h.table<-apply(xx,2,function(X)do.call(rbind,lapply(X,function(x) paste(strsplit(x, ":")[[1]][AD], collapse = ':'))))}
+    if(itype=="AD"){h.table<-t(apply(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))}
+    else if(itype=="DP"){h.table<-t(apply(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))}
+    else if(itype=="GT"){h.table<-t(apply(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))}
   }
+  h.table<-h.table[,-1]
 
   if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}
 
@@ -167,16 +200,16 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
     h.table[h.table=="0/0"]<-0
     h.table[h.table=="1/1"]<-1
     h.table[h.table=="1/0" | h.table=="0/1"] <- 2
-    h.table[h.table=="./."]<-NA
+    h.table[h.table=="./."| h.table=="."]<-NA
   }
   if(info.type=="GT-AB"){
     h.table[h.table=="0/0"]<-"AA"
     h.table[h.table=="1/1"]<-"BB"
     h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
-    h.table[h.table=="./."]<--9
+    h.table[h.table=="./."| h.table=="."]<--9
   }
   if(info.type=="AD" ){
-    h.table[h.table=="./."]<-"0,0"
+    h.table[h.table=="./." | h.table=="."]<-"0,0"
   }
   if(info.type=="DP"){
     h.table[is.character(h.table)]<-0
@@ -335,5 +368,8 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
   } else { chu <- NULL}
   return(list(hor=pgt.h,ver=t(pgt.h),subsets=chu,pop=as.character(pp)))
 }
+
+
+
 
 

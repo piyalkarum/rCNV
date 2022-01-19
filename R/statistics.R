@@ -51,7 +51,7 @@ return(V)}
 #' Determine per sample heterozygosity and inbreeding coefficient
 #'
 #' This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality. See details.
-#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
+#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF" or a data frame of genotypes generated using "hetTgen"
 #' @param plot logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided
 #' @param pops character. A list of population names
 #' @param verbose logical. Show progress
@@ -105,7 +105,7 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #'
 #' Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 (doi:10.1038/ng.608) equation 6, on a per sample basis (with itself and others), using SNPs.
 #'
-#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
+#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF" or a data frame of genotypes generated using "hetTgen"
 #' @param plot logical. Whether to plot relatedness of samples against themselves, among themselves and outliers
 #' @param threshold numerical. A value indicating to filter the individuals of relatedness among themselves. Default=0.5 (siblings)
 #' @param verbose logical. Show progress.
