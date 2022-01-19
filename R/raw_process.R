@@ -81,6 +81,7 @@ gg<-function(x){
 #'
 #' @param h.table a data frame of allele depth values generated from hetTgen
 #' @param AD logical. If TRUE a allele depth table similar to hetTgen output will be returns; If FALSE, individual AD values per SNP will be returned in a list.
+#' @param verbose logical. Show progress
 #'
 #' @return a data frame or a list
 #'
