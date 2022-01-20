@@ -93,15 +93,13 @@ maf<-function(h.table,AD=TRUE,verbose=TRUE){
   if(verbose){
     glt<-apply_pb(htab,1,function(X){
       gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
-      pp<-proportions(gg,1)
-      if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(pp,na.rm=T))]
+      while(ncol(gg)>2){gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]}
       if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
     })
   }else{
     glt<-apply(htab,1,function(X){
       gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
-      pp<-proportions(gg,1)
-      if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(pp,na.rm=T))]
+      if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]
       if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
     })
   }
@@ -217,7 +215,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
     h.table[is.na(h.table)]<-0
   }
   het.table<-as.data.frame(cbind(vcf[,1:3],h.table))
-  colnames(het.table)[1]<-"CHROM"
+  colnames(het.table)<-c("CHROM",colnames(vcf)[9:ncol(vcf)])
   return(het.table)
 }
 
