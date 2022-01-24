@@ -157,11 +157,11 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
   if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
   if(length(which(apply(vcf[,5],1,nchar)>1))>1){
-    message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed")
-    ans<-readline(prompt="Remove non-biallelic SNPs (y/n) ?: ")
-    if(ans=="y"){
-      vcf<-non_bi_rm(vcf)
-    }
+    message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps")
+    # ans<-readline(prompt="Remove non-biallelic SNPs (y/n) ?: ")
+    # if(ans=="y"){
+    #   vcf<-non_bi_rm(vcf)
+    # }
   }
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
 
