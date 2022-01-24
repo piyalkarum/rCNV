@@ -248,14 +248,14 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
   type<-match.arg(type,several.ok = T)
   if(any(type=="samples")){
     ll<-t(apply(ndat[,-c(1:3)],2,function(x){
-      cbind(length(which(x=="./." | is.na(x) | x=="0,0" | x==".,.")),length(which(x=="./." | is.na(x) | x=="0,0" | x==".,."))/length(x))
+      cbind(sum(x!="0/0" | x!="1/0" | x!="1/1"),sum(x!="0/0" | x!="1/0" | x!="1/1")/length(x))
     }))
     ll<-data.frame(indiv=colnames(ndat)[-c(1:3)],n_miss=ll[,1],f_miss=ll[,2])
     rownames(ll)<-NULL
   }
   if(any(type=="snps")){
     L<-apply(ndat[,-c(1:3)],1,function(x){
-      cbind(length(which(x=="./." | is.na(x) | x=="0,0" | x==".,.")),length(which(x=="./." | is.na(x) | x=="0,0" | x==".,."))/length(x))
+      cbind(sum(x!="0/0" | x!="1/0" | x!="1/1"),sum(x!="0/0" | x!="1/0" | x!="1/1")/length(x))
     })
     if(is.list(L)){
       L<-do.call(rbind,L)
@@ -287,7 +287,6 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
   if(!exists("L")){L<-NULL}
   return(list(perSample=ll,perSNP=L))
 }
-
 
 
 #' Format genotype for BayEnv and BayPass
