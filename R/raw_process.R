@@ -157,11 +157,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
   if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
   if(any(nchar(vcf$POS)>1)){ #if(length(which(apply(vcf[,5],1,nchar)>1))>1){
-    message("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps")
-    # ans<-readline(prompt="Remove non-biallelic SNPs (y/n) ?: ")
-    # if(ans=="y"){
-    #   vcf<-non_bi_rm(vcf)
-    # }
+    warning("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps")
   }
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
 
@@ -215,7 +211,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
     h.table[is.na(h.table)]<-0
   }
   het.table<-as.data.frame(cbind(vcf[,1:3],h.table))
-  colnames(het.table)<-c("CHROM",colnames(vcf)[9:ncol(vcf)])
+  colnames(het.table)<-c("CHROM",colnames(vcf)[c(2,3,10:ncol(vcf))])
   return(het.table)
 }
 
@@ -248,14 +244,14 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
   type<-match.arg(type,several.ok = T)
   if(any(type=="samples")){
     ll<-t(apply(ndat[,-c(1:3)],2,function(x){
-      cbind(sum(x!="0/0" | x!="1/0" | x!="1/1"),sum(x!="0/0" | x!="1/0" | x!="1/1")/length(x))
+      cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
     }))
     ll<-data.frame(indiv=colnames(ndat)[-c(1:3)],n_miss=ll[,1],f_miss=ll[,2])
     rownames(ll)<-NULL
   }
   if(any(type=="snps")){
     L<-apply(ndat[,-c(1:3)],1,function(x){
-      cbind(sum(x!="0/0" | x!="1/0" | x!="1/1"),sum(x!="0/0" | x!="1/0" | x!="1/1")/length(x))
+      cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
     })
     if(is.list(L)){
       L<-do.call(rbind,L)
@@ -287,6 +283,7 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
   if(!exists("L")){L<-NULL}
   return(list(perSample=ll,perSNP=L))
 }
+
 
 
 #' Format genotype for BayEnv and BayPass

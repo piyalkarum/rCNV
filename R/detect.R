@@ -28,8 +28,8 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
 #' @examples
-#' data(ADtable)
-#' AI <- allele.info(ADtable,plot=FALSE)
+#' data(alleleINF)
+#' AI <- alleleINF
 #' duplicates<-sig.hets(AI,plot=TRUE)
 #'
 #' @importFrom grDevices col2rgb rgb
