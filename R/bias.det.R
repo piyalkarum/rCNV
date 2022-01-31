@@ -1,6 +1,6 @@
 # helpers
 get.pvals<-function(x,df,p.cal){
-  snp1<-df[x,-c(1:3)]
+  snp1<-df[x,-c(1:4)]
   y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
   rr1<-y[,2]/rowSums(y)
   snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
@@ -74,7 +74,7 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,
   }
   if(verbose){
     message("calculating probability values of alleles")
-    p.cal<-apply_pb(x.norm[,-c(1:3)],1,function(snp1){
+    p.cal<-apply_pb(x.norm[,-c(1:4)],1,function(snp1){
       y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
       rr1<-y[,2]/rowSums(y)
       snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
@@ -94,7 +94,7 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,
       return(ll)
     })
   } else {
-    p.cal<-apply(x.norm[,-c(1:3)],1,function(snp1){
+    p.cal<-apply(x.norm[,-c(1:4)],1,function(snp1){
       y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
       rr1<-y[,2]/rowSums(y)
       snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]

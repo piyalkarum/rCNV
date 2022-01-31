@@ -7,7 +7,7 @@ calcFactorQuantile <- function (data, lib.size, p=0.75)
   #	adopted from EdgeR package
 {
   f <- rep_len(1,ncol(data))
-  for (j in seq_len(ncol(data))) f[j] <- quantile(data[,j], probs=p)
+  for (j in seq_len(ncol(data))) f[j] <- quantile(data[,j], probs=p,na.rm=TRUE)
   if(min(f)==0) warning("One or more quantiles are zero")
   f / lib.size
 }
@@ -160,7 +160,7 @@ TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutof
 #'
 #' @export
 norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10){
-  if(setequal(c("CHROM","POS","ID"),colnames(df)[1:3])){df<-df[,-c(1:3)]}
+  if(setequal(c("CHROM","POS","ID"),colnames(df)[1:3])){df<-df[,-c(1:4)]}
   method<-match.arg(method,several.ok = TRUE)
   if(length(method)>1){ifelse(nrow(df)<10001, assign("method","TMM"),assign("method","TMMex"))}
   if(method=="TMM"){
@@ -212,24 +212,24 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex"),logratioTrim=.3, sumTrim
   method<-match.arg(method)
   if(verbose){
     message("calculating normalization factor")
-    tdep<-apply_pb(het.table[,-c(1:3)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+    tdep<-apply_pb(het.table[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
   } else {
-    tdep<-apply(het.table[,-c(1:3)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+    tdep<-apply(het.table[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
   }
   nf<-norm.fact(tdep,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
   if(verbose){
     message("calculating normalized depth")
-    out<-apply_pb(het.table[,-c(1:3)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+    out<-apply_pb(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
     y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
     nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
     if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
   } else {
-    out<-apply(het.table[,-c(1:3)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+    out<-apply(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
     y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
     nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
     if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
   }
-  out<-data.frame(het.table[,c(1:3)],t(out))
+  out<-data.frame(het.table[,c(1:4)],t(out))
   colnames(out)<-colnames(het.table)
   return(out)
 }

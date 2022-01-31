@@ -33,8 +33,8 @@ het expected
 This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 }
 \examples{
-data(ADtable)
-AI <- allele.info(ADtable,plot=FALSE)
+data(alleleINF)
+AI <- alleleINF
 duplicates<-sig.hets(AI,plot=TRUE)
 
 }

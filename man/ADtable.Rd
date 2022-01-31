@@ -5,7 +5,7 @@
 \alias{ADtable}
 \title{Allele Depth (AD) example data}
 \format{
-An object of class \code{data.frame} with 5518 rows and 150 columns.
+An object of class \code{data.frame} with 3000 rows and 109 columns.
 }
 \usage{
 data(ADtable)
