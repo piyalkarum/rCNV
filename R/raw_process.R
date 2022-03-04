@@ -366,5 +366,91 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 
 
 
+#' Correct allele depth values
+#'
+#' A function to correct depth values where odd number of coverage values due to sequencing anomalies or miss classification where genotype is homozygous and depth values indicate heterozygosity.
+#' The function adds a value of 1 to the allele with the lowest depth value for when odd number anomalies or make the depth value 0 for when miss-classified. The genotype table must be provided for the latter.
+#'
+#' @param het.table allele depth table generated from the function hetTgen
+#' @param gt.table genotype table generated from the function hetTgen
+#' @param verbose logical. show progress. Default = TRUE
+#'
+#' @return returns the coverage corrected allele depth table similar to the output of hetTgen
+#'
+#' @author Piyal Karunarathne
+#'
+#' @export
+
+ad.correct<-function(het.table,gt.table=NULL,verbose=TRUE){
+  if(!is.null(gt.table)){
+    if(verbose){
+      message("correcting genotype miss-classification")
+      Nw.ad<-lapply_pb(5:ncol(het.table),function(n){
+        X<-het.table[,n]
+        x<-gt.table[,n]
+        Y<-data.frame(do.call(cbind,data.table::tstrsplit(X,",")))
+        y<-which(x=="0/0" & Y$X2>0)
+        rr<-range(Y$X2[y])#range of depth in miss classified snps
+        Y[y,]<-0
+        ll<-length(y)#number of miss classifications
+        out<-paste0(Y$X1,",",Y$X2)
+        return(out)
+      })
+      Nw.ad<-do.call(cbind,Nw.ad)
+      Nw.ad<-data.frame(het.table[,1:4],Nw.ad)
+      colnames(Nw.ad)<-colnames(het.table)
+    } else {
+      Nw.ad<-lapply(5:ncol(het.table),function(n){
+        X<-het.table[,n]
+        x<-gt.table[,n]
+        Y<-data.frame(do.call(cbind,data.table::tstrsplit(X,",")))
+        y<-which(x=="0/0" & Y$X2>0)
+        rr<-range(Y$X2[y])#range of depth in miss classified snps
+        Y[y,]<-0
+        ll<-length(y)#number of miss classifications
+        out<-paste0(Y$X1,",",Y$X2)
+        return(out)
+      })
+      Nw.ad<-do.call(cbind,Nw.ad)
+      Nw.ad<-data.frame(het.table[,1:4],Nw.ad)
+      colnames(Nw.ad)<-colnames(het.table)
+    }
+    het.table<-Nw.ad
+    rm(Nw.ad)
+  }
+  X<-data.frame(het.table[,-c(1:4)])
+  if(verbose){
+    message("correcting odd number anomalies")
+    vv<-apply_pb(X,2,function(sam){
+      dl<-lapply(sam,function(y){
+        l<-as.numeric(unlist(strsplit(y,",")))
+        if((sum(l,na.rm=TRUE)%%2)!=0){
+          if(any(l==0)){l}else{
+            l[which.min(l)]<-l[which.min(l)]+1}
+        }
+        return(paste0(l,collapse = ","))
+      })
+    })
+    if(inherits(vv,"list")){
+      vv<-do.call(cbind,vv)
+    }
+  } else {
+    vv<-apply(X,2,function(sam){
+      dl<-lapply(sam,function(y){
+        l<-as.numeric(unlist(strsplit(y,",")))
+        if((sum(l,na.rm=TRUE)%%2)!=0){
+          if(any(l==0)){l}else{
+            l[which.min(l)]<-l[which.min(l)]+1}
+        }
+        return(paste0(l,collapse = ","))
+      })
+    })
+    if(inherits(vv,"list")){
+      vv<-do.call(cbind,vv)
+    }
+  }
+  return(data.frame(het.table[,1:4],vv))
+}
+
 
 

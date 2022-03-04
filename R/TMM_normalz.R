@@ -212,13 +212,22 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex"),logratioTrim=.3, sumTrim
   method<-match.arg(method)
   if(verbose){
     message("calculating normalization factor")
-    tdep<-apply_pb(het.table[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+    tdep<-apply_pb(het.table[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))),na.rm=TRUE)}))})
   } else {
-    tdep<-apply(het.table[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+    tdep<-apply(het.table[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))),na.rm=TRUE)}))})
   }
+  #find and warn about outliers
+  ot<-boxplot.stats(colSums(tdep,na.rm = T))$out
+  cl<-rep("dodgerblue",ncol(tdep))
+  ot.ind<-which(colnames(tdep) %in% names(ot))
+  cl[ot.ind]<-2
+  if(length(ot)>0){barplot(colSums(tdep,na.rm = T),col=cl)
+  message("OUTLIERS DETECTED\nConsider removing the samples:")
+  cat(colnames(tdep)[ot.ind])}
+
   nf<-norm.fact(tdep,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
   if(verbose){
-    message("calculating normalized depth")
+    message("\ncalculating normalized depth")
     out<-apply_pb(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
     y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
     nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
