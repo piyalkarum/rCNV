@@ -1,8 +1,8 @@
 # helpers
 get.pvals<-function(x,df,p.cal){
   snp1<-df[x,-c(1:4)]
-  y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
-  rr1<-y[,2]/rowSums(y)
+  y<-data.frame(do.call(rbind,strsplit(as.character(unlist(snp1)),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+  rr1<-y[,2]/rowSums(y,na.rm = T)
   snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
   homalt<-sum(rr1==1,na.rm=T)
   homref<-sum(rr1==0,na.rm=T)
@@ -13,16 +13,16 @@ get.pvals<-function(x,df,p.cal){
     p.sum<-p.cal[x,2]
     p.05<-0.5
     p.all<-p.cal[x,1]
-    n<-unname(rowSums(snp1het))
-    chi.het<-sum((n*p.sum-snp1het[,2])^2/(n*p.sum))
-    chi.05<-sum((n*p.05-snp1het[,2])^2/(n*p.05))
+    n<-unname(rowSums(snp1het,na.rm = T))
+    chi.het<-sum((n*p.sum-snp1het[,2])^2/(n*p.sum),na.rm = T)
+    chi.05<-sum((n*p.05-snp1het[,2])^2/(n*p.05),na.rm = T)
     chi.all<-sum((n*p.all-snp1het[,2])^2/(n*p.all))
     z <- (n*p.sum-snp1het[,2])/sqrt(n*p.sum*(1-p.sum))
-    z<-pnorm(sum(z),0,sqrt(nrow(snp1het)))
+    z<-pnorm(sum(z,na.rm = T),0,sqrt(nrow(snp1het)))
     z.05 <- (n*p.05-snp1het[,2])/sqrt(n*p.05*(1-p.05))
-    z.05<-pnorm(sum(z.05),0,sqrt(nrow(snp1het)))
+    z.05<-pnorm(sum(z.05,na.rm = T),0,sqrt(nrow(snp1het)))
     z.all<- (n*p.all-snp1het[,2])/sqrt(n*p.all*(1-p.all))
-    z.all<-pnorm(sum(z.all),0,sqrt(nrow(snp1het)))
+    z.all<-pnorm(sum(z.all,na.rm = T),0,sqrt(nrow(snp1het)))
     ll<-data.frame(NHet=nrow(snp1het),propHet,medRatio,NHomRef=homref,NHomAlt=homalt,propHomAlt=homalt/Nsamp,Nsamp,
                    pAll=p.all,pHet=p.sum,fis=1-(nrow(snp1het)/(2*(homref+(nrow(snp1het)/2))*(homalt+(nrow(snp1het)/2)))),
                    z.het=ifelse(z>0.5, (1-z)*2, z*2),

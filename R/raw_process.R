@@ -390,9 +390,7 @@ ad.correct<-function(het.table,gt.table=NULL,verbose=TRUE){
         x<-gt.table[,n]
         Y<-data.frame(do.call(cbind,data.table::tstrsplit(X,",")))
         y<-which(x=="0/0" & Y$X2>0)
-        rr<-range(Y$X2[y])#range of depth in miss classified snps
         Y[y,]<-0
-        ll<-length(y)#number of miss classifications
         out<-paste0(Y$X1,",",Y$X2)
         return(out)
       })
@@ -449,7 +447,7 @@ ad.correct<-function(het.table,gt.table=NULL,verbose=TRUE){
       vv<-do.call(cbind,vv)
     }
   }
-  return(data.frame(het.table[,1:4],vv))
+  return(cbind(het.table[,1:4],vv))
 }
 
 

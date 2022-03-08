@@ -6,7 +6,7 @@
 \usage{
 cpm.normal(
   het.table,
-  method = c("TMM", "TMMex"),
+  method = c("TMM", "TMMex", "MedR", "QN"),
   logratioTrim = 0.3,
   sumTrim = 0.05,
   Weighting = TRUE,
@@ -33,10 +33,10 @@ cpm.normal(
 Returns a data frame of normalized depth values similar to the output of hetTgen function
 }
 \description{
-This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries. See details.
+This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, or median ratios normalization or .... See details.
 }
 \details{
-This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth.
+This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000. The method "MedR" is median ratio normalization (see publication); QN - quantile normalization (see publication).
 }
 \examples{
 data(ADtable)
@@ -49,5 +49,5 @@ Robinson MD, Oshlack A (2010). A scaling normalization method for differential e
 Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
 }
 \author{
-Piyal Karunarathne
+Piyal Karunarathne, Qiujie Zhou
 }

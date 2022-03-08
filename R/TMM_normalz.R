@@ -131,6 +131,40 @@ TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutof
 }
 
 
+quantile_normalisation <- function(df,het.table=NULL,verbose=verbose){
+  df_rank <- apply(df,2,rank,ties.method="min")
+  df_sorted <- data.frame(apply(df, 2, sort,na.last=TRUE))
+  df_mean <- apply(df_sorted, 1, mean,na.rm=TRUE)
+  if(!is.null(het.table)){
+    het.table<-het.table[,-c(1:4)]
+  }
+  if(verbose){
+    message("\ncalculating normalized depth")
+    df_final <- lapply_pb(1:ncol(df_rank), index_to_mean, my_mean=df_mean,indx=df_rank,al=het.table)
+  } else {
+    df_final <- lapply(1:ncol(df_rank), index_to_mean, my_mean=df_mean,indx=df_rank,al=het.table)
+  }
+  return(df_final)
+}
+
+
+index_to_mean <- function(x,indx, my_mean, al=NULL){
+  my_index<-indx[,x]
+  nr<-my_index[my_mean]
+  if(!is.null(al)){
+    alleles<-al[,x]
+    sm<-do.call(cbind,lapply(data.table::tstrsplit(alleles,","),as.numeric))
+    af<-proportions(sm,1)
+    af<-round(af*nr,0)
+    af<-paste0(af[,1],",",af[,2])
+    af[af=="NaN,NaN" | af=="NA,NA"] <- NA
+    return(af)
+  } else {
+    return(nr)
+  }
+}
+
+
 #' Calculate normalization factor for each sample
 #'
 #' This function calculates the normalization factor for each sample using trimmed mean of M-values of sample libraries. See details.
@@ -183,7 +217,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 
 #' Calculate normalized depth for alleles
 #'
-#' This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries. See details.
+#' This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, or median ratios normalization or .... See details.
 #'
 #' @param het.table a data frame or matrix of coverage (output of hetTgen with "AD")
 #' @param method character. method to be used (see detials). Default="TMM"
@@ -193,11 +227,11 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #' @param Acutoff numeric, cutoff on "A" values to use before trimming
 #' @param verbose logical. show progress
 #'
-#' @details This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth.
+#' @details This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000. The method "MedR" is median ratio normalization (see publication); QN - quantile normalization (see publication).
 #'
 #' @return Returns a data frame of normalized depth values similar to the output of hetTgen function
 #'
-#' @author Piyal Karunarathne
+#' @author Piyal Karunarathne, Qiujie Zhou
 #'
 #' @references Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25
 #' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
@@ -208,7 +242,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #'
 #'
 #' @export
-cpm.normal<-function(het.table, method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE){
+cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE){
   method<-match.arg(method)
   if(verbose){
     message("calculating normalization factor")
@@ -222,21 +256,40 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex"),logratioTrim=.3, sumTrim
   ot.ind<-which(colnames(tdep) %in% names(ot))
   cl[ot.ind]<-2
   if(length(ot)>0){barplot(colSums(tdep,na.rm = T),col=cl)
-  message("OUTLIERS DETECTED\nConsider removing the samples:")
-  cat(colnames(tdep)[ot.ind])}
+    message("OUTLIERS DETECTED\nConsider removing the samples:")
+    cat(colnames(tdep)[ot.ind])}
+  if(method=="TMM" | method=="TMMex"){
+    nf<-norm.fact(tdep,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
+    if(verbose){
+      message("\ncalculating normalized depth")
+      out<-apply_pb(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+    } else {
+      out<-apply(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+    }
+  } else if(method=="MedR") {
+    pseudo<- apply(tdep,1,function(xx){exp(mean(log(as.numeric(xx)[as.numeric(xx)>0])))})
+    nf<-  apply(tdep,2,function(xx){median(as.numeric(xx)/pseudo,na.rm=T)})
+    if(verbose){
+      message("\ncalculating normalized depth")
+      out<-apply_pb(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/nf),0)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+    } else {
+      out<-apply(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/nf),0)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
 
-  nf<-norm.fact(tdep,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
-  if(verbose){
-    message("\ncalculating normalized depth")
-    out<-apply_pb(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
-    y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
-    nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
-    if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
-  } else {
-    out<-apply(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
-    y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
-    nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
-    if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+    }
+  } else if(method=="QN"){
+    out<-t(do.call(cbind,quantile_normalisation(tdep,het.table,verbose=verbose)))
   }
   out<-data.frame(het.table[,c(1:4)],t(out))
   colnames(out)<-colnames(het.table)
