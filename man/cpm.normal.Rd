@@ -30,7 +30,7 @@ cpm.normal(
 \item{verbose}{logical. show progress}
 }
 \value{
-Returns a data frame of normalized depth values similar to the output of hetTgen function
+Returns a list with (AD) a data frame of normalized depth values similar to the output of hetTgen function and (outliers) a list of outlier sample names
 }
 \description{
 This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, or median ratios normalization or .... See details.

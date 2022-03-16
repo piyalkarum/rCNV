@@ -72,3 +72,57 @@ dup.validate<-function(d.detect,window.size=100){
 }
 
 
+#' Calculate population wise Vst
+#'
+#' This function calculates Vst (......) for populations given a list of duplicated loci
+#'
+#' @param AD data frame of total allele depth values of (duplicated if id.list is not provided) SNPs
+#' @param pops character. A vector of population names for each individual. Must be the same length as the number of samples in AD
+#' @param id.list character. A vector of duplicated SNP IDs. Must match the IDs in the AD data frame
+#' @param qGraph logical. Plot the network plot based on Vst values (see details)
+#' @param ... additional arguments passed to qgraph
+#'
+#' @return returns a matrix of pairwise Vst values for populations
+#'
+#' @details more details on the qgraph
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples #to be added
+#'
+#' @export
+vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
+  if(!is.null(id.list)){
+    AD<-AD[match(id.list,AD$ID),]
+  }
+  nm<-colnames(data.frame(AD))[-c(1:4)]
+  pop<-unique(pops)
+  tmp<-data.frame(ind=nm,pop=pops,t(AD[,-c(1:4)]))
+
+  Vst<-combn(pop,2,function(x){
+    jj<-na.omit(tmp[tmp$pop==x[1],-c(1:2)])
+    kk<-na.omit(tmp[tmp$pop==x[2],-c(1:2)])
+    ft<-ncol(jj)
+    ll<-lapply(1:ft, function(y){
+      vt<-var(c(jj[,y],kk[,y]))
+      vs<-(var(jj[,y])*length(jj[,y])+var(kk[,y])*length(kk[,y]))/(length(jj[,y])+length(kk[,y]))
+      return((vt-vs)/vt)
+    })
+    vst<-mean(unlist(ll),na.rm = T)
+    return(matrix(vst,dimnames=list(x[1],x[2])))
+  },simplify = F)
+  mt<-matrix(NA,nrow=length(pop),ncol=length(pop))
+  dimnames(mt)<-list(pop,pop)
+  for(i in 1:length(Vst)){
+    mt[colnames(Vst[[i]]),rownames(Vst[[i]])]<-Vst[[i]]
+  }
+  if(qGraph){
+    qgraph::qgraph(mt,layout="spring", ...=...)
+  }
+  return(mt)
+}
+
+
+
+
+

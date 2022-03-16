@@ -48,7 +48,7 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
     df<-data.frame(t(apply(d,1,ex.prop,method=method)))
   }
   colnames(df)<-c("p2","het","q2","pval","delta")
-  df$dup.stats<-"singleton";df$dup.stats[which(df$pval < 0.05 & df$delta > 0 )]<-"duplicated"
+  df$dup.stats<-"singlet";df$dup.stats[which(df$pval < 0.05 & df$delta > 0 )]<-"duplicated"
   if(plot){
     l<-list(...)
     if(is.null(l$cex)) l$cex=0.2
@@ -62,7 +62,7 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
     plot(a.info$propHet~a.info$propHomAlt, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
          xlab="Proportion of Alternate Homozygotes",ylab="Proportion of Heterozygotes")
     lines((smm<-smooth.spline(df$het~df$q2)),col="blue")
-    legend("bottomright", c("singleton","duplicate","expected"), col = c(cols,"blue"), lty = c(0, 0, 1), lwd = c(0, 0, 1),pch = c(l$pch, l$pch, NA),
+    legend("bottomright", c("singlet","duplicate","expected"), col = c(cols,"blue"), lty = c(0, 0, 1), lwd = c(0, 0, 1),pch = c(l$pch, l$pch, NA),
            cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
   }
   return(data.frame(cbind(a.info[,c(1:3)],df[,c(4:6)]),row.names = NULL))
@@ -149,10 +149,10 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
       for(i in 1:ncol(pp)){
         df[which(pp[,i]<0.05/nrow(pp)),i]<-1
       }
-      pp$dup.stat<-"singleton"
+      pp$dup.stat<-"singlet"
       pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"duplicated"
     } else {
-      pp$dup.stat<-"singleton"
+      pp$dup.stat<-"singlet"
       for(i in 1:ncol(pp)){
         pp$dup.stat[pp[,i]<0.05/nrow(pp)]<-"duplicated"
       }

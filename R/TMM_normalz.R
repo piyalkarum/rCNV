@@ -229,7 +229,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #'
 #' @details This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000. The method "MedR" is median ratio normalization (see publication); QN - quantile normalization (see publication).
 #'
-#' @return Returns a data frame of normalized depth values similar to the output of hetTgen function
+#' @return Returns a list with (AD) a data frame of normalized depth values similar to the output of hetTgen function and (outliers) a list of outlier sample names
 #'
 #' @author Piyal Karunarathne, Qiujie Zhou
 #'
@@ -255,7 +255,7 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim
   cl<-rep("dodgerblue",ncol(tdep))
   ot.ind<-which(colnames(tdep) %in% names(ot))
   cl[ot.ind]<-2
-  if(length(ot)>0){barplot(colSums(tdep,na.rm = T),col=cl)
+  if(length(ot)>0){barplot(colSums(tdep,na.rm = T),col=cl,border=NA,xlab="sample",ylab="total depth")
     message("OUTLIERS DETECTED\nConsider removing the samples:")
     cat(colnames(tdep)[ot.ind])}
   if(method=="TMM" | method=="TMMex"){
@@ -293,7 +293,7 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim
   }
   out<-data.frame(het.table[,c(1:4)],t(out))
   colnames(out)<-colnames(het.table)
-  return(out)
+  return(list(AD=out,outliers=ot.ind))
 }
 
 

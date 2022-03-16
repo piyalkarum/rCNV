@@ -4,12 +4,14 @@
 \alias{ad.correct}
 \title{Correct allele depth values}
 \usage{
-ad.correct(het.table, gt.table = NULL, verbose = TRUE)
+ad.correct(het.table, gt.table = NULL, odd.correct = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{het.table}{allele depth table generated from the function hetTgen}
 
 \item{gt.table}{genotype table generated from the function hetTgen}
+
+\item{odd.correct}{logical, to correct for odd number anomalies in AD values. default TRUE}
 
 \item{verbose}{logical. show progress. Default = TRUE}
 }

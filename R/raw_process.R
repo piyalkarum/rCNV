@@ -373,6 +373,7 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 #'
 #' @param het.table allele depth table generated from the function hetTgen
 #' @param gt.table genotype table generated from the function hetTgen
+#' @param odd.correct logical, to correct for odd number anomalies in AD values. default TRUE
 #' @param verbose logical. show progress. Default = TRUE
 #'
 #' @return returns the coverage corrected allele depth table similar to the output of hetTgen
@@ -381,7 +382,7 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 #'
 #' @export
 
-ad.correct<-function(het.table,gt.table=NULL,verbose=TRUE){
+ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
   if(!is.null(gt.table)){
     if(verbose){
       message("correcting genotype miss-classification")
@@ -417,37 +418,39 @@ ad.correct<-function(het.table,gt.table=NULL,verbose=TRUE){
     rm(Nw.ad)
   }
   X<-data.frame(het.table[,-c(1:4)])
-  if(verbose){
-    message("correcting odd number anomalies")
-    vv<-apply_pb(X,2,function(sam){
-      dl<-lapply(sam,function(y){
-        l<-as.numeric(unlist(strsplit(y,",")))
-        if((sum(l,na.rm=TRUE)%%2)!=0){
-          if(any(l==0)){l}else{
-            l[which.min(l)]<-l[which.min(l)]+1}
-        }
-        return(paste0(l,collapse = ","))
-      })
-    })
-    if(inherits(vv,"list")){
-      vv<-do.call(cbind,vv)
-    }
-  } else {
-    vv<-apply(X,2,function(sam){
-      dl<-lapply(sam,function(y){
-        l<-as.numeric(unlist(strsplit(y,",")))
-        if((sum(l,na.rm=TRUE)%%2)!=0){
-          if(any(l==0)){l}else{
-            l[which.min(l)]<-l[which.min(l)]+1}
-        }
-        return(paste0(l,collapse = ","))
-      })
-    })
-    if(inherits(vv,"list")){
-      vv<-do.call(cbind,vv)
-    }
-  }
-  return(cbind(het.table[,1:4],vv))
+ if(odd.correct){
+   if(verbose){
+     message("correcting odd number anomalies")
+     vv<-apply_pb(X,2,function(sam){
+       dl<-lapply(sam,function(y){
+         l<-as.numeric(unlist(strsplit(y,",")))
+         if((sum(l,na.rm=TRUE)%%2)!=0){
+           if(any(l==0)){l}else{
+             l[which.min(l)]<-l[which.min(l)]+1}
+         }
+         return(paste0(l,collapse = ","))
+       })
+     })
+     if(inherits(vv,"list")){
+       vv<-do.call(cbind,vv)
+     }
+   } else {
+     vv<-apply(X,2,function(sam){
+       dl<-lapply(sam,function(y){
+         l<-as.numeric(unlist(strsplit(y,",")))
+         if((sum(l,na.rm=TRUE)%%2)!=0){
+           if(any(l==0)){l}else{
+             l[which.min(l)]<-l[which.min(l)]+1}
+         }
+         return(paste0(l,collapse = ","))
+       })
+     })
+     if(inherits(vv,"list")){
+       vv<-do.call(cbind,vv)
+     }
+   }
+   return(cbind(het.table[,1:4],vv))
+ } else { return(het.table)}
 }
 
 

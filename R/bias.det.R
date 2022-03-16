@@ -15,13 +15,19 @@ get.pvals<-function(x,df,p.cal){
     p.all<-p.cal[x,1]
     n<-unname(rowSums(snp1het,na.rm = T))
     chi.het<-sum((n*p.sum-snp1het[,2])^2/(n*p.sum),na.rm = T)
+    chi.het.sum<-chi.het
     chi.05<-sum((n*p.05-snp1het[,2])^2/(n*p.05),na.rm = T)
+    chi.0.5.sum<-chi.05
     chi.all<-sum((n*p.all-snp1het[,2])^2/(n*p.all))
+    chi.all.sum<-chi.all
     z <- (n*p.sum-snp1het[,2])/sqrt(n*p.sum*(1-p.sum))
+    z.het.sum<-sum(z,na.rm = T)
     z<-pnorm(sum(z,na.rm = T),0,sqrt(nrow(snp1het)))
     z.05 <- (n*p.05-snp1het[,2])/sqrt(n*p.05*(1-p.05))
+    z.05.sum<-sum(z.05,na.rm = T)
     z.05<-pnorm(sum(z.05,na.rm = T),0,sqrt(nrow(snp1het)))
     z.all<- (n*p.all-snp1het[,2])/sqrt(n*p.all*(1-p.all))
+    z.all.sum<-sum(z.all,na.rm = T)
     z.all<-pnorm(sum(z.all,na.rm = T),0,sqrt(nrow(snp1het)))
     ll<-data.frame(NHet=nrow(snp1het),propHet,medRatio,NHomRef=homref,NHomAlt=homalt,propHomAlt=homalt/Nsamp,Nsamp,
                    pAll=p.all,pHet=p.sum,fis=1-(nrow(snp1het)/(2*(homref+(nrow(snp1het)/2))*(homalt+(nrow(snp1het)/2)))),
@@ -30,12 +36,14 @@ get.pvals<-function(x,df,p.cal){
                    z.all=ifelse(z.all>0.5, (1-z.all)*2, z.all*2),
                    chi.het=pchisq(chi.het,nrow(snp1het)-1,lower.tail=F),
                    chi.05=pchisq(chi.05,nrow(snp1het)-1,lower.tail = F),
-                   chi.all=pchisq(chi.all,nrow(snp1het)-1,lower.tail = F))
+                   chi.all=pchisq(chi.all,nrow(snp1het)-1,lower.tail = F),
+                   z.het.sum,z.05.sum,z.all.sum,chi.het.sum,chi.0.5.sum,chi.all.sum)
   } else {
     ll<-NA
   }
   return(ll)
 }
+
 
 
 #' Get allele info. for duplicate detection
@@ -68,6 +76,8 @@ get.pvals<-function(x,df,p.cal){
 #'
 #' @export
 allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
+  if(!is.list(x.norm)){x.norm<-list(AD=x.norm)}
+  if(is.list(x.norm)){x.norm<-x.norm$AD}
   method=match.arg(method)
   if(is.null(x.norm)){
     x.norm<-cpm.normal(X,method=method,logratioTrim=logratioTrim,sumTrim = sumTrim,Weighting = Weighting,Acutoff = Acutoff,verbose = verbose)
