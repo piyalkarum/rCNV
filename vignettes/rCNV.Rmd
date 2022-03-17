@@ -130,7 +130,7 @@ ad.nor[1:6,1:6]
 Table 1.4.1 Normalized allele depth table
 ```{r, echo=FALSE,cache=FALSE}
 ad.nor<-cpm.normal(ADtable,verbose = F)
-knitr::kable(ad.nor[1:6,1:6],format = "html")
+knitr::kable(ad.nor$AD[1:6,1:6],format = "html")
 ```
 Compare the allele depth values between tables 1.4.0 and 1.4.1.
 

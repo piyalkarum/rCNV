@@ -82,6 +82,12 @@ dup.validate<-function(d.detect,window.size=100){
 #' @param qGraph logical. Plot the network plot based on Vst values (see details)
 #' @param ... additional arguments passed to qgraph
 #'
+#' @importFrom qgraph qgraph
+#' @importFrom grDevices boxplot.stats
+#' @importFrom graphics barplot
+#' @importFrom stats var
+#' @importFrom utils combn
+#'
 #' @return returns a matrix of pairwise Vst values for populations
 #'
 #' @details more details on the qgraph
@@ -96,16 +102,21 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
     AD<-AD[match(id.list,AD$ID),]
   }
   nm<-colnames(data.frame(AD))[-c(1:4)]
-  pop<-unique(pops)
-  tmp<-data.frame(ind=nm,pop=pops,t(AD[,-c(1:4)]))
-
+  pop<-na.omit(unique(pops))
+  AD<-AD[,-c(1:4)]
+  AD[AD==0]<-NA
+  tmp<-data.frame(ind=nm,pop=pops,t(AD))
+  # Vst - for CNVs
+  # Vt-Vs/Vt
+  ## VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size
   Vst<-combn(pop,2,function(x){
-    jj<-na.omit(tmp[tmp$pop==x[1],-c(1:2)])
-    kk<-na.omit(tmp[tmp$pop==x[2],-c(1:2)])
+    jj<-tmp[tmp$pop==x[1],-c(1:2)]
+    kk<-tmp[tmp$pop==x[2],-c(1:2)]
     ft<-ncol(jj)
     ll<-lapply(1:ft, function(y){
-      vt<-var(c(jj[,y],kk[,y]))
-      vs<-(var(jj[,y])*length(jj[,y])+var(kk[,y])*length(kk[,y]))/(length(jj[,y])+length(kk[,y]))
+      vt<-var(c(jj[,y],kk[,y]),na.rm=T)
+      vs<-(var(jj[,y],na.rm=T)*length(na.omit(jj[,y]))+
+             var(kk[,y],na.rm=T)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
       return((vt-vs)/vt)
     })
     vst<-mean(unlist(ll),na.rm = T)
@@ -117,7 +128,7 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
     mt[colnames(Vst[[i]]),rownames(Vst[[i]])]<-Vst[[i]]
   }
   if(qGraph){
-    qgraph::qgraph(mt,layout="spring", ...=...)
+    qgraph::qgraph(1/mt,layout="spring", ...=...)
   }
   return(mt)
 }

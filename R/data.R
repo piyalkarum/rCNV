@@ -29,3 +29,16 @@
 #' @references McKinney et al. 2017
 #'
 'ADtable'
+
+
+#' Normalized allele depth example data
+#'
+#' normalized example SNPs data of Picea abies from Chen et al. 2019
+#' The data has been normalized with TMM
+#'
+#' @docType data
+#' @usage  data(ADnorm)
+#'
+'ADnorm'
+
+

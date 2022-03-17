@@ -5,7 +5,7 @@
 \alias{alleleINF}
 \title{Allele info example data}
 \format{
-An object of class \code{data.frame} with 5388 rows and 19 columns.
+An object of class \code{data.frame} with 2857 rows and 25 columns.
 }
 \source{
 \href{url}{dataset name}

@@ -49,7 +49,7 @@ print("to be added")
 }
 \examples{
 data(ADtable)
-AI<-allele.info(ADtable)
+AI<-allele.info(ADtable,x.norm=ADnorm)
 
 }
 \author{
