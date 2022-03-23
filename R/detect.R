@@ -28,9 +28,9 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
 #' @examples
-#' data(alleleINF)
+#' \dontrun{data(alleleINF)
 #' AI <- alleleINF
-#' duplicates<-sig.hets(AI,plot=TRUE)
+#' duplicates<-sig.hets(AI,plot=TRUE)}
 #'
 #' @importFrom grDevices col2rgb rgb
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline chisq.test
@@ -83,9 +83,9 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' data(alleleINF)
+#' \dontrun{data(alleleINF)
 #' DD<-dupGet(alleleINF,plot=FALSE)
-#' dup.plot(DD)
+#' dup.plot(DD)}
 #'
 #' @export
 dup.plot<-function(ds,...){
@@ -127,8 +127,8 @@ dup.plot<-function(ds,...){
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' data(alleleINF)
-#' DD<-dupGet(alleleINF)
+#' \dontrun{data(alleleINF)
+#' DD<-dupGet(alleleINF)}
 #'
 #' @export
 dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),intersection=FALSE,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){

@@ -18,9 +18,9 @@ plots duplicates on proportion of heterozygotes vs allele median ratio
 The function plots detected duplicates from functions "sig.snps", and "dup.detect"
 }
 \examples{
-data(alleleINF)
+\dontrun{data(alleleINF)
 DD<-dupGet(alleleINF,plot=FALSE)
-dup.plot(DD)
+dup.plot(DD)}
 
 }
 \author{

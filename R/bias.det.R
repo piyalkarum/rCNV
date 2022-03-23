@@ -71,8 +71,8 @@ get.pvals<-function(x,df,p.cal){
 #' @author Piyal Karunarathne, Pascal Milesi, Qiujie Zhou
 #'
 #' @examples
-#' data(ADtable)
-#' AI<-allele.info(ADtable,x.norm=ADnorm)
+#' \dontrun{data(ADtable)
+#' AI<-allele.info(ADtable,x.norm=ADnorm)}
 #'
 #' @export
 allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){

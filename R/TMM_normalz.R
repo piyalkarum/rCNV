@@ -237,8 +237,8 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
 #'
 #' @examples
-#' data(ADtable)
-#' ADnormalized<-cpm.normal(ADtable)
+#' \dontrun{data(ADtable)
+#' ADnormalized<-cpm.normal(ADtable)}
 #'
 #'
 #' @export

@@ -39,8 +39,8 @@ This function outputs the normalized depth values separately for each allele, ca
 This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000. The method "MedR" is median ratio normalization (see publication); QN - quantile normalization (see publication).
 }
 \examples{
-data(ADtable)
-ADnormalized<-cpm.normal(ADtable)
+\dontrun{data(ADtable)
+ADnormalized<-cpm.normal(ADtable)}
 
 
 }

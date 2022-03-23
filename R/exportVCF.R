@@ -28,9 +28,9 @@
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path)
-#' exportVCF(vcf,"../exVcf.vcf")
+#' exportVCF(vcf,"../exVcf.vcf")}
 #'
 #' @export
 exportVCF<-function(out.vcf, out.path, compress=TRUE){

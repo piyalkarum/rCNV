@@ -79,7 +79,7 @@ plot.svd <- function(MR,cols=c("red","cyan")){
 #' @references <add reference>
 #'
 #' @examples
-#' alleles <- sim.als(n=200,nrun=1000,res=0.001,plot=TRUE)
+#' \dontrun{alleles <- sim.als(n=200,nrun=1000,res=0.001,plot=TRUE)}
 #'
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' @importFrom graphics legend lines
@@ -133,7 +133,7 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #' @references <add reference>
 #'
 #' @examples
-#' depthVsSample(cov.len=50,sam.len=100)
+#' \dontrun{depthVsSample(cov.len=50,sam.len=100)}
 #'
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' @importFrom grDevices as.raster colorRampPalette

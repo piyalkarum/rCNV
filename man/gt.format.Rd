@@ -22,11 +22,11 @@ returns a list with formated genotype data: $hor - snps in horizontal format (tw
 This function generates necessary genotype count formats for BayEnv and BayPass with a subset of SNPs
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
 het.table<-hetTgen(vcf,"GT")
 info<-unique(substr(colnames(het.table)[-c(1:3)],1,8))
-GT<-gt.format(het.table,info)
+GT<-gt.format(het.table,info)}
 
 }
 \author{

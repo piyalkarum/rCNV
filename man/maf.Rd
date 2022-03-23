@@ -19,6 +19,10 @@ a data frame or a list
 \description{
 A function to remove the alleles with minimum allele frequency and keep only a biallelic matrix
 }
+\examples{
+mf<-maf(ADtable)
+
+}
 \author{
 Piyal Karunarathne
 }

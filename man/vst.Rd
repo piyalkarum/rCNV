@@ -27,7 +27,12 @@ This function calculates Vst (......) for populations given a list of duplicated
 more details on the qgraph
 }
 \examples{
-#to be added
+\dontrun{data(alleleINF)
+data(ADtable)
+DD<-dupGet(alleleINF)
+ds<-DD[DD$dup.stat=="duplicated",]
+ad<-ADtable[match(paste0(ds$CHROM,".",ds$POS),paste0(ADtable$CHROM,".",ADtable$POS)),]
+vst(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 
 }
 \author{

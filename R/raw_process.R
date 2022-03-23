@@ -87,6 +87,9 @@ gg<-function(x){
 #'
 #' @author Piyal Karunarathne
 #'
+#' @examples
+#' mf<-maf(ADtable)
+#'
 #' @export
 maf<-function(h.table,AD=TRUE,verbose=TRUE){
   htab<-h.table[,-c(1:3)]
@@ -300,11 +303,11 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
 #' het.table<-hetTgen(vcf,"GT")
 #' info<-unique(substr(colnames(het.table)[-c(1:3)],1,8))
-#' GT<-gt.format(het.table,info)
+#' GT<-gt.format(het.table,info)}
 #'
 #' @export
 gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
@@ -379,6 +382,9 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 #' @return returns the coverage corrected allele depth table similar to the output of hetTgen
 #'
 #' @author Piyal Karunarathne
+#'
+#' @examples
+#' adc<-ad.correct(ADtable)
 #'
 #' @export
 

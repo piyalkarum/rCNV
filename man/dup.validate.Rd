@@ -17,9 +17,6 @@ a data frame of scaffold names and their average presence in the scaffold.
 \description{
 This function will validate the detected duplicated-SNPs using a moving window approach (see details)
 }
-\examples{
-print("to be added")
-}
 \author{
 Piyal Karunarathne
 }

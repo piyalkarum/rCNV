@@ -39,8 +39,8 @@ Detect duplicated snps using excess of heterozygotes (alleles that do not follow
 to be added
 }
 \examples{
-data(alleleINF)
-DD<-dupGet(alleleINF)
+\dontrun{data(alleleINF)
+DD<-dupGet(alleleINF)}
 
 }
 \author{

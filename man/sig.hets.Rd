@@ -33,9 +33,9 @@ het expected
 This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
 }
 \examples{
-data(alleleINF)
+\dontrun{data(alleleINF)
 AI <- alleleINF
-duplicates<-sig.hets(AI,plot=TRUE)
+duplicates<-sig.hets(AI,plot=TRUE)}
 
 }
 \author{

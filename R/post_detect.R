@@ -19,8 +19,6 @@ wind<-function(xx,dd){
 #'
 #' @author Piyal Karunarathne
 #'
-#' @examples
-#' print("to be added")
 #' @export
 dup.validate<-function(d.detect,window.size=100){
   nm<-unique(d.detect$Scaffold)
@@ -94,7 +92,13 @@ dup.validate<-function(d.detect,window.size=100){
 #'
 #' @author Piyal Karunarathne
 #'
-#' @examples #to be added
+#' @examples
+#' \dontrun{data(alleleINF)
+#' data(ADtable)
+#' DD<-dupGet(alleleINF)
+#' ds<-DD[DD$dup.stat=="duplicated",]
+#' ad<-ADtable[match(paste0(ds$CHROM,".",ds$POS),paste0(ADtable$CHROM,".",ADtable$POS)),]
+#' vst(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 #'
 #' @export
 vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
