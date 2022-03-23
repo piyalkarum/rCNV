@@ -43,5 +43,6 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--ignore-vignettes", "--no-build-vignettes"), build_args = c("--no-manual", "--ignore-vignettes", "--no-build-vignettes"), error_on = "error")
       - uses: r-lib/actions/check-r-package@v1
+      - name: checks
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--ignore-vignettes", "--no-build-vignettes"), build_args = c("--no-manual", "--ignore-vignettes", "--no-build-vignettes"), error_on = "error")
