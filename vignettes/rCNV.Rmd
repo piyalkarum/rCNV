@@ -61,8 +61,9 @@ vcf$vcf[1:6,c(1:7,9,10)]
 The following example demonstrates such filtering on Parrot Fish data from *McKinney et al. (2017)*.
 
 ```{r,echo=TRUE,eval=TRUE,fig.dim=c(6,4)}
-download.file("https://drive.google.com/uc?export=download&id=141-RRGKJaioGWuJxBOAz3D-nUmNI36LZ","Parrotfish_sequenceReads.vcf.gz",method="wget", quiet = T)
-parrot<-readVCF("Parrotfish_sequenceReads.vcf.gz",verbose=F)
+fl<-paste0(tempdir(),"Parrotfish_sequenceReads.vcf.gz")
+download.file("https://drive.google.com/uc?export=download&id=141-RRGKJaioGWuJxBOAz3D-nUmNI36LZ",fl,method="wget", quiet = T)
+parrot<-readVCF(fl,verbose=F)
 mss<-get.miss(parrot,verbose = F, plot=F)
 ```
 This generates list with missing percentage tables for SNPs and samples and the Fig 1.2 where missing percentages are plotted. Users can also manually plot these percentages on their discretion. Further, if desired one type of missing percentage (i.e. per sample or per SNP) can calculated separately by specifying the argument *type=* in the *get.miss* function. See the help page of *get.miss* for more information.
