@@ -41,6 +41,31 @@ lapply_pb <- function(X, FUN, ...)
 
 #https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
 
+combn_pb <- function(X, size, FUN, ...)
+{
+  env <- environment()
+  n<-length(X)
+  r<-size
+  pb_Total <- factorial(n)/(factorial(r)*factorial(n-r))
+  counter <- 0
+  pb <- txtProgressBar(min = 0, max = pb_Total,
+                       style = 3)
+
+  wrapper <- function(...)
+  {
+    curVal <- get("counter", envir = env)
+    assign("counter", curVal +1 ,envir= env)
+    setTxtProgressBar(get("pb", envir= env),
+                      curVal +1)
+    FUN(...)
+  }
+  res <- combn(X, size, wrapper, ...)
+  close(pb)
+  res
+}
+
+
+
 #(extra) generate colors for Rmarkdown docs [extracted from Rmarkdown guide book]
 colorize <- function(x, color) {
   if (knitr::is_latex_output()) {

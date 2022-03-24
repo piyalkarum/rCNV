@@ -108,12 +108,16 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
   nm<-colnames(data.frame(AD))[-c(1:4)]
   pop<-na.omit(unique(pops))
   AD<-AD[,-c(1:4)]
+  if(is.character(AD[1,1])){
+    tm<-apply(AD,2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+  }
+  AD<-tm
   AD[AD==0]<-NA
   tmp<-data.frame(ind=nm,pop=pops,t(AD))
   # Vst - for CNVs
   # Vt-Vs/Vt
   ## VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size
-  Vst<-combn(pop,2,function(x){
+  Vst<-combn_pb(pop,2,function(x){
     jj<-tmp[tmp$pop==x[1],-c(1:2)]
     kk<-tmp[tmp$pop==x[2],-c(1:2)]
     ft<-ncol(jj)
@@ -136,7 +140,6 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
   }
   return(mt)
 }
-
 
 
 
