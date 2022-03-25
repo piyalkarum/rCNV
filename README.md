@@ -5,7 +5,7 @@
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
-    ## # rCNV <img src='man/figures/logo.png' align='right' height='139' />
+# rCNV <img src='man/figures/logo.png' align='right' height='139' />
 
 #rCNV: An R package for detecting copy number variants from SNPs data
 <span style="color: dodgerblue;">Piyal Karunarathne, Qiujie Zhou, and
