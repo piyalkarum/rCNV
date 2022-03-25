@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rCNV</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,9 @@
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -67,7 +70,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Detecting CNV from SNPs: a quick guide to rCNV</h1>
                         <h4 data-toc-skip class="author">Piyal Karunarathne</h4>
             
-            <h4 data-toc-skip class="date">Last updated: 12 January, 2022</h4>
+            <h4 data-toc-skip class="date">Last updated: 25 March, 2022</h4>
       
       
       <div class="d-none name"><code>rCNV.Rmd</code></div>
@@ -126,7 +129,10 @@
 <div class="line-block">      The raw VCF files often contain missing data for both samples and SNPs. If retained, these samples and SNPs can introduce false positives and negatives to the analysis. Therefore, they must be removed based on a missing percentage. The function <em>get.miss()</em> determines the missing percentages in samples and SNPs and graphically visualize the missing ranges with 5% quantile values. We recommend removing samples and SNPs with missing percentages higher than 50%.</div>
 <p>The following example demonstrates such filtering on Parrot Fish data from <em>McKinney et al. (2017)</em>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">parrot</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/readVCF.html">readVCF</a></span><span class="op">(</span><span class="st">"../testDATA/Parrotfish_sequenceReads.vcf"</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co">#download the parrotfish data file from the following link to your working directory if you do not have the github folder</span>
+<span class="co">#https://drive.google.com/uc?export=download&amp;id=141-RRGKJaioGWuJxBOAz3D-nUmNI36LZ</span>
+<span class="va">fl</span><span class="op">&lt;-</span><span class="st">"../testDATA/Parrotfish_sequenceReads.vcf.gz"</span>
+<span class="va">parrot</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/readVCF.html">readVCF</a></span><span class="op">(</span><span class="va">fl</span>,verbose<span class="op">=</span><span class="cn">F</span><span class="op">)</span>
 <span class="va">mss</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/get.miss.html">get.miss</a></span><span class="op">(</span><span class="va">parrot</span>,verbose <span class="op">=</span> <span class="cn">F</span>, plot<span class="op">=</span><span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p>This generates list with missing percentage tables for SNPs and samples and the Fig 1.2 where missing percentages are plotted. Users can also manually plot these percentages on their discretion. Further, if desired one type of missing percentage (i.e. per sample or per SNP) can calculated separately by specifying the argument <em>type=</em> in the <em>get.miss</em> function. See the help page of <em>get.miss</em> for more information.</p>
 <div class="figure">
@@ -191,152 +197,152 @@ POS
 ID
 </th>
 <th style="text-align:left;">
+ALT
+</th>
+<th style="text-align:left;">
 KKOGR07_0005_combo
 </th>
 <th style="text-align:left;">
 KKOGR07_0006
 </th>
-<th style="text-align:left;">
-KKOGR07_0007
-</th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-6729
+7452
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-637031
+705339
 </td>
 <td style="text-align:right;">
-60972
+67808
 </td>
 <td style="text-align:left;">
-90,0
+A
 </td>
 <td style="text-align:left;">
-60,0
+45,0
 </td>
 <td style="text-align:left;">
-53,0
+34,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-2053
+18079
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-193727
+769896
 </td>
 <td style="text-align:right;">
-17336
+80692
 </td>
 <td style="text-align:left;">
-66,0
+T
 </td>
 <td style="text-align:left;">
-53,0
+16,0
 </td>
 <td style="text-align:left;">
-38,0
+15,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-16090
+9793
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-582066
+926883
 </td>
 <td style="text-align:right;">
-58027
+109573
 </td>
 <td style="text-align:left;">
-71,61
+A
 </td>
 <td style="text-align:left;">
-45,30
+56,0
 </td>
 <td style="text-align:left;">
-45,35
+42,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9192
+11755
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-870025
+172395
 </td>
 <td style="text-align:right;">
-87830
+16363
 </td>
 <td style="text-align:left;">
-48,0
+C
 </td>
 <td style="text-align:left;">
-44,0
+61,67
 </td>
 <td style="text-align:left;">
-36,0
+40,34
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-18180
+10122
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-779370
+18102
 </td>
 <td style="text-align:right;">
-82011
+1703
 </td>
 <td style="text-align:left;">
-62,24
+A
 </td>
 <td style="text-align:left;">
-41,14
+75,0
 </td>
 <td style="text-align:left;">
-84,0
+51,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-15991
+816
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-572766
+76725
 </td>
 <td style="text-align:right;">
-57054
+6991
 </td>
 <td style="text-align:left;">
-49,52
+C
 </td>
 <td style="text-align:left;">
-35,25
+66,41
 </td>
 <td style="text-align:left;">
-43,24
+20,20
 </td>
 </tr>
 </tbody>
@@ -345,7 +351,11 @@ un
 <code class="sourceCode R"><span class="co">#normalize depth table with cpm.normal()</span>
 <span class="va">ad.nor</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/cpm.normal.html">cpm.normal</a></span><span class="op">(</span><span class="va">ad.tab</span><span class="op">)</span>
 <span class="va">ad.nor</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span></code></pre></div>
-Table 1.4.1 Normalized allele depth table
+<p>Table 1.4.1 Normalized allele depth table</p>
+<pre><code><span class="co">#&gt; OUTLIERS DETECTED</span>
+<span class="co">#&gt; Consider removing the samples:</span></code></pre>
+<p><img src="rCNV_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<pre><code><span class="co">#&gt; KKOGR07_0030 KKOGR07_0043_combo KKOKT10_0069</span></code></pre>
 <table class="table">
 <thead><tr>
 <th style="text-align:left;">
@@ -360,152 +370,152 @@ POS
 ID
 </th>
 <th style="text-align:left;">
+ALT
+</th>
+<th style="text-align:left;">
 KKOGR07_0005_combo
 </th>
 <th style="text-align:left;">
 KKOGR07_0006
 </th>
-<th style="text-align:left;">
-KKOGR07_0007
-</th>
 </tr></thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-6729
+7452
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-637031
+705339
 </td>
 <td style="text-align:right;">
-60972
+67808
 </td>
 <td style="text-align:left;">
-251.02,0
+A
 </td>
 <td style="text-align:left;">
-259.74,0
+228.93,0
 </td>
 <td style="text-align:left;">
-235.35,0
+268.65,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-2053
+18079
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-193727
+769896
 </td>
 <td style="text-align:right;">
-17336
+80692
 </td>
 <td style="text-align:left;">
-184.08,0
+T
 </td>
 <td style="text-align:left;">
-229.44,0
+81.4,0
 </td>
 <td style="text-align:left;">
-168.74,0
+118.52,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-16090
+9793
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-582066
+926883
 </td>
 <td style="text-align:right;">
-58027
+109573
 </td>
 <td style="text-align:left;">
-198.03,170.14
+A
 </td>
 <td style="text-align:left;">
-194.8,129.87
+284.89,0
 </td>
 <td style="text-align:left;">
-199.83,155.42
+331.87,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9192
+11755
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-870025
+172395
 </td>
 <td style="text-align:right;">
-87830
+16363
 </td>
 <td style="text-align:left;">
-133.88,0
+C
 </td>
 <td style="text-align:left;">
-190.48,0
+310.32,340.85
 </td>
 <td style="text-align:left;">
-159.86,0
+316.06,268.65
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-18180
+10122
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-779370
+18102
 </td>
 <td style="text-align:right;">
-82011
+1703
 </td>
 <td style="text-align:left;">
-172.93,66.94
+A
 </td>
 <td style="text-align:left;">
-177.49,60.61
+381.55,0
 </td>
 <td style="text-align:left;">
-373.01,0
+402.98,0
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-15991
+816
 </td>
 <td style="text-align:left;">
 un
 </td>
 <td style="text-align:right;">
-572766
+76725
 </td>
 <td style="text-align:right;">
-57054
+6991
 </td>
 <td style="text-align:left;">
-136.67,145.03
+C
 </td>
 <td style="text-align:left;">
-151.51,108.22
+335.76,208.58
 </td>
 <td style="text-align:left;">
-190.95,106.58
+158.03,158.03
 </td>
 </tr>
 </tbody>
@@ -525,30 +535,37 @@ un
 <p>Where N is the total depth summed for all heterozygotes, N<sub>A</sub> is the depth of allele A summed for all the heterozygotes, <em>P</em> is the occurrence probability of allele A in heterozygotes - for unbiased sequencing this is 0.5. <em>allele.info()</em> function calculates this for both 0.5 and biased probability using the ratio between reference and alternative alleles.</p>
 <p>The Chi-squared values per SNP per sample were calculated using the following equation: <img src="eq.chi.svg"></p>
 <p>Where <em>N<sub>jk</sub></em> is the total depth value of SNP <em>k</em> for individual <em>j</em>, <em>D<sub>jk</sub></em> is the depth value of the alternative allele of SNP <em>k</em>, <em>P<sub>j</sub></em> is the occurrence probability of alternative allele at SNP <em>k</em> in heterozygotes - in unbiased sequencing, this is 0.5.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">A.info</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/allele.info.html">allele.info</a></span><span class="op">(</span><span class="va">ADtable</span>, plot.allele.cov <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">A.info</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">#&gt;       CHROM    POS    ID NHet    propHet  medRatio NHomRef NHomAlt  propHomAlt</span>
-<span class="co">#&gt; 6729     un 637031 60972   12 0.08163265 0.4948980     135       0 0.000000000</span>
-<span class="co">#&gt; 2053     un 193727 17336   12 0.08275862 0.5222816     133       0 0.000000000</span>
-<span class="co">#&gt; 16090    un 582066 58027  144 1.00000000 0.4594305       0       0 0.000000000</span>
-<span class="co">#&gt; 9192     un 870025 87830   16 0.11111111 0.5024259     127       1 0.006944444</span>
-<span class="co">#&gt; 18180    un 779370 82011  106 0.73611111 0.3457471      36       2 0.013888889</span>
-<span class="co">#&gt; 17562    un 720913 73498   41 0.27891156 0.5102041     103       3 0.020408163</span>
-<span class="co">#&gt;       Nsamp      pAll      pHet       fis     z.het         z.05        z.all</span>
-<span class="co">#&gt; 6729    147 0.5066782 0.5357998 0.9929078 0.8455573 1.057404e-01 2.006324e-01</span>
-<span class="co">#&gt; 2053    145 0.5477796 0.5310504 0.9928058 0.8615190 2.338438e-01 3.609743e-01</span>
-<span class="co">#&gt; 16090   144 0.4691747 0.4691747 0.9861111 0.6496651 1.088019e-13 6.496651e-01</span>
-<span class="co">#&gt; 9192    144 0.4846198 0.4585085 0.9934156 0.7230089 6.684452e-02 3.063507e-01</span>
-<span class="co">#&gt; 18180   144 0.4132400 0.3961386 0.9891726 0.3183991 0.000000e+00 5.059653e-05</span>
-<span class="co">#&gt; 17562   147 0.5028998 0.5082751 0.9929365 0.8730083 5.711841e-01 7.551443e-01</span>
-<span class="co">#&gt;            chi.het       chi.05      chi.all</span>
-<span class="co">#&gt; 6729  3.609200e-01 1.710481e-01 2.140890e-01</span>
-<span class="co">#&gt; 2053  2.435999e-01 1.755278e-01 2.405805e-01</span>
-<span class="co">#&gt; 16090 2.057621e-01 2.557959e-02 2.057621e-01</span>
-<span class="co">#&gt; 9192  6.004367e-02 5.024685e-02 6.257303e-02</span>
-<span class="co">#&gt; 18180 1.642723e-54 2.559052e-71 7.688667e-53</span>
-<span class="co">#&gt; 17562 4.876925e-02 4.037911e-02 4.369391e-02</span></code></pre>
+<pre><code><span class="co">#&gt;       CHROM    POS     ID NHet    propHet  medRatio NHomRef NHomAlt propHomAlt</span>
+<span class="co">#&gt; 7452     un 705339  67808    9 0.08653846 0.5000000      95       0 0.00000000</span>
+<span class="co">#&gt; 18079    un 769896  80692   41 0.40594059 0.5000000      48      12 0.11881188</span>
+<span class="co">#&gt; 9793     un 926883 109573   54 0.51923077 0.5096539      34      16 0.15384615</span>
+<span class="co">#&gt; 10122    un  18102   1703    8 0.07619048 0.5174242      97       0 0.00000000</span>
+<span class="co">#&gt; 816      un  76725   6991   49 0.47115385 0.4897959      35      20 0.19230769</span>
+<span class="co">#&gt; 17482    un 713297  72437   46 0.43809524 0.5217593      52       7 0.06666667</span>
+<span class="co">#&gt;       Nsamp      pAll      pHet       fis     z.het      z.05     z.all</span>
+<span class="co">#&gt; 7452    104 0.5516892 0.5155351 0.9899497 0.9853781 0.5373322 0.1669619</span>
+<span class="co">#&gt; 18079   101 0.5082649 0.4825144 0.9907917 0.9531631 0.3160515 0.1473500</span>
+<span class="co">#&gt; 9793    104 0.5043312 0.4939215 0.9897064 0.6534022 0.8933630 0.5826420</span>
+<span class="co">#&gt; 10122   105 0.4615933 0.4916555 0.9900990 0.7967226 0.5758174 0.4050012</span>
+<span class="co">#&gt; 816     104 0.5007026 0.5002302 0.9907469 0.6409348 0.6562743 0.6099265</span>
+<span class="co">#&gt; 17482   105 0.5086655 0.5166121 0.9897778 0.9829558 0.1245431 0.4556636</span>
+<span class="co">#&gt;         chi.het    chi.05   chi.all   z.het.sum    z.05.sum z.all.sum</span>
+<span class="co">#&gt; 7452  0.6129256 0.5563662 0.5912685 -0.05498053  -1.8505568  4.146095</span>
+<span class="co">#&gt; 18079 0.8685639 0.8845710 0.8829935  0.37608802   6.4198038  9.277843</span>
+<span class="co">#&gt; 9793  0.8196782 0.8368758 0.8426532 -3.29976321   0.9850626  4.038202</span>
+<span class="co">#&gt; 10122 0.2941631 0.3026659 0.2062024  0.72857723   1.5825180 -2.355295</span>
+<span class="co">#&gt; 816   0.6488278 0.6486573 0.6491177  3.26474533   3.1154399  3.571248</span>
+<span class="co">#&gt; 17482 0.7487560 0.6250022 0.7040393 -0.14489338 -10.4175272 -5.059661</span>
+<span class="co">#&gt;       chi.het.sum chi.0.5.sum chi.all.sum</span>
+<span class="co">#&gt; 7452     6.306639    6.818223    6.501254</span>
+<span class="co">#&gt; 18079   30.235077   29.656595   29.715671</span>
+<span class="co">#&gt; 9793    43.540437   42.933241   42.721388</span>
+<span class="co">#&gt; 10122    8.455278    8.350960    9.700308</span>
+<span class="co">#&gt; 816     43.717658   43.721894   43.710452</span>
+<span class="co">#&gt; 17482   38.324345   41.405597   39.483216</span></code></pre>
 <p>In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the <em>allele.info()</em> output. See below. ADD MORE ABOUT THE PROBE BIASE PLOTS****</p>
 </div>
 <div class="section level3">
@@ -559,23 +576,23 @@ un
 <div class="line-block">  The proportion of heterozygotes in a population according to HWE is 2pq where as homozygotes is q<sup>2</sup>. In duplicates heterozygozity is expected to be higher indicating excess of heterozygosity and thus flagged as putatively-duplicated.</div>
 <div class="line-block">  In non-duplicated alleles (singlets), median allele ratio must be ~0.5, however, in duplicates it varies between 1:3 and 3:1. These SNP deviants are also flagged as putative duplicates. To determine the deviation, we use the Z-score values and Chi-square significance calculated in the previous step.</div>
 <div class="line-block">  **NOTE: users can select the occurrence probability of the alternative allele based on the sequencing method and the probe bias therein.</div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">duplicates</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.all"</span>,<span class="st">"chi.all"</span><span class="op">)</span>,plot<span class="op">=</span><span class="cn">TRUE</span>,verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">duplicates</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">#&gt;       CHROM    POS    ID NHet    propHet  medRatio NHomRef NHomAlt  propHomAlt</span>
-<span class="co">#&gt; 6729     un 637031 60972   12 0.08163265 0.4948980     135       0 0.000000000</span>
-<span class="co">#&gt; 2053     un 193727 17336   12 0.08275862 0.5222816     133       0 0.000000000</span>
-<span class="co">#&gt; 16090    un 582066 58027  144 1.00000000 0.4594305       0       0 0.000000000</span>
-<span class="co">#&gt; 9192     un 870025 87830   16 0.11111111 0.5024259     127       1 0.006944444</span>
-<span class="co">#&gt; 18180    un 779370 82011  106 0.73611111 0.3457471      36       2 0.013888889</span>
-<span class="co">#&gt; 17562    un 720913 73498   41 0.27891156 0.5102041     103       3 0.020408163</span>
-<span class="co">#&gt;       Nsamp   dup.stat</span>
-<span class="co">#&gt; 6729    147  singleton</span>
-<span class="co">#&gt; 2053    145  singleton</span>
-<span class="co">#&gt; 16090   144 duplicated</span>
-<span class="co">#&gt; 9192    144  singleton</span>
-<span class="co">#&gt; 18180   144 duplicated</span>
-<span class="co">#&gt; 17562   147  singleton</span></code></pre>
+<pre><code><span class="co">#&gt;       CHROM    POS     ID NHet    propHet  medRatio NHomRef NHomAlt propHomAlt</span>
+<span class="co">#&gt; 7452     un 705339  67808    9 0.08653846 0.5000000      95       0 0.00000000</span>
+<span class="co">#&gt; 18079    un 769896  80692   41 0.40594059 0.5000000      48      12 0.11881188</span>
+<span class="co">#&gt; 9793     un 926883 109573   54 0.51923077 0.5096539      34      16 0.15384615</span>
+<span class="co">#&gt; 10122    un  18102   1703    8 0.07619048 0.5174242      97       0 0.00000000</span>
+<span class="co">#&gt; 816      un  76725   6991   49 0.47115385 0.4897959      35      20 0.19230769</span>
+<span class="co">#&gt; 17482    un 713297  72437   46 0.43809524 0.5217593      52       7 0.06666667</span>
+<span class="co">#&gt;       Nsamp dup.stat</span>
+<span class="co">#&gt; 7452    104  singlet</span>
+<span class="co">#&gt; 18079   101  singlet</span>
+<span class="co">#&gt; 9793    104  singlet</span>
+<span class="co">#&gt; 10122   105  singlet</span>
+<span class="co">#&gt; 816     104  singlet</span>
+<span class="co">#&gt; 17482   105  singlet</span></code></pre>
 <p>The function also plots the putative duplicates with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of <em>dupGet()</em> using <em>dup.plot()</em> fucntion.</p>
 <div class="figure">
 <img src="dupPlot.png" width="400" alt=""><p class="caption">Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates</p>

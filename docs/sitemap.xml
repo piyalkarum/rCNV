@@ -19,7 +19,16 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/news/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ADnorm.html</loc>
+  </url>
+  <url>
     <loc>/reference/ADtable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ad.correct.html</loc>
   </url>
   <url>
     <loc>/reference/allele.freq.html</loc>
@@ -64,6 +73,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/maf.html</loc>
+  </url>
+  <url>
     <loc>/reference/norm.fact.html</loc>
   </url>
   <url>
@@ -80,5 +92,8 @@
   </url>
   <url>
     <loc>/reference/vcf.stat.html</loc>
+  </url>
+  <url>
+    <loc>/reference/vst.html</loc>
   </url>
 </urlset>
