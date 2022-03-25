@@ -15,6 +15,8 @@ wind<-function(xx,dd){
 #' @param d.detect a data frame of detected SNPs of duplicates/singletons (output of dup.detect)
 #' @param window.size numerical. a single value of the desired moving window size (default=100 bp)
 #'
+#' @details This function is still in development for non-mapped reference sequences
+#'
 #' @return a data frame of scaffold names and their average presence in the scaffold.
 #'
 #' @author Piyal Karunarathne
@@ -70,9 +72,9 @@ dup.validate<-function(d.detect,window.size=100){
 }
 
 
-#' Calculate population wise Vst
+#' Calculate population-wise Vst
 #'
-#' This function calculates Vst (......) for populations given a list of duplicated loci
+#' This function calculates Vst (variant fixation index) for populations given a list of duplicated loci
 #'
 #' @param AD data frame of total allele depth values of (duplicated if id.list is not provided) SNPs
 #' @param pops character. A vector of population names for each individual. Must be the same length as the number of samples in AD
@@ -88,7 +90,10 @@ dup.validate<-function(d.detect,window.size=100){
 #'
 #' @return returns a matrix of pairwise Vst values for populations
 #'
-#' @details more details on the qgraph
+#' @details See qgraph help for details on qgraph output
+#'
+#' @references
+#' Redon, Richard, et al. "Global variation in copy number in the human genome." nature 444.7118 (2006): 444-454
 #'
 #' @author Piyal Karunarathne
 #'

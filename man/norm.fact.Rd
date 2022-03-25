@@ -30,7 +30,7 @@ norm.fact(
 Returns a numerical vector of normalization factors for each sample
 }
 \description{
-This function calculates the normalization factor for each sample using trimmed mean of M-values of sample libraries. See details.
+This function calculates the normalization factor for each sample using different methods. See details.
 }
 \details{
 Originally described for normalization of RNA sequences (Robinson & Oshlack 2010), this function computes normalization (scaling) factors to convert observed library sizes into effective library sizes. It uses the method trimmed means of M-values proposed by Robinson & Oshlack (2010). See the original publication and edgeR package for more information.

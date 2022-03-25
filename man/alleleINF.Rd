@@ -8,7 +8,7 @@
 An object of class \code{data.frame} with 2857 rows and 25 columns.
 }
 \source{
-\href{url}{dataset name}
+\href{https://zenodo.org/record/5025423#.Yj2XKRDMLyQ}{Chinook Salmon sequence reads McKinney et al. 2017}
 }
 \usage{
 data(alleleINF)

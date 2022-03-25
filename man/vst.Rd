@@ -2,7 +2,7 @@
 % Please edit documentation in R/post_detect.R
 \name{vst}
 \alias{vst}
-\title{Calculate population wise Vst}
+\title{Calculate population-wise Vst}
 \usage{
 vst(AD, pops, id.list = NULL, qGraph = TRUE, ...)
 }
@@ -21,10 +21,10 @@ vst(AD, pops, id.list = NULL, qGraph = TRUE, ...)
 returns a matrix of pairwise Vst values for populations
 }
 \description{
-This function calculates Vst (......) for populations given a list of duplicated loci
+This function calculates Vst (variant fixation index) for populations given a list of duplicated loci
 }
 \details{
-more details on the qgraph
+See qgraph help for details on qgraph output
 }
 \examples{
 \dontrun{data(alleleINF)
@@ -34,6 +34,9 @@ ds<-DD[DD$dup.stat=="duplicated",]
 ad<-ADtable[match(paste0(ds$CHROM,".",ds$POS),paste0(ADtable$CHROM,".",ADtable$POS)),]
 vst(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 
+}
+\references{
+Redon, Richard, et al. "Global variation in copy number in the human genome." nature 444.7118 (2006): 444-454
 }
 \author{
 Piyal Karunarathne

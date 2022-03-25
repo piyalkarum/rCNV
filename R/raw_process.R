@@ -65,7 +65,6 @@ combn_pb <- function(X, size, FUN, ...)
 }
 
 
-
 #(extra) generate colors for Rmarkdown docs [extracted from Rmarkdown guide book]
 colorize <- function(x, color) {
   if (knitr::is_latex_output()) {
@@ -409,7 +408,7 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' adc<-ad.correct(ADtable)
+#' \dontrun{adc<-ad.correct(ADtable)}
 #'
 #' @export
 

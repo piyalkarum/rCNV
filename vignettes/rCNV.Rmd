@@ -13,6 +13,9 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+---
+# rmarkdown::html_vignette
+---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(

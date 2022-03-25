@@ -36,7 +36,7 @@ Returns a list with (AD) a data frame of normalized depth values similar to the 
 This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, or median ratios normalization or .... See details.
 }
 \details{
-This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000. The method "MedR" is median ratio normalization (see publication); QN - quantile normalization (see publication).
+This function converts an observed depth value table to an effective depth value table using several normaliztion methods; 1. TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000; 2. The method "MedR" is median ratio normalization; 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a comparison of methods).
 }
 \examples{
 \dontrun{data(ADtable)
@@ -47,6 +47,7 @@ ADnormalized<-cpm.normal(ADtable)}
 \references{
 Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25
 Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
+Maza, Elie, et al. "Comparison of normalization methods for differential gene expression analysis in RNA-Seq experiments: a matter of relative size of studied transcriptomes." Communicative & integrative biology 6.6 (2013): e25849
 }
 \author{
 Piyal Karunarathne, Qiujie Zhou

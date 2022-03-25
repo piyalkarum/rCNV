@@ -1,16 +1,3 @@
-### export VCF
-#pre function
-#pan<-as.matrix(as.data.frame(pa$vcf[match(colnames(RR1pa),paste0(pa$vcf$`#CHROM`,".",pa$vcf$POS)),])) # duplicates
-#pans<-as.matrix(as.data.frame(pa$vcf[!match(colnames(RR1pa),paste0(pa$vcf$`#CHROM`,".",pa$vcf$POS)),])) # singlets
-#fcon<-"/Users/piyalkarunarathne/Desktop/UPPSALA/gentree/CNV/filtered_vcf/PA_duplicates.vcf"
-#cat('##fileformat=VCFv4.0\n##fileDate=20151210\n##source="Stacks rCNV0.1.0"\n##INFO=<ID=NS,Number=1,Type=Integer,Description="Number of Samples With Data">\n##INFO=<ID=AF,Number=.,Type=Float,Description="Allele Frequency">\n##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">\n##FORMAT=<ID=AD,Number=1,Type=Integer,Description="Allele Depth">\n##FORMAT=<ID=GL,Number=.,Type=Float,Description="Genotype Likelihood">\n',file=fcon,sep="\t")
-#cat(colnames(pan),file=fcon,append=T,sep="\t")
-#cat("\n",file=fcon,append=T)
-#for(i in 1:nrow(pan)){
- # cat(pan[i,],file=fcon,append=T,sep="\t")
-#  cat("\n",file=fcon,append=T)
-#}
-######################
 
 #' Export VCF files
 #'

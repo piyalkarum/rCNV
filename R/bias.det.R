@@ -1,4 +1,5 @@
 # helpers
+#1. get allele based p and chi-square values for all the samples
 get.pvals<-function(x,df,p.cal){
   snp1<-df[x,-c(1:4)]
   y<-data.frame(do.call(rbind,strsplit(as.character(unlist(snp1)),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])

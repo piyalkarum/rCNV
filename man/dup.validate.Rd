@@ -17,6 +17,9 @@ a data frame of scaffold names and their average presence in the scaffold.
 \description{
 This function will validate the detected duplicated-SNPs using a moving window approach (see details)
 }
+\details{
+This function is still in development for non-mapped reference sequences
+}
 \author{
 Piyal Karunarathne
 }

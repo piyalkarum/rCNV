@@ -11,7 +11,7 @@
 #'
 #' @references Karunarathne et al. (2021)
 #'
-#' @source \href{url}{dataset name}
+#' @source \href{https://zenodo.org/record/5025423#.Yj2XKRDMLyQ}{Chinook Salmon sequence reads McKinney et al. 2017}
 #'
 #' @examples
 #' data(alleleINF)

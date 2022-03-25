@@ -1,5 +1,5 @@
-### This set of functions were adopted from edgeR package (Robinson et al. 2010) unless otherwise stated.
-### The methodology behind the normalization was originally described by Mark Robinson (2010)
+### TMM calculation of this function was adopted from edgeR package (Robinson et al. 2010)
+### The methodology behind the TMM normalization was originally described by Mark Robinson (2010)
 
 calcFactorQuantile <- function (data, lib.size, p=0.75)
   #	Generalized version of upper-quartile normalization
@@ -167,7 +167,7 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 
 #' Calculate normalization factor for each sample
 #'
-#' This function calculates the normalization factor for each sample using trimmed mean of M-values of sample libraries. See details.
+#' This function calculates the normalization factor for each sample using different methods. See details.
 #'
 #' @param df a data frame or matrix of count values (total counts per snp per sample)
 #' @param method character. method to be used (see detials). Default="TMM"
@@ -227,7 +227,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #' @param Acutoff numeric, cutoff on "A" values to use before trimming
 #' @param verbose logical. show progress
 #'
-#' @details This function converts an observed depth value table to an effective depth vallue table using TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000. The method "MedR" is median ratio normalization (see publication); QN - quantile normalization (see publication).
+#' @details This function converts an observed depth value table to an effective depth value table using several normaliztion methods; 1. TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000; 2. The method "MedR" is median ratio normalization; 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a comparison of methods).
 #'
 #' @return Returns a list with (AD) a data frame of normalized depth values similar to the output of hetTgen function and (outliers) a list of outlier sample names
 #'
@@ -235,6 +235,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #'
 #' @references Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25
 #' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
+#' Maza, Elie, et al. "Comparison of normalization methods for differential gene expression analysis in RNA-Seq experiments: a matter of relative size of studied transcriptomes." Communicative & integrative biology 6.6 (2013): e25849
 #'
 #' @examples
 #' \dontrun{data(ADtable)

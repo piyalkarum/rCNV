@@ -23,7 +23,7 @@ A function to correct depth values where odd number of coverage values due to se
 The function adds a value of 1 to the allele with the lowest depth value for when odd number anomalies or make the depth value 0 for when miss-classified. The genotype table must be provided for the latter.
 }
 \examples{
-adc<-ad.correct(ADtable)
+\dontrun{adc<-ad.correct(ADtable)}
 
 }
 \author{
