@@ -61,8 +61,9 @@ vcf$vcf[1:6,c(1:7,9,10)]
 The following example demonstrates such filtering on Parrot Fish data from *McKinney et al. (2017)*.
 
 ```{r,echo=TRUE,eval=TRUE,fig.dim=c(6,4)}
-fl<-paste0(tempdir(),"Parrotfish_sequenceReads.vcf.gz")
-download.file("https://drive.google.com/uc?export=download&id=141-RRGKJaioGWuJxBOAz3D-nUmNI36LZ",fl,method="wget", quiet = T)
+#download the parrotfish data file from the following link to your working directory if you do not have the github folder
+#https://drive.google.com/uc?export=download&id=141-RRGKJaioGWuJxBOAz3D-nUmNI36LZ
+fl<-"../testDATA/Parrotfish_sequenceReads.vcf.gz"
 parrot<-readVCF(fl,verbose=F)
 mss<-get.miss(parrot,verbose = F, plot=F)
 ```

@@ -3,7 +3,7 @@ Type: Package
 Title: Detect copy number variants (CNV) from SNPs data
 Version: 1.0.0
 Authors@R: c(person(given="Piyal",family="Karunarathne", email="piyal.karunarathne@ebc.uu.se", role = c("aut", "cre"),comment = c(ORCID = "0000-0002-1934-145X")),person(given="Pascal", family="Milesi", role = "aut",comment = c(ORCID = "0000-0001-8580-4291")),person(given="Qiujie",family="Zhou", email="qiujie.zhou@ebc.uu.se", role = c("aut"),comment = c(ORCID = "0000-0001-7351-2371")))
-Maintainer: The package maintainer <piyal.karunarathne@ebc.uu.se>
+Maintainer: The package maintainer <piyalkarumail@yahoo.com>
 Description: Functions in this package will import filtered vcf files of snps data and generate data sets to detect, plot and do downstream analyses (e.g. Environmental association analyses).
 License: AGPL (>= 3)
 Imports: methods, data.table, graphics, colorspace, R.utils, qgraph
