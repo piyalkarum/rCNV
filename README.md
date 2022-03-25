@@ -7,7 +7,7 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 
 # rCNV <img src='man/figures/logo.png' align='right' height='139' />
 
-#rCNV: An R package for detecting copy number variants from SNPs data
+# rCNV: An R package for detecting copy number variants from SNPs data
 <span style="color: dodgerblue;">Piyal Karunarathne, Qiujie Zhou, and
 Pascal Milesi</span>
 
@@ -20,7 +20,8 @@ ease.
 <https://piyalkarum.github.io/rCNV/> and navigate to “Get started” where
 all the functions and usage are explained with ample examples.***
 
-##Installation CRAN link to be added
+## Installation
+CRAN link to be added
 
 You can install the development version of rCNV from
 [GitHub](https://github.com/) with:
@@ -31,6 +32,6 @@ You can install the development version of rCNV from
 
 Please don’t forget to cite us if you use the package.
 
-##How to cite
+## How to cite
 
 \*Publication to be added
