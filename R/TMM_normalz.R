@@ -169,7 +169,7 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #'
 #' This function calculates the normalization factor for each sample using different methods. See details.
 #'
-#' @param df a data frame or matrix of count values (total counts per snp per sample)
+#' @param df a data frame or matrix of allele depth values (total depth per snp per sample)
 #' @param method character. method to be used (see detials). Default="TMM"
 #' @param logratioTrim numeric. percentage value (0 - 1) of variation to be trimmed in log transformation
 #' @param sumTrim numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"
@@ -217,7 +217,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 
 #' Calculate normalized depth for alleles
 #'
-#' This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, or median ratios normalization or .... See details.
+#' This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, median ratios normalization or quantile normalization, See details.
 #'
 #' @param het.table a data frame or matrix of coverage (output of hetTgen with "AD")
 #' @param method character. method to be used (see detials). Default="TMM"
@@ -233,8 +233,8 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #'
 #' @author Piyal Karunarathne, Qiujie Zhou
 #'
-#' @references Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25
-#' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140
+#' @references Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25 \n
+#' Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140 \n
 #' Maza, Elie, et al. "Comparison of normalization methods for differential gene expression analysis in RNA-Seq experiments: a matter of relative size of studied transcriptomes." Communicative & integrative biology 6.6 (2013): e25849
 #'
 #' @examples

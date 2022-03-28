@@ -7,7 +7,7 @@
 h.zygosity(vcf, plot = FALSE, pops = NA, verbose = TRUE)
 }
 \arguments{
-\item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF" or a data frame of genotypes generated using "hetTgen"}
+\item{vcf}{an imported vcf file in in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"}
 
 \item{plot}{logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided}
 
@@ -19,7 +19,7 @@ h.zygosity(vcf, plot = FALSE, pops = NA, verbose = TRUE)
 Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with their inbreeding coefficients.
 }
 \description{
-This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality. See details.
+This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
@@ -28,5 +28,5 @@ hzygots<-h.zygosity(vcf,plot=TRUE,pops=c("FR_PA","RU_PA"))
 
 }
 \author{
-Piyal Karunarathne Pascal Milesi
+Piyal Karunarathne, Pascal Milesi
 }

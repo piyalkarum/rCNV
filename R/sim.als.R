@@ -70,13 +70,12 @@ plot.svd <- function(MR,cols=c("red","cyan")){
 #' @param n desired populations size (set this value same as your actual population size for an accurate simulation)
 #' @param nrun number of simulations to run on each allele frequency. The higher this number, the closer the simulations will be to the theoretical values (at the cost of computer power); 10000 is an optimal value.
 #' @param res desired resolution of the theoretical allele frequency
-#' @param plot whether to plot the simulation
+#' @param plot logical. whether to plot the simulation
 #'
 #' @return A list of two matrices: 1. allele_freqs: theoretical allele frequency, 2. simulated_freqs: simulated frequencies at different confidence intervals
 #'
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
-#' @references <add reference>
 #'
 #' @examples
 #' \dontrun{alleles <- sim.als(n=200,nrun=1000,res=0.001,plot=TRUE)}
@@ -122,15 +121,13 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #'
 #' @param cov.len max value of depth of coverage to be simulated
 #' @param sam.len maximum no. of samples to be simulated
-#' @param incr a vector of two integers indicating ncrement size for both depth and no. samples ranges
+#' @param incr a vector of two integers indicating increment size for both depth and no. samples ranges
 #' @param plot logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)
 #' @param plot.cols string. Two colors to add to the gradient
 #'
 #' @return A matrix of median allele ratios where rows are the number of samples and columns are depth of coverage values
 #'
 #' @author Pascal Milesi, Piyal Karunarathne
-#'
-#' @references <add reference>
 #'
 #' @examples
 #' \dontrun{depthVsSample(cov.len=50,sam.len=100)}

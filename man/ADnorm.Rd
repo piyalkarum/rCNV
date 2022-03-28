@@ -11,7 +11,7 @@ An object of class \code{list} of length 2.
 data(ADnorm)
 }
 \description{
-normalized example SNPs data of Picea abies from Chen et al. 2019
+Normalized example SNPs data of Picea abies from Chen et al. 2019
 The data has been normalized with TMM
 }
 \keyword{datasets}

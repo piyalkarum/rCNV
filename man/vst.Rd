@@ -18,12 +18,14 @@ vst(AD, pops, id.list = NULL, qGraph = TRUE, ...)
 \item{...}{additional arguments passed to qgraph}
 }
 \value{
-returns a matrix of pairwise Vst values for populations
+Returns a matrix of pairwise Vst values for populations
 }
 \description{
 This function calculates Vst (variant fixation index) for populations given a list of duplicated loci
 }
 \details{
+Vst is calculated with the following equation
+\deqn{ V_{T} =   \frac{ V_{S} }{ V_{T} } } where VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size (see reference for more details)
 See qgraph help for details on qgraph output
 }
 \examples{

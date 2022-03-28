@@ -11,25 +11,25 @@ vcf.stat(vcf, plot = TRUE, ...)
 
 \item{plot}{logical. Whether to plot the (12) parameters}
 
-\item{...}{other arguments passed on to plot (e.g. col,border)}
+\item{...}{other arguments passed on to \link[graphics]{plot} (e.g. col,border)}
 }
 \value{
-returns a data frame with quality parameters from the info. field of the vcf
-QUAL   The Phred-scaled probability that a REF/ALT polymorphism exists at this site given sequencing data
-AC     Allele count
-AF     Allele frequencey
-DP     unfiltered depth
-MQ     .....
-QD     QualByDepth - This is the variant confidence (from the QUAL field) divided by the unfiltered depth of non-hom-ref samples
-FS     FisherStrand - This is the Phred-scaled probability that there is strand bias at the site.
-SOR    StrandOddsRatio - This is another way to estimate strand bias using a test similar to the symmetric odds ratio test
-MQ     RMSMappingQuality - This is the root mean square mapping quality over all the reads at the site
-MQRankSum  MappingQualityRankSumTest - This is the u-based z-approximation from the Rank Sum Test for mapping qualities
-ReadPosRankSum ReadPosRankSumTest - This is the u-based z-approximation from the Rank Sum Test for site position within reads
+returns a data frame with quality parameters from the info. field of the vcf\n
+QUAL   The Phred-scaled probability that a REF/ALT polymorphism exists at this site given sequencing data\n
+AC     Allele count\n
+AF     Allele frequencey\n
+DP     unfiltered depth\n
+MQ     .....\n
+QD     QualByDepth - This is the variant confidence (from the QUAL field) divided by the unfiltered depth of non-hom-ref samples\n
+FS     FisherStrand - This is the Phred-scaled probability that there is strand bias at the site\n
+SOR    StrandOddsRatio - This is another way to estimate strand bias using a test similar to the symmetric odds ratio test\n
+MQ     RMSMappingQuality - This is the root mean square mapping quality over all the reads at the site\n
+MQRankSum  MappingQualityRankSumTest - This is the u-based z-approximation from the Rank Sum Test for mapping qualities\n
+ReadPosRankSum ReadPosRankSumTest - This is the u-based z-approximation from the Rank Sum Test for site position within reads\n
 ...
 }
 \description{
-This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details).
+This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details & values).
 }
 \details{
 For more details see https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants

@@ -7,7 +7,7 @@
 relatedness(vcf, plot = TRUE, threshold = 0.5, verbose = TRUE)
 }
 \arguments{
-\item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF" or a data frame of genotypes generated using "hetTgen"}
+\item{vcf}{an imported vcf file in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"}
 
 \item{plot}{logical. Whether to plot relatedness of samples against themselves, among themselves and outliers}
 
@@ -19,7 +19,7 @@ relatedness(vcf, plot = TRUE, threshold = 0.5, verbose = TRUE)
 A data frame of individuals and relatedness score Ajk
 }
 \description{
-Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 (doi:10.1038/ng.608) equation 6, on a per sample basis (with itself and others), using SNPs.
+Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 equation 6, on a per sample basis (with itself and others), using SNPs.
 }
 \details{
 According to Yang et al. (2010), outbreeding non-related pairs should have a relatedness value of 0 while the individual with itself will have a relatedness value of 1. Relatedness value of ~0.5 indicates siblings.

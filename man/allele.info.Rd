@@ -2,7 +2,7 @@
 % Please edit documentation in R/bias.det.R
 \name{allele.info}
 \alias{allele.info}
-\title{Get allele info. for duplicate detection}
+\title{Get allele information for duplicate detection}
 \usage{
 allele.info(
   X,
@@ -45,12 +45,16 @@ Returns a data frame of median allele ratio, proportion of heterozygotes, number
 The function to calculate allele median ratios, proportion of heterozygotes and allele probability values under different assumptions (see details), and their chi-square significance values for duplicate detection
 }
 \details{
-print("to be added")
+Allele information generated here are individual SNP based and presents the proportion of heterozygotes, number of samples, and deviation of allele detection from a 1:1 ratio of reference and alternative alleles. The significance of the deviation is tested with Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }}, and chi-square test (see references for more details on the method).
 }
 \examples{
 \dontrun{data(ADtable)
 AI<-allele.info(ADtable,x.norm=ADnorm)}
 
+}
+\references{
+McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.
+Karunarathne et al. 2022 (to be added)
 }
 \author{
 Piyal Karunarathne, Pascal Milesi, Qiujie Zhou

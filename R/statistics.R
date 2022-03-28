@@ -50,15 +50,15 @@ return(V)}
 
 #' Determine per sample heterozygosity and inbreeding coefficient
 #'
-#' This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality. See details.
-#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF" or a data frame of genotypes generated using "hetTgen"
+#' This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality.
+#' @param vcf an imported vcf file in in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"
 #' @param plot logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided
 #' @param pops character. A list of population names
 #' @param verbose logical. Show progress
 #' @importFrom graphics boxplot
 #' @return Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with their inbreeding coefficients.
 #'
-#' @author Piyal Karunarathne Pascal Milesi
+#' @author Piyal Karunarathne, Pascal Milesi
 #'
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
@@ -103,9 +103,9 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 
 #' Determine pairwise relatedness
 #'
-#' Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 (doi:10.1038/ng.608) equation 6, on a per sample basis (with itself and others), using SNPs.
+#' Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 equation 6, on a per sample basis (with itself and others), using SNPs.
 #'
-#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF" or a data frame of genotypes generated using "hetTgen"
+#' @param vcf an imported vcf file in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"
 #' @param plot logical. Whether to plot relatedness of samples against themselves, among themselves and outliers
 #' @param threshold numerical. A value indicating to filter the individuals of relatedness among themselves. Default=0.5 (siblings)
 #' @param verbose logical. Show progress.
@@ -183,27 +183,27 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 
 #' Get sequencing quality statistics of raw VCF files (with GatK generated vcf files only)
 #'
-#' This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details).
+#' This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details & values).
 #'
 #' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
 #' @param plot logical. Whether to plot the (12) parameters
-#' @param ... other arguments passed on to plot (e.g. col,border)
+#' @param ... other arguments passed on to \link[graphics]{plot} (e.g. col,border)
 #'
 #' @importFrom stats density
 #' @importFrom graphics polygon
 #'
-#' @return returns a data frame with quality parameters from the info. field of the vcf
-#' QUAL   The Phred-scaled probability that a REF/ALT polymorphism exists at this site given sequencing data
-#' AC     Allele count
-#' AF     Allele frequencey
-#' DP     unfiltered depth
-#' MQ     .....
-#' QD     QualByDepth - This is the variant confidence (from the QUAL field) divided by the unfiltered depth of non-hom-ref samples
-#' FS     FisherStrand - This is the Phred-scaled probability that there is strand bias at the site.
-#' SOR    StrandOddsRatio - This is another way to estimate strand bias using a test similar to the symmetric odds ratio test
-#' MQ     RMSMappingQuality - This is the root mean square mapping quality over all the reads at the site
-#' MQRankSum  MappingQualityRankSumTest - This is the u-based z-approximation from the Rank Sum Test for mapping qualities
-#' ReadPosRankSum ReadPosRankSumTest - This is the u-based z-approximation from the Rank Sum Test for site position within reads
+#' @return returns a data frame with quality parameters from the info. field of the vcf\n
+#' QUAL   The Phred-scaled probability that a REF/ALT polymorphism exists at this site given sequencing data\n
+#' AC     Allele count\n
+#' AF     Allele frequencey\n
+#' DP     unfiltered depth\n
+#' MQ     .....\n
+#' QD     QualByDepth - This is the variant confidence (from the QUAL field) divided by the unfiltered depth of non-hom-ref samples\n
+#' FS     FisherStrand - This is the Phred-scaled probability that there is strand bias at the site\n
+#' SOR    StrandOddsRatio - This is another way to estimate strand bias using a test similar to the symmetric odds ratio test\n
+#' MQ     RMSMappingQuality - This is the root mean square mapping quality over all the reads at the site\n
+#' MQRankSum  MappingQualityRankSumTest - This is the u-based z-approximation from the Rank Sum Test for mapping qualities\n
+#' ReadPosRankSum ReadPosRankSumTest - This is the u-based z-approximation from the Rank Sum Test for site position within reads\n
 #' ...
 #'
 #' @details

@@ -23,11 +23,11 @@ dupGet(
 
 \item{method}{character. method for testing excess of heterozygotes. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
 
-\item{plot}{logical. whether to plot the detected singletons and duplicates on allele ratio vs. proportion of heterozygotes plot.}
+\item{plot}{logical. whether to plot the detected singlets and duplicates on allele ratio vs. proportion of heterozygotes plot.}
 
 \item{verbose}{logical. show progress}
 
-\item{...}{additional parameters to be passed on to plot}
+\item{...}{additional parameters to be passed on to \link[graphics]{plot}}
 }
 \value{
 Returs a data frame of snps/alles with their duplication status
@@ -36,7 +36,12 @@ Returs a data frame of snps/alles with their duplication status
 Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.
 }
 \details{
-to be added
+Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \n
+\enumerate{
+\item Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \n
+\item chi-square test (see references for more details on the method) \n
+Users can pick among Z-score for heterozygotes (z.het, chi.het), all allele combinations (z.all, chi.all) and the assumption of no probe bias p=0.5 (z.05, chi.05)
+}
 }
 \examples{
 \dontrun{data(alleleINF)

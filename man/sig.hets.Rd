@@ -21,16 +21,16 @@ sig.hets(
 
 \item{verbose}{logical, if TRUE, the progress is shown}
 
-\item{...}{other arguments passed to plot}
+\item{...}{other arguments passed to \link[graphics]{plot}}
 }
 \value{
 A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
-If enabled, the function also plots the recognized duplicates in red and expected (singletons) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot
-p2 observed homozygote reference
-het expected
+If enabled, the function also plots the recognized duplicates in red and expected (singlets) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot\n
+p2  - observed homozygote reference\n
+het  - expected
 }
 \description{
-This function will recognize the SNPs that are significantly different from the expected under HWE and plot potential duplicated snps
+This function will recognize the SNPs that are significantly different from the expected under HWE and plot putatively duplicated snps
 }
 \examples{
 \dontrun{data(alleleINF)

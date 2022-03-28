@@ -12,12 +12,12 @@ wind<-function(xx,dd){
 #'
 #' This function will validate the detected duplicated-SNPs using a moving window approach (see details)
 #'
-#' @param d.detect a data frame of detected SNPs of duplicates/singletons (output of dup.detect)
+#' @param d.detect a data frame of detected SNPs of duplicates/singlets (output of dupGet)
 #' @param window.size numerical. a single value of the desired moving window size (default=100 bp)
 #'
-#' @details This function is still in development for non-mapped reference sequences
+#' @details Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences
 #'
-#' @return a data frame of scaffold names and their average presence in the scaffold.
+#' @return A data frame of scaffold names and their average presence in the scaffold.
 #'
 #' @author Piyal Karunarathne
 #'
@@ -88,9 +88,11 @@ dup.validate<-function(d.detect,window.size=100){
 #' @importFrom stats var
 #' @importFrom utils combn
 #'
-#' @return returns a matrix of pairwise Vst values for populations
+#' @return Returns a matrix of pairwise Vst values for populations
 #'
-#' @details See qgraph help for details on qgraph output
+#' @details Vst is calculated with the following equation
+#' \deqn{ V_{T} =   \frac{ V_{S} }{ V_{T} } } where VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size (see reference for more details)
+#' See qgraph help for details on qgraph output
 #'
 #' @references
 #' Redon, Richard, et al. "Global variation in copy number in the human genome." nature 444.7118 (2006): 444-454

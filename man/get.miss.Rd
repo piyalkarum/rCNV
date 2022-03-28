@@ -11,7 +11,7 @@ get.miss(data, type = c("samples", "snps"), plot = TRUE, verbose = TRUE)
 
 \item{type}{character. Get the missing percentages per sample or per SNP."samples" or "snps", default both}
 
-\item{plot}{logical. Whether to plot the missingness density with a suggested cut-off}
+\item{plot}{logical. Whether to plot the missingness density with 95\% quantile}
 
 \item{verbose}{logical. Whether to show progress}
 }

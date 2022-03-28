@@ -14,14 +14,15 @@ An object of class \code{data.frame} with 2857 rows and 25 columns.
 data(alleleINF)
 }
 \description{
-Semi-randomly generated data from the function dup.snp.info
-Data contains depth and proportion values of 19800 snps
+Semi-randomly generated data from the function dup.snp.info.
+Data contains depth and proportion values of 2857 snps
 }
 \examples{
 data(alleleINF)
 with(alleleINF,plot(medRatio~propHet))
 }
 \references{
-Karunarathne et al. (2021)
+Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K., Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves shallow population structure to inform conservation of Chinook salmon (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369.\n
+McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.
 }
 \keyword{datasets}

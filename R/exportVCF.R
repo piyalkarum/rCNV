@@ -4,8 +4,8 @@
 #' A function to export tables/matrices in VCF format to VCF files
 #'
 #' @param out.vcf a matrix or data frame in vcf file format to be exported
-#' @param out.path a character string of output path for the vcf file; should end in the name of the vcf file and .vcf. see examples
-#' @param compress logical. wthether to compress the output file. If true, the file will be .gz compressed
+#' @param out.path a character string of output path for the vcf file; should end in the name as the vcf file and .vcf. See examples
+#' @param compress logical. whether to compress the output file. If true, the file will be .gz compressed
 #'
 #' @importFrom utils packageVersion
 #' @importFrom R.utils gzip

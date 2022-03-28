@@ -19,7 +19,7 @@ ad.correct(het.table, gt.table = NULL, odd.correct = TRUE, verbose = TRUE)
 returns the coverage corrected allele depth table similar to the output of hetTgen
 }
 \description{
-A function to correct depth values where odd number of coverage values due to sequencing anomalies or miss classification where genotype is homozygous and depth values indicate heterozygosity.
+A function to correct depth values with odd number of coverage values due to sequencing anomalies or miss classification where genotype is homozygous and depth values indicate heterozygosity.
 The function adds a value of 1 to the allele with the lowest depth value for when odd number anomalies or make the depth value 0 for when miss-classified. The genotype table must be provided for the latter.
 }
 \examples{

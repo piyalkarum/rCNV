@@ -17,7 +17,7 @@ depthVsSample(
 
 \item{sam.len}{maximum no. of samples to be simulated}
 
-\item{incr}{a vector of two integers indicating ncrement size for both depth and no. samples ranges}
+\item{incr}{a vector of two integers indicating increment size for both depth and no. samples ranges}
 
 \item{plot}{logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)}
 
@@ -33,9 +33,6 @@ This is useful if you need to find the cutoff values of allele ratios for differ
 \examples{
 \dontrun{depthVsSample(cov.len=50,sam.len=100)}
 
-}
-\references{
-<add reference>
 }
 \author{
 Pascal Milesi, Piyal Karunarathne

@@ -1,7 +1,7 @@
 #' Allele info example data
 #'
-#' Semi-randomly generated data from the function dup.snp.info
-#' Data contains depth and proportion values of 19800 snps
+#' Semi-randomly generated data from the function dup.snp.info.
+#' Data contains depth and proportion values of 2857 snps
 #'
 #' @docType data
 #'
@@ -9,9 +9,11 @@
 #'
 #' @keywords datasets
 #'
-#' @references Karunarathne et al. (2021)
+#' @references Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K., Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves shallow population structure to inform conservation of Chinook salmon (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369.\n
+#' McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.
 #'
 #' @source \href{https://zenodo.org/record/5025423#.Yj2XKRDMLyQ}{Chinook Salmon sequence reads McKinney et al. 2017}
+#'
 #'
 #' @examples
 #' data(alleleINF)
@@ -21,19 +23,20 @@
 
 #' Allele Depth (AD) example data
 #'
-#' example SNPs data of Picea abies from Chen et al. 2019
-#' The data contains only a partial snps data set of exome-capture data after filtering
+#' Example SNPs data of Chinook Salmon from Larson et al. et al. 2014.
+#' The data contains only a partial snps data set of RadSeq data after filtering
 #'
 #' @docType data
 #' @usage data(ADtable)
-#' @references McKinney et al. 2017
+#' @references Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K., Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves shallow population structure to inform conservation of Chinook salmon (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369.\n
+#' McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.
 #'
 'ADtable'
 
 
 #' Normalized allele depth example data
 #'
-#' normalized example SNPs data of Picea abies from Chen et al. 2019
+#' Normalized example SNPs data of Picea abies from Chen et al. 2019
 #' The data has been normalized with TMM
 #'
 #' @docType data

@@ -7,18 +7,18 @@
 dup.validate(d.detect, window.size = 100)
 }
 \arguments{
-\item{d.detect}{a data frame of detected SNPs of duplicates/singletons (output of dup.detect)}
+\item{d.detect}{a data frame of detected SNPs of duplicates/singlets (output of dupGet)}
 
 \item{window.size}{numerical. a single value of the desired moving window size (default=100 bp)}
 }
 \value{
-a data frame of scaffold names and their average presence in the scaffold.
+A data frame of scaffold names and their average presence in the scaffold.
 }
 \description{
 This function will validate the detected duplicated-SNPs using a moving window approach (see details)
 }
 \details{
-This function is still in development for non-mapped reference sequences
+Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences
 }
 \author{
 Piyal Karunarathne

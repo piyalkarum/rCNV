@@ -12,10 +12,10 @@ readVCF(vcf.file.path, verbose = FALSE)
 \item{verbose}{logical. show progress}
 }
 \value{
-Returns a dataframe with scaffold/chromosome positions and depth values for individual samples
+Returns a list with vcf table in a data frame $vcf, excluding meta data. The meta data is stored in a second element with $met
 }
 \description{
-Function to import raw single/multi-sample VCF files generated from GatK or VCFtools.
+Function to import raw single/multi-sample VCF files.
 The function required the R-package "data.table" for faster importing.
 }
 \examples{

@@ -14,7 +14,7 @@ norm.fact(
 )
 }
 \arguments{
-\item{df}{a data frame or matrix of count values (total counts per snp per sample)}
+\item{df}{a data frame or matrix of allele depth values (total depth per snp per sample)}
 
 \item{method}{character. method to be used (see detials). Default="TMM"}
 
