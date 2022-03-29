@@ -11,7 +11,7 @@ An object of class \code{list} of length 2.
 data(ADnorm)
 }
 \description{
-Normalized example SNPs data of Chinook Salmon from Larson et al. 2014
+Normalized example SNPs data of Chinook Salmon from Larson et al. 2014\cr
 The data has been normalized with TMM
 }
 \references{

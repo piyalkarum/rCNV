@@ -101,7 +101,7 @@ gg<-function(x){
 
 #' Remove MAF allele
 #'
-#' A function to remove the alleles with minimum allele frequency and keep only a biallelic matrix
+#' A function to remove the alleles with minimum allele frequency and keep only a biallelic matrix when loci are multi-allelic
 #'
 #' @param h.table allele depth table generated from the function \link[rCNV]{hetTgen}
 #' @param AD logical. If TRUE a allele depth table similar to \link[rCNV]{hetTgen} output will be returns; If FALSE, individual AD values per SNP will be returned in a list.
@@ -165,11 +165,11 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #'
 #' hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
 #'
-#' @param vcf an imported vcf file in data.frame or matrix format using \link[rCNV]{readVCF}
-#' @param info.type character. "AD"=allele depth value, "AD-tot"=allele total depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.
+#' @param vcf an imported vcf file in a list using \link[rCNV]{readVCF}
+#' @param info.type character. "AD"=allele depth value, "AD-tot"=total allele depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.
 #' @param verbose logical. whether to show the progress of the analysis
 #'
-#' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
+#' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
 #' For info.type "GT" option is provided to extract the genotypes of individuals by snp.
 #'
 #' @author Piyal Karunarathne

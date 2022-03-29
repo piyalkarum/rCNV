@@ -15,7 +15,7 @@ wind<-function(xx,dd){
 #' @param d.detect a data frame of detected SNPs of duplicates/singlets (output of \link[rCNV]{dupGet})
 #' @param window.size numerical. a single value of the desired moving window size (default=100 bp)
 #'
-#' @details Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences
+#' @details Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences.
 #'
 #' @return A data frame of scaffold names and their average presence in the scaffold.
 #'
@@ -76,7 +76,7 @@ dup.validate<-function(d.detect,window.size=100){
 #'
 #' This function calculates Vst (variant fixation index) for populations given a list of duplicated loci
 #'
-#' @param AD data frame of total allele depth values of (duplicated if id.list is not provided) SNPs
+#' @param AD data frame of total allele depth values of (duplicated, if id.list is not provided) SNPs
 #' @param pops character. A vector of population names for each individual. Must be the same length as the number of samples in AD
 #' @param id.list character. A vector of duplicated SNP IDs. Must match the IDs in the AD data frame
 #' @param qGraph logical. Plot the network plot based on Vst values (see details)

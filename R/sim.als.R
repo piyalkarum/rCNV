@@ -123,7 +123,7 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #' @param sam.len maximum no. of samples to be simulated
 #' @param incr a vector of two integers indicating increment size for both depth and no. samples ranges
 #' @param plot logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)
-#' @param plot.cols string. Two colors to add to the gradient
+#' @param plot.cols character. Two colors to add to the gradient
 #'
 #' @return A matrix of median allele ratios where rows are the number of samples and columns are depth of coverage values
 #'
