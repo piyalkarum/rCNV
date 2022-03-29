@@ -12,3 +12,4 @@
 ^testDATA
 ^cran-comments.md
 ^vignettes
+^codecov\.yml$

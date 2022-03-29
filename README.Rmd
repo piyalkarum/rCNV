@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/piyalkarum/rCNV/workflows/R-CMD-check/badge.svg)](https://github.com/piyalkarum/rCNV/actions)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Codecov test coverage](https://codecov.io/gh/piyalkarum/rCNV/branch/master/graph/badge.svg)](https://app.codecov.io/gh/piyalkarum/rCNV?branch=master)
 <!-- badges: end -->
 
 ```{r, echo=FALSE}
