@@ -4,6 +4,6 @@
 .Ruserdata
 .DS_Store
 .RDataTmp
-tests
+tst
 inst/doc
 man/.DS_Store
