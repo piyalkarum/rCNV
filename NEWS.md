@@ -1,7 +1,6 @@
-# rCNV 1.0.0
+# rCNV 1.0.0 (Release date: 29/03/2022)
 
-# rCNV 1.0.0 (Release data: )
-
-Changes:
+## Changes
 * All the major functions completed
 * bugs fixed
+* this is the first release of the package

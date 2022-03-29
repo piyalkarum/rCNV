@@ -54,13 +54,17 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>d.detect</dt>
-<dd><p>a data frame of detected SNPs of duplicates/singletons (output of dup.detect)</p></dd>
+<dd><p>a data frame of detected SNPs of duplicates/singlets (output of dupGet)</p></dd>
 <dt>window.size</dt>
 <dd><p>numerical. a single value of the desired moving window size (default=100 bp)</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a data frame of scaffold names and their average presence in the scaffold.</p>
+    <p>A data frame of scaffold names and their average presence in the scaffold.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

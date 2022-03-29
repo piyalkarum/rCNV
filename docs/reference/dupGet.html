@@ -70,11 +70,11 @@
 <dt>method</dt>
 <dd><p>character. method for testing excess of heterozygotes. Fisher exact test ("fisher") or Chi squre test ("chi.sq")</p></dd>
 <dt>plot</dt>
-<dd><p>logical. whether to plot the detected singletons and duplicates on allele ratio vs. proportion of heterozygotes plot.</p></dd>
+<dd><p>logical. whether to plot the detected singlets and duplicates on allele ratio vs. proportion of heterozygotes plot.</p></dd>
 <dt>verbose</dt>
 <dd><p>logical. show progress</p></dd>
 <dt>...</dt>
-<dd><p>additional parameters to be passed on to plot</p></dd>
+<dd><p>additional parameters to be passed on to <a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -82,8 +82,10 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>to be added</p>
-    </div>
+    <p>Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods <br></p><ol><li><p>Z-score test $$Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }$$ <br></p></li>
+<li><p>chi-square test (see references for more details on the method) <br>
+Users can pick among Z-score for heterozygotes (z.het, chi.het), all allele combinations (z.all, chi.all) and the assumption of no probe bias p=0.5 (z.05, chi.05)</p></li>
+</ol></div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Piyal Karunarathne</p>
