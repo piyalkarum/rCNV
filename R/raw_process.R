@@ -396,7 +396,7 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 #' Correct allele depth values
 #'
 #' A function to correct depth values with odd number of coverage values due to sequencing anomalies or miss classification where genotype is homozygous and depth values indicate heterozygosity.
-#' The function adds a value of 1 to the allele with the lowest depth value for when odd number anomalies or make the depth value 0 for when miss-classified. The genotype table must be provided for the latter.
+#' The function adds a value of one to the allele with the lowest depth value for when odd number anomalies or make the depth value zero for when miss-classified. The genotype table must be provided for the latter.
 #'
 #' @param het.table allele depth table generated from the function hetTgen
 #' @param gt.table genotype table generated from the function hetTgen
@@ -411,7 +411,6 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 #' \dontrun{adc<-ad.correct(ADtable)}
 #'
 #' @export
-
 ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
   if(!is.null(gt.table)){
     if(verbose){
