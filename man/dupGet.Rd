@@ -36,10 +36,10 @@ Returs a data frame of snps/alles with their duplication status
 Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.
 }
 \details{
-Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \n
+Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \cr
 \enumerate{
-\item Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \n
-\item chi-square test (see references for more details on the method) \n
+\item Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \cr
+\item chi-square test (see references for more details on the method) \cr
 Users can pick among Z-score for heterozygotes (z.het, chi.het), all allele combinations (z.all, chi.all) and the assumption of no probe bias p=0.5 (z.05, chi.05)
 }
 }

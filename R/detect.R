@@ -21,8 +21,8 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @param ... other arguments passed to \link[graphics]{plot}
 #'
 #' @return A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
-#' If enabled, the function also plots the recognized duplicates in red and expected (singlets) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot\n
-#' p2  - observed homozygote reference\n
+#' If enabled, the function also plots the recognized duplicates in red and expected (singlets) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot\cr
+#' p2  - observed homozygote reference\cr
 #' het  - expected
 #'
 #' @author Piyal Karunarathne, Pascal Milesi
@@ -122,9 +122,9 @@ dup.plot<-function(ds,...){
 #'
 #' @return Returs a data frame of snps/alles with their duplication status
 #'
-#' @details Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \n
-#' 1. Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \n
-#' 2. chi-square test (see references for more details on the method) \n
+#' @details Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \cr
+#' 1. Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \cr
+#' 2. chi-square test (see references for more details on the method) \cr
 #' Users can pick among Z-score for heterozygotes (z.het, chi.het), all allele combinations (z.all, chi.all) and the assumption of no probe bias p=0.5 (z.05, chi.05)
 #'
 #' @author Piyal Karunarathne

@@ -25,8 +25,8 @@ sig.hets(
 }
 \value{
 A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
-If enabled, the function also plots the recognized duplicates in red and expected (singlets) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot\n
-p2  - observed homozygote reference\n
+If enabled, the function also plots the recognized duplicates in red and expected (singlets) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot\cr
+p2  - observed homozygote reference\cr
 het  - expected
 }
 \description{
