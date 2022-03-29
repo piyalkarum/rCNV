@@ -7,7 +7,7 @@
 vst(AD, pops, id.list = NULL, qGraph = TRUE, ...)
 }
 \arguments{
-\item{AD}{data frame of total allele depth values of (duplicated if id.list is not provided) SNPs}
+\item{AD}{data frame of total allele depth values of (duplicated, if id.list is not provided) SNPs}
 
 \item{pops}{character. A vector of population names for each individual. Must be the same length as the number of samples in AD}
 

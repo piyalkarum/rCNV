@@ -21,7 +21,7 @@ depthVsSample(
 
 \item{plot}{logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)}
 
-\item{plot.cols}{string. Two colors to add to the gradient}
+\item{plot.cols}{character. Two colors to add to the gradient}
 }
 \value{
 A matrix of median allele ratios where rows are the number of samples and columns are depth of coverage values

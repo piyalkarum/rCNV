@@ -18,7 +18,7 @@ A data frame of scaffold names and their average presence in the scaffold.
 This function will validate the detected duplicated-SNPs using a moving window approach (see details)
 }
 \details{
-Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences
+Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences.
 }
 \author{
 Piyal Karunarathne

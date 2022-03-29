@@ -202,7 +202,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 #' \item{}{MQ: RMSMappingQuality - This is the root mean square mapping quality over all the reads at the site}
 #' \item{}{MQRankSum: MappingQualityRankSumTest - This is the u-based z-approximation from the Rank Sum Test for mapping qualities}
 #' \item{}{ReadPosRankSum: ReadPosRankSumTest - This is the u-based z-approximation from the Rank Sum Test for site position within reads}
-#'
+#'}
 #' @details
 #' For more details see https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants
 #'

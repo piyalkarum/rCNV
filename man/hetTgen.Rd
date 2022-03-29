@@ -11,9 +11,9 @@ hetTgen(
 )
 }
 \arguments{
-\item{vcf}{an imported vcf file in data.frame or matrix format using \link[rCNV]{readVCF}}
+\item{vcf}{an imported vcf file in a list using \link[rCNV]{readVCF}}
 
-\item{info.type}{character. "AD"=allele depth value, "AD-tot"=allele total depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.}
+\item{info.type}{character. "AD"=allele depth value, "AD-tot"=total allele depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
@@ -21,7 +21,7 @@ hetTgen(
 hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
 }
 \details{
-If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM POS and individual AD columns.
+If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
 For info.type "GT" option is provided to extract the genotypes of individuals by snp.
 }
 \examples{
