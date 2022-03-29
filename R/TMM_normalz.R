@@ -227,7 +227,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #' @param Acutoff numeric, cutoff on "A" values to use before trimming (only for TMM(ex))
 #' @param verbose logical. show progress
 #'
-#' @details This function converts an observed depth value table to an effective depth value table using several normaliztion methods; 1. TMM normalization (See the original publication for more information). It is different from the function \link[rCNV]{normz} only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000; 2. The method "MedR" is median ratio normalization; 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a comparison of methods).
+#' @details This function converts an observed depth value table to an effective depth value table using several normaliztion methods; 1. TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000; 2. The method "MedR" is median ratio normalization; 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a comparison of methods).
 #'
 #' @return Returns a list with (AD), a data frame of normalized depth values similar to the output of \link[rCNV]{hetTgen} function and (outliers) a list of outlier sample names
 #'

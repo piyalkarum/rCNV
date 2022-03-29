@@ -36,7 +36,7 @@ Returns a list with (AD), a data frame of normalized depth values similar to the
 This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, median ratios normalization or quantile normalization, See details.
 }
 \details{
-This function converts an observed depth value table to an effective depth value table using several normaliztion methods; 1. TMM normalization (See the original publication for more information). It is different from the function \link[rCNV]{normz} only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000; 2. The method "MedR" is median ratio normalization; 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a comparison of methods).
+This function converts an observed depth value table to an effective depth value table using several normaliztion methods; 1. TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000; 2. The method "MedR" is median ratio normalization; 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a comparison of methods).
 }
 \examples{
 \dontrun{data(ADtable)
