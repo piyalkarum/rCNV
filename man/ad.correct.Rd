@@ -16,7 +16,7 @@ ad.correct(het.table, gt.table = NULL, odd.correct = TRUE, verbose = TRUE)
 \item{verbose}{logical. show progress. Default = TRUE}
 }
 \value{
-returns the coverage corrected allele depth table similar to the output of hetTgen
+Returns the coverage corrected allele depth table similar to the output of \link[rCNV]{hetTgen}
 }
 \description{
 A function to correct depth values with odd number of coverage values due to sequencing anomalies or miss classification where genotype is homozygous and depth values indicate heterozygosity.

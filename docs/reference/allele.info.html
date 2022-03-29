@@ -71,11 +71,11 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>X</dt>
-<dd><p>a data frame of allele coverage (non-normalized). output of hetTgen()</p></dd>
+<dd><p>allele depth table generated from the function <a href="hetTgen.html">hetTgen</a> (non-normalized)</p></dd>
 <dt>x.norm</dt>
 <dd><p>a data frame of normalized allele coverage. output of cpm.normal(). If not provided, calculated using X.</p></dd>
 <dt>method</dt>
-<dd><p>character. method to be used for normalization (see cpm.normal detials). Default="TMM" for data &lt;100,000 snps and "TMMex" for &gt;100,000</p></dd>
+<dd><p>character. method to be used for normalization (see <a href="cpm.normal.html">cpm.normal</a> detials). Default="TMM"</p></dd>
 <dt>logratioTrim</dt>
 <dd><p>numeric. percentage value (0 - 1) of variation to be trimmed in log transformation</p></dd>
 <dt>sumTrim</dt>
@@ -89,7 +89,7 @@
 <dt>verbose</dt>
 <dd><p>logical, whether to print progress</p></dd>
 <dt>...</dt>
-<dd><p>further arguments to be passed to plot</p></dd>
+<dd><p>further arguments to be passed to <a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

@@ -403,7 +403,7 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 #' @param odd.correct logical, to correct for odd number anomalies in AD values. default TRUE
 #' @param verbose logical. show progress. Default = TRUE
 #'
-#' @return returns the coverage corrected allele depth table similar to the output of hetTgen
+#' @return Returns the coverage corrected allele depth table similar to the output of \link[rCNV]{hetTgen}
 #'
 #' @author Piyal Karunarathne
 #'
