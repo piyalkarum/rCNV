@@ -61,9 +61,10 @@ return(V)}
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
-#' hzygots<-h.zygosity(vcf,plot=TRUE,pops=c("FR_PA","RU_PA"))
+#' pp<-substr(colnames(vcf$vcf)[-c(1:9)],1,8)
+#' hzygots<-h.zygosity(vcf,plot=TRUE,pops=pp)}
 #'
 #' @export
 h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){

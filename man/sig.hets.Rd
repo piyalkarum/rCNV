@@ -13,7 +13,7 @@ sig.hets(
 )
 }
 \arguments{
-\item{a.info}{allele info table generated from filtered vcfs using the function '\link[rCNV]{llele.info}}
+\item{a.info}{allele info table generated from filtered vcfs using the function '\link[rCNV]{allele.info}}
 
 \item{method}{character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
 

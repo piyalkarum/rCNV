@@ -22,9 +22,10 @@ Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with th
 This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality.
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
-hzygots<-h.zygosity(vcf,plot=TRUE,pops=c("FR_PA","RU_PA"))
+pp<-substr(colnames(vcf$vcf)[-c(1:9)],1,8)
+hzygots<-h.zygosity(vcf,plot=TRUE,pops=pp)}
 
 }
 \author{

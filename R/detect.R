@@ -14,7 +14,7 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #'
 #' This function will recognize the SNPs with a proportion of heterozygotes significantly higher than expected under HWE and plot putatively duplicated snps
 #'
-#' @param a.info allele info table generated from filtered vcfs using the function '\link[rCNV]{llele.info}
+#' @param a.info allele info table generated from filtered vcfs using the function '\link[rCNV]{allele.info}
 #' @param method character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
 #' @param plot logical. Whether to plot the identified duplicated snps with the expected values
 #' @param verbose logical, if TRUE, the progress is shown
