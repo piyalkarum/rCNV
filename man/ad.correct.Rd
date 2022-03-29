@@ -7,7 +7,7 @@
 ad.correct(het.table, gt.table = NULL, odd.correct = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{het.table}{allele depth table generated from the function hetTgen}
+\item{het.table}{allele depth table generated from the function \link[rCNV]{hetTgen}}
 
 \item{gt.table}{genotype table generated from the function hetTgen}
 

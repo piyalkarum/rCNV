@@ -12,18 +12,15 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 
 #' Identify significantly different heterozygotes from SNPs data
 #'
-#' This function will recognize the SNPs that are significantly different from the expected under HWE and plot putatively duplicated snps
+#' This function will recognize the SNPs with a proportion of heterozygotes significantly higher than expected under HWE and plot putatively duplicated snps
 #'
-#' @param a.info allele info table generated from filtered vcfs using the function 'allele.info()'
+#' @param a.info allele info table generated from filtered vcfs using the function '\link[rCNV]{llele.info}
 #' @param method character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
 #' @param plot logical. Whether to plot the identified duplicated snps with the expected values
 #' @param verbose logical, if TRUE, the progress is shown
 #' @param ... other arguments passed to \link[graphics]{plot}
 #'
-#' @return A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
-#' If enabled, the function also plots the recognized duplicates in red and expected (singlets) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot\cr
-#' p2  - observed homozygote reference\cr
-#' het  - expected
+#' @return A matrix of expected heterozygote proportions from the observed data with p-value indicating significance of deviation.
 #'
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
@@ -110,7 +107,7 @@ dup.plot<-function(ds,...){
 #'
 #' Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.
 #'
-#' @param data data frame of the output of allele.info()
+#' @param data data frame of the output of \link[rCNV]{allele.info}
 #' @param test character. type of test to be used for significance. See detials
 #' @param intersection logical, whether to use the intersection of the methods specified in test (if more than one)
 #' @param method character. method for testing excess of heterozygotes. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
@@ -120,7 +117,7 @@ dup.plot<-function(ds,...){
 #'
 #' @importFrom colorspace terrain_hcl
 #'
-#' @return Returs a data frame of snps/alles with their duplication status
+#' @return Returns a data frame of snps/alleles with their duplication status
 #'
 #' @details Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \cr
 #' 1. Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \cr

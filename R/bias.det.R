@@ -51,16 +51,16 @@ get.pvals<-function(x,df,p.cal){
 #'
 #' The function to calculate allele median ratios, proportion of heterozygotes and allele probability values under different assumptions (see details), and their chi-square significance values for duplicate detection
 #'
-#' @param X a data frame of allele coverage (non-normalized). output of hetTgen()
+#' @param X allele depth table generated from the function \link[rCNV]{hetTgen} (non-normalized)
 #' @param x.norm a data frame of normalized allele coverage. output of cpm.normal(). If not provided, calculated using X.
-#' @param method character. method to be used for normalization (see cpm.normal detials). Default="TMM" for data <100,000 snps and "TMMex" for >100,000
+#' @param method character. method to be used for normalization (see \link[rCNV]{cpm.normal} detials). Default="TMM"
 #' @param logratioTrim numeric. percentage value (0 - 1) of variation to be trimmed in log transformation
 #' @param sumTrim numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"
 #' @param Weighting logical, whether to compute (asymptotic binomial precision) weights
 #' @param Acutoff numeric, cutoff on "A" values to use before trimming
 #' @param plot.allele.cov logical, plot comparative plots of allele depth coverage in homozygotes and heterozygotes
 #' @param verbose logical, whether to print progress
-#' @param ... further arguments to be passed to plot
+#' @param ... further arguments to be passed to \link[graphics]{plot}
 #'
 #' @importFrom stats pchisq pnorm na.omit
 #'

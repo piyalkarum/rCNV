@@ -18,11 +18,11 @@ allele.info(
 )
 }
 \arguments{
-\item{X}{a data frame of allele coverage (non-normalized). output of hetTgen()}
+\item{X}{allele depth table generated from the function \link[rCNV]{hetTgen} (non-normalized)}
 
 \item{x.norm}{a data frame of normalized allele coverage. output of cpm.normal(). If not provided, calculated using X.}
 
-\item{method}{character. method to be used for normalization (see cpm.normal detials). Default="TMM" for data <100,000 snps and "TMMex" for >100,000}
+\item{method}{character. method to be used for normalization (see \link[rCNV]{cpm.normal} detials). Default="TMM"}
 
 \item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be trimmed in log transformation}
 
@@ -36,7 +36,7 @@ allele.info(
 
 \item{verbose}{logical, whether to print progress}
 
-\item{...}{further arguments to be passed to plot}
+\item{...}{further arguments to be passed to \link[graphics]{plot}}
 }
 \value{
 Returns a data frame of median allele ratio, proportion of heterozygotes, number of heterozygotes, and allele probability at different assumptions with their chi-square significance

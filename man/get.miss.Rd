@@ -7,7 +7,7 @@
 get.miss(data, type = c("samples", "snps"), plot = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{data}{a list containing imported vcf file using readVCF or genotype table generated using hetTgen}
+\item{data}{a list containing imported vcf file using \link[rCNV]{readVCF} or genotype table generated using \link[rCNV]{hetTgen}}
 
 \item{type}{character. Get the missing percentages per sample or per SNP."samples" or "snps", default both}
 
@@ -16,7 +16,7 @@ get.miss(data, type = c("samples", "snps"), plot = TRUE, verbose = TRUE)
 \item{verbose}{logical. Whether to show progress}
 }
 \description{
-A function to get missingness of snps data on a per-individual basis similar to --missing-indiv option in vcftools
+A function to get the percentage of missing data of snps per SNP and per sample
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")

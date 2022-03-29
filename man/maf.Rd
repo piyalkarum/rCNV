@@ -7,9 +7,9 @@
 maf(h.table, AD = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{h.table}{a data frame of allele depth values generated from hetTgen}
+\item{h.table}{allele depth table generated from the function \link[rCNV]{hetTgen}}
 
-\item{AD}{logical. If TRUE a allele depth table similar to hetTgen output will be returns; If FALSE, individual AD values per SNP will be returned in a list.}
+\item{AD}{logical. If TRUE a allele depth table similar to \link[rCNV]{hetTgen} output will be returns; If FALSE, individual AD values per SNP will be returned in a list.}
 
 \item{verbose}{logical. Show progress}
 }

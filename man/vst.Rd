@@ -15,7 +15,7 @@ vst(AD, pops, id.list = NULL, qGraph = TRUE, ...)
 
 \item{qGraph}{logical. Plot the network plot based on Vst values (see details)}
 
-\item{...}{additional arguments passed to qgraph}
+\item{...}{additional arguments passed to \link[qgraph]{qgraph}}
 }
 \value{
 Returns a matrix of pairwise Vst values for populations

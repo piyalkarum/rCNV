@@ -7,7 +7,7 @@
 relatedness(vcf, plot = TRUE, threshold = 0.5, verbose = TRUE)
 }
 \arguments{
-\item{vcf}{an imported vcf file in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"}
+\item{vcf}{an imported vcf file in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}}
 
 \item{plot}{logical. Whether to plot relatedness of samples against themselves, among themselves and outliers}
 

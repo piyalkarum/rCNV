@@ -2,7 +2,7 @@
 #'
 #' Get alternative allele frequency accross all individuals per SNP from the genotype table
 #'
-#' @param gtt a genotype table produced from hetTgen (or similar)
+#' @param gtt a genotype table produced from \link[rCNV]{hetTgen} (or similar)
 #' @param verbose logical. whether to show the progress of the analysis
 #'
 #' @details Use hetTgen function to generate the genotype table with the "GT" option
@@ -39,5 +39,3 @@ allele.freq<-function(gtt,verbose=TRUE){
   tmp<-data.frame(gtt[,1:3],tmp)
   return(tmp)
 }
-
-

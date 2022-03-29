@@ -13,7 +13,7 @@ sig.hets(
 )
 }
 \arguments{
-\item{a.info}{allele info table generated from filtered vcfs using the function 'allele.info()'}
+\item{a.info}{allele info table generated from filtered vcfs using the function '\link[rCNV]{llele.info}}
 
 \item{method}{character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
 
@@ -24,13 +24,10 @@ sig.hets(
 \item{...}{other arguments passed to \link[graphics]{plot}}
 }
 \value{
-A matrix of expected heterozygote proportions from the observed data with p-value indicating significantly deviating snps, thus duplicates.
-If enabled, the function also plots the recognized duplicates in red and expected (singlets) in black on a prop. of homozygote alt Vs. prop. of heterozygote plot\cr
-p2  - observed homozygote reference\cr
-het  - expected
+A matrix of expected heterozygote proportions from the observed data with p-value indicating significance of deviation.
 }
 \description{
-This function will recognize the SNPs that are significantly different from the expected under HWE and plot putatively duplicated snps
+This function will recognize the SNPs with a proportion of heterozygotes significantly higher than expected under HWE and plot putatively duplicated snps
 }
 \examples{
 \dontrun{data(alleleINF)

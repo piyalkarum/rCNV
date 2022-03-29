@@ -15,7 +15,7 @@ dupGet(
 )
 }
 \arguments{
-\item{data}{data frame of the output of allele.info()}
+\item{data}{data frame of the output of \link[rCNV]{allele.info}}
 
 \item{test}{character. type of test to be used for significance. See detials}
 
@@ -30,7 +30,7 @@ dupGet(
 \item{...}{additional parameters to be passed on to \link[graphics]{plot}}
 }
 \value{
-Returs a data frame of snps/alles with their duplication status
+Returns a data frame of snps/alleles with their duplication status
 }
 \description{
 Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.

@@ -7,7 +7,7 @@
 vcf.stat(vcf, plot = TRUE, ...)
 }
 \arguments{
-\item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}
+\item{vcf}{an imported vcf file in data.frame or matrix format using  \link[rCNV]{readVCF}}
 
 \item{plot}{logical. Whether to plot the (12) parameters}
 

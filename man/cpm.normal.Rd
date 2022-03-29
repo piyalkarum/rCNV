@@ -15,7 +15,7 @@ cpm.normal(
 )
 }
 \arguments{
-\item{het.table}{a data frame or matrix of coverage (output of hetTgen with "AD")}
+\item{het.table}{allele depth table generated from the function \link[rCNV]{hetTgen}}
 
 \item{method}{character. method to be used (see detials). Default="TMM"}
 
@@ -25,7 +25,7 @@ cpm.normal(
 
 \item{Weighting}{logical, whether to compute (asymptotic binomial precision) weights}
 
-\item{Acutoff}{numeric, cutoff on "A" values to use before trimming}
+\item{Acutoff}{numeric, cutoff on "A" values to use before trimming (only for TMM(ex))}
 
 \item{verbose}{logical. show progress}
 }

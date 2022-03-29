@@ -11,7 +11,7 @@ hetTgen(
 )
 }
 \arguments{
-\item{vcf}{an imported vcf file in data.frame or matrix format using "readVCF"}
+\item{vcf}{an imported vcf file in data.frame or matrix format using \link[rCNV]{readVCF}}
 
 \item{info.type}{character. "AD"=allele depth value, "AD-tot"=allele total depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.}
 

@@ -7,11 +7,11 @@
 h.zygosity(vcf, plot = FALSE, pops = NA, verbose = TRUE)
 }
 \arguments{
-\item{vcf}{an imported vcf file in in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"}
+\item{vcf}{an imported vcf file in in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}}
 
 \item{plot}{logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided}
 
-\item{pops}{character. A list of population names}
+\item{pops}{character. A list of population names with the same length and order as the number of samples in the vcf}
 
 \item{verbose}{logical. Show progress}
 }

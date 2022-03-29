@@ -7,7 +7,7 @@
 allele.freq(gtt, verbose = TRUE)
 }
 \arguments{
-\item{gtt}{a genotype table produced from hetTgen (or similar)}
+\item{gtt}{a genotype table produced from \link[rCNV]{hetTgen} (or similar)}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }

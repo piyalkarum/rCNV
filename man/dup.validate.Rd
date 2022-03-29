@@ -7,7 +7,7 @@
 dup.validate(d.detect, window.size = 100)
 }
 \arguments{
-\item{d.detect}{a data frame of detected SNPs of duplicates/singlets (output of dupGet)}
+\item{d.detect}{a data frame of detected SNPs of duplicates/singlets (output of \link[rCNV]{dupGet})}
 
 \item{window.size}{numerical. a single value of the desired moving window size (default=100 bp)}
 }

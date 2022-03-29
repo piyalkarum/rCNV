@@ -51,9 +51,9 @@ return(V)}
 #' Determine per sample heterozygosity and inbreeding coefficient
 #'
 #' This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality.
-#' @param vcf an imported vcf file in in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"
+#' @param vcf an imported vcf file in in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}
 #' @param plot logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided
-#' @param pops character. A list of population names
+#' @param pops character. A list of population names with the same length and order as the number of samples in the vcf
 #' @param verbose logical. Show progress
 #' @importFrom graphics boxplot
 #' @return Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with their inbreeding coefficients.
@@ -87,12 +87,9 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
     if(is.na(pops[1])){
       warning("Please provide a population list")
     } else {
-      hh$pop<-"ungrouped"
-      for(i in seq_along(pops)){
-        hh$pop[grep(pops[i],hh$ind)]<-pops[i]
-      }
+      hh$pop<-pops
       if(length(unique(hh$pop))<=1){
-        warning("population names must be a part of individual names")
+        warning("individuals must come from at least two populations")
       }
       boxplot(hh$Fis~hh$pop,ann=F)
     }
@@ -105,7 +102,7 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #'
 #' Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 equation 6, on a per sample basis (with itself and others), using SNPs.
 #'
-#' @param vcf an imported vcf file in a list using "readVCF" or a data frame of genotypes generated using "hetTgen"
+#' @param vcf an imported vcf file in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}
 #' @param plot logical. Whether to plot relatedness of samples against themselves, among themselves and outliers
 #' @param threshold numerical. A value indicating to filter the individuals of relatedness among themselves. Default=0.5 (siblings)
 #' @param verbose logical. Show progress.
@@ -185,7 +182,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 #'
 #' This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details & values).
 #'
-#' @param vcf an imported vcf file in data.frame or matrix format using "readVCF"
+#' @param vcf an imported vcf file in data.frame or matrix format using  \link[rCNV]{readVCF}
 #' @param plot logical. Whether to plot the (12) parameters
 #' @param ... other arguments passed on to \link[graphics]{plot} (e.g. col,border)
 #'
