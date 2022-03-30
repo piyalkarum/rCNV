@@ -22,7 +22,7 @@ ease.
 <https://piyalkarum.github.io/rCNV/> and navigate to “Get started” where
 all the functions and usage are explained with ample examples.***
 
-##Installation CRAN link to be added
+## Installation CRAN link to be added
 
 You can install the development version of rCNV from
 [GitHub](https://github.com/) with:
@@ -33,6 +33,6 @@ You can install the development version of rCNV from
 
 Please don’t forget to cite us if you use the package.
 
-##How to cite
+## How to cite
 
-\*Publication to be added
+* Publication to be added

@@ -83,7 +83,7 @@ genotype table</p>
 <span class="r-in"><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readVCF.html">readVCF</a></span><span class="op">(</span>vcf.file.path<span class="op">=</span><span class="va">vcf.file.path</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fread(vcf.file.path, sep = "\t", skip = "#CHROM", verbose = verbose):</span> File '/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/example.raw.vcf.gz' does not exist or is non-readable. getwd()=='/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/docs/reference'</span>
 <span class="r-in"><span class="va">het.table</span><span class="op">&lt;-</span><span class="fu"><a href="hetTgen.html">hetTgen</a></span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"GT"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(vcf, "list"):</span> object 'vcf' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in hetTgen(vcf, "GT"):</span> object 'vcf' not found</span>
 <span class="r-in"><span class="va">frQ</span><span class="op">&lt;-</span><span class="fu">allele.freq</span><span class="op">(</span><span class="va">het.table</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in allele.freq(het.table):</span> object 'het.table' not found</span>
 <span class="r-in"></span>

@@ -104,7 +104,7 @@ large proportion of the heritability for human height. Nat Genet 42, 565–569
 <span class="r-in"><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readVCF.html">readVCF</a></span><span class="op">(</span>vcf.file.path<span class="op">=</span><span class="va">vcf.file.path</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fread(vcf.file.path, sep = "\t", skip = "#CHROM", verbose = verbose):</span> File '/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/example.raw.vcf.gz' does not exist or is non-readable. getwd()=='/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/docs/reference'</span>
 <span class="r-in"><span class="va">relate</span><span class="op">&lt;-</span><span class="fu">relatedness</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(vcf, "list"):</span> object 'vcf' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in relatedness(vcf):</span> object 'vcf' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

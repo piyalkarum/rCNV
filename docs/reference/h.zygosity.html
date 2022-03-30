@@ -96,7 +96,7 @@ order as the number of samples in the vcf</p></dd>
 <span class="r-in"><span class="va">pp</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">$</span><span class="va">vcf</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span><span class="op">]</span>,<span class="fl">1</span>,<span class="fl">8</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.data.frame(x):</span> object 'vcf' not found</span>
 <span class="r-in"><span class="va">hzygots</span><span class="op">&lt;-</span><span class="fu">h.zygosity</span><span class="op">(</span><span class="va">vcf</span>,plot<span class="op">=</span><span class="cn">TRUE</span>,pops<span class="op">=</span><span class="va">pp</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(vcf, "list"):</span> object 'vcf' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h.zygosity(vcf, plot = TRUE, pops = pp):</span> object 'vcf' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
