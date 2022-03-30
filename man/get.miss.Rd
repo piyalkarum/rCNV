@@ -7,16 +7,23 @@
 get.miss(data, type = c("samples", "snps"), plot = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{data}{a list containing imported vcf file using \link[rCNV]{readVCF} or genotype table generated using \link[rCNV]{hetTgen}}
+\item{data}{a list containing imported vcf file using \code{readVCF} or
+genotype table generated using \code{hetTgen}}
 
-\item{type}{character. Get the missing percentages per sample or per SNP."samples" or "snps", default both}
+\item{type}{character.  Missing percentages per sample
+\dQuote{samples} or per SNP \dQuote{snps}, default both}
 
-\item{plot}{logical. Whether to plot the missingness density with 95\% quantile}
+\item{plot}{logical. Whether to plot the missingness density with ninety
+five percent quantile}
 
 \item{verbose}{logical. Whether to show progress}
 }
+\value{
+Returns a data frame of allele depth or genotypes
+}
 \description{
-A function to get the percentage of missing data of snps per SNP and per sample
+A function to get the percentage of missing data of snps per SNP and per
+sample
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")

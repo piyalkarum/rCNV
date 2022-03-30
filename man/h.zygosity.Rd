@@ -7,19 +7,26 @@
 h.zygosity(vcf, plot = FALSE, pops = NA, verbose = TRUE)
 }
 \arguments{
-\item{vcf}{an imported vcf file in in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}}
+\item{vcf}{an imported vcf file in in a list using
+\code{readVCF} or a data frame of genotypes generated using
+\code{hetTgen}}
 
-\item{plot}{logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided}
+\item{plot}{logical. Whether to plot a boxplot of inbreeding coefficients
+for populations. A list of populations must be provided}
 
-\item{pops}{character. A list of population names with the same length and order as the number of samples in the vcf}
+\item{pops}{character. A list of population names with the same length and
+order as the number of samples in the vcf}
 
 \item{verbose}{logical. Show progress}
 }
 \value{
-Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with their inbreeding coefficients.
+Returns a data frame of expected \dQuote{E(Hom)}, observed
+\dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
 }
 \description{
-This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality.
+This function will calculate the heterozygosity on a per-sample basis from
+vcf files (snps), and most importantly inbreeding coefficient which is used
+to filter out the samples with bad mapping quality.
 }
 \examples{
 \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")

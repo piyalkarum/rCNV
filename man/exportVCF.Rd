@@ -9,9 +9,11 @@ exportVCF(out.vcf, out.path, compress = TRUE)
 \arguments{
 \item{out.vcf}{a matrix or data frame in vcf file format to be exported}
 
-\item{out.path}{a character string of output path for the vcf file; should end in the name as the vcf file and .vcf. See examples}
+\item{out.path}{a character string of output path for the vcf file;
+should end in the name as the vcf file and .vcf. See examples}
 
-\item{compress}{logical. whether to compress the output file. If true, the file will be .gz compressed}
+\item{compress}{logical. whether to compress the output file. If \code{TRUE},
+the file will be \code{.gz} compressed}
 }
 \value{
 export a vcf file

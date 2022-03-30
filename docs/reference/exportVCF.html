@@ -62,9 +62,11 @@
     <dl><dt>out.vcf</dt>
 <dd><p>a matrix or data frame in vcf file format to be exported</p></dd>
 <dt>out.path</dt>
-<dd><p>a character string of output path for the vcf file; should end in the name as the vcf file and .vcf. See examples</p></dd>
+<dd><p>a character string of output path for the vcf file;
+should end in the name as the vcf file and .vcf. See examples</p></dd>
 <dt>compress</dt>
-<dd><p>logical. whether to compress the output file. If true, the file will be .gz compressed</p></dd>
+<dd><p>logical. whether to compress the output file. If <code>TRUE</code>,
+the file will be <code>.gz</code> compressed</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -81,7 +83,7 @@
 <span class="r-in"><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readVCF.html">readVCF</a></span><span class="op">(</span><span class="va">vcf.file.path</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fread(vcf.file.path, sep = "\t", skip = "#CHROM", verbose = verbose):</span> object 'vcf.file.path' not found</span>
 <span class="r-in"><span class="fu">exportVCF</span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"../exVcf.vcf"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in exportVCF(vcf, "../exVcf.vcf"):</span> object 'vcf' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(out.vcf, "list"):</span> object 'vcf' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

@@ -12,15 +12,21 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 
 #' Identify significantly different heterozygotes from SNPs data
 #'
-#' This function will recognize the SNPs with a proportion of heterozygotes significantly higher than expected under HWE and plot putatively duplicated snps
+#' This function will recognize the SNPs with a proportion of heterozygotes
+#'  significantly higher than expected under HWE and plot putatively
+#'  duplicated snps
 #'
-#' @param a.info allele info table generated from filtered vcfs using the function '\link[rCNV]{allele.info}
-#' @param method character. Method for testing significance. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
-#' @param plot logical. Whether to plot the identified duplicated snps with the expected values
+#' @param a.info allele info table generated from filtered vcfs using the
+#' function \code{allele.info}
+#' @param method character. Method for testing significance. Fisher exact test
+#'  (\code{fisher}) or Chi squre test (\code{chi.sq})
+#' @param plot logical. Whether to plot the identified duplicated snps with
+#' the expected values
 #' @param verbose logical, if TRUE, the progress is shown
-#' @param ... other arguments passed to \link[graphics]{plot}
+#' @param ... other arguments passed to \code{plot}
 #'
-#' @return A matrix of expected heterozygote proportions from the observed data with p-value indicating significance of deviation.
+#' @return A matrix of expected heterozygote proportions from the observed
+#' data with p-value indicating significance of deviation.
 #'
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
@@ -30,7 +36,8 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' duplicates<-sig.hets(AI,plot=TRUE)}
 #'
 #' @importFrom grDevices col2rgb rgb
-#' @importFrom stats fisher.test median quantile rbinom sd smooth.spline chisq.test
+#' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
+#' chisq.test
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom colorspace rainbow_hcl
 #' @export
@@ -68,14 +75,17 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
 
 #' Plot duplicates
 #'
-#' The function plots detected duplicates from functions "sig.snps", and "dupGet"
+#' The function plots detected duplicates from functions \code{sig.snps}, and
+#' \code{dupGet}
 #'
 #' @param ds a data frame of detected duplicates
-#' @param ... other graphical parameters to be passed to the function \link[graphics]{plot}
+#' @param \dots other graphical parameters to be passed to the function
+#' \code{plot}
 #'
 #' @importFrom colorspace rainbow_hcl
 #'
-#' @return Plots duplicates on proportion of heterozygotes vs allele median ratio
+#' @return Plots duplicates on proportion of heterozygotes vs allele
+#' median ratio
 #'
 #' @author Piyal Karunarathne
 #'
@@ -105,24 +115,35 @@ dup.plot<-function(ds,...){
 
 #' Detect duplicates from SNPs
 #'
-#' Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.
+#' Detect duplicated snps using excess of heterozygotes
+#' (alleles that do not follow HWE) and snp deviates
+#' (alleles that do not follow a normal or chi-square distribution).
+#'  See details.
 #'
-#' @param data data frame of the output of \link[rCNV]{allele.info}
+#' @param data data frame of the output of \code{allele.info}
 #' @param test character. type of test to be used for significance. See detials
-#' @param intersection logical, whether to use the intersection of the methods specified in test (if more than one)
-#' @param method character. method for testing excess of heterozygotes. Fisher exact test ("fisher") or Chi squre test ("chi.sq")
-#' @param plot logical. whether to plot the detected singlets and duplicates on allele ratio vs. proportion of heterozygotes plot.
+#' @param intersection logical, whether to use the intersection of the methods
+#'  specified in \code{test} (if more than one)
+#' @param method character. method for testing excess of heterozygotes.
+#'  Fisher exact test (\code{fisher}) or Chi squre test (\code{chi.sq})
+#' @param plot logical. whether to plot the detected singlets and duplicates
+#'  on allele ratio vs. proportion of heterozygotes plot.
 #' @param verbose logical. show progress
-#' @param ... additional parameters to be passed on to \link[graphics]{plot}
+#' @param \dots additional parameters passed on to \code{plot}
 #'
 #' @importFrom colorspace terrain_hcl
 #'
 #' @return Returns a data frame of snps/alleles with their duplication status
 #'
-#' @details Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \cr
-#' 1. Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \cr
-#' 2. chi-square test (see references for more details on the method) \cr
-#' Users can pick among Z-score for heterozygotes (z.het, chi.het), all allele combinations (z.all, chi.all) and the assumption of no probe bias p=0.5 (z.05, chi.05)
+#' @details Duplicates are detected with both excess of heterozygosity
+#' according to HWE and deviant SNPs where deviants are detected using the
+#'  following methods:
+#' 1. Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}
+#' 2. chi-square test (see references for more details on the method)
+#'
+#' Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
+#' all allele combinations (\code{z.all, chi.all}) and the assumption of no
+#' probe bias p=0.5 (\code{z.05, chi.05})
 #'
 #' @author Piyal Karunarathne
 #'

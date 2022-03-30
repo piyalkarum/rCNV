@@ -7,11 +7,14 @@
 relatedness(vcf, plot = TRUE, threshold = 0.5, verbose = TRUE)
 }
 \arguments{
-\item{vcf}{an imported vcf file in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}}
+\item{vcf}{an imported vcf file in a list using \code{readVCF}
+or a data frame of genotypes generated using \code{hetTgen}}
 
-\item{plot}{logical. Whether to plot relatedness of samples against themselves, among themselves and outliers}
+\item{plot}{logical. Whether to plot relatedness of samples against
+themselves, among themselves and outliers}
 
-\item{threshold}{numerical. A value indicating to filter the individuals of relatedness among themselves. Default=0.5 (siblings)}
+\item{threshold}{numerical. A value indicating to filter the individuals of
+relatedness among themselves. Default \code{0.5} (siblings)}
 
 \item{verbose}{logical. Show progress.}
 }
@@ -19,10 +22,14 @@ relatedness(vcf, plot = TRUE, threshold = 0.5, verbose = TRUE)
 A data frame of individuals and relatedness score Ajk
 }
 \description{
-Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 equation 6, on a per sample basis (with itself and others), using SNPs.
+Relatedness is determined according to genome-wide relationship assessment
+of Yang et al. 2010 equation 6, on a per sample basis (with itself and
+others), using SNPs.
 }
 \details{
-According to Yang et al. (2010), outbreeding non-related pairs should have a relatedness value of 0 while the individual with itself will have a relatedness value of 1. Relatedness value of ~0.5 indicates siblings.
+According to Yang et al. (2010), outbreeding non-related pairs should have a
+relatedness value of zero while the individual with itself will have a
+relatedness value of one. Relatedness value of ~0.5 indicates siblings.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
@@ -31,8 +38,9 @@ relate<-relatedness(vcf)
 
 }
 \references{
-Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a large proportion of the heritability for human height. Nat Genet 42, 565–569 (2010).
-https://doi.org/10.1038/ng.608
+Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a
+large proportion of the heritability for human height. Nat Genet 42, 565–569
+(2010).
 }
 \author{
 Piyal Karunarathne

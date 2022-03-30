@@ -15,8 +15,8 @@ readVCF(vcf.file.path, verbose = FALSE)
 Returns a list with vcf table in a data frame, excluding meta data.
 }
 \description{
-Function to import raw single/multi-sample VCF files.
-The function required the R-package "data.table" for faster importing.
+Function to import raw single and multi-sample VCF files.
+The function required the R-package \code{data.table} for faster importing.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")

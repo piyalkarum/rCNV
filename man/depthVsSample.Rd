@@ -17,18 +17,23 @@ depthVsSample(
 
 \item{sam.len}{maximum no. of samples to be simulated}
 
-\item{incr}{a vector of two integers indicating increment size for both depth and no. samples ranges}
+\item{incr}{a vector of two integers indicating increment size for both
+depth and no. samples ranges}
 
-\item{plot}{logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)}
+\item{plot}{logical. Whether to plot the output (a plot of no. samples
+vs median depth of coverage colored by median allele ratios)}
 
 \item{plot.cols}{character. Two colors to add to the gradient}
 }
 \value{
-A matrix of median allele ratios where rows are the number of samples and columns are depth of coverage values
+A matrix of median allele ratios where rows are the number of
+samples and columns are depth of coverage values
 }
 \description{
-This function will simulate the expected median allele ratios under HWE for given ranges of no. of samples and depth coverage values.
-This is useful if you need to find the cutoff values of allele ratios for different no. of samples and depth of coverage values in your dataset.
+This function will simulate the expected median allele ratios under HWE
+for given ranges of no. of samples and depth coverage values.
+This is useful if you need to find the cutoff values of allele ratios for
+different no. of samples and depth of coverage values in your dataset.
 }
 \examples{
 \dontrun{depthVsSample(cov.len=50,sam.len=100)}

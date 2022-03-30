@@ -7,15 +7,17 @@
 allele.freq(gtt, verbose = TRUE)
 }
 \arguments{
-\item{gtt}{a genotype table produced from \link[rCNV]{hetTgen} (or similar)}
+\item{gtt}{a genotype table produced from \code{hetTgen} (or similar)}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
 \description{
-Get alternative allele frequency accross all individuals per SNP from the genotype table
+Get alternative allele frequency accross all individuals per SNP from the
+genotype table
 }
 \details{
-Use hetTgen function to generate the genotype table with the "GT" option
+Use hetTgen function to generate the genotype table with the
+\code{GT} option
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")

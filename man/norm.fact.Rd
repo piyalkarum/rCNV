@@ -14,26 +14,36 @@ norm.fact(
 )
 }
 \arguments{
-\item{df}{a data frame or matrix of allele depth values (total depth per snp per sample)}
+\item{df}{a data frame or matrix of allele depth values
+(total depth per snp per sample)}
 
-\item{method}{character. method to be used (see detials). Default="TMM"}
+\item{method}{character. method to be used (see detials). Default \code{TMM}}
 
-\item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be trimmed in log transformation}
+\item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be
+trimmed in log transformation}
 
-\item{sumTrim}{numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"}
+\item{sumTrim}{numeric. amount of trim to use on the combined absolute
+levels (\dQuote{A} values) for method \code{TMM}}
 
-\item{Weighting}{logical, whether to compute (asymptotic binomial precision) weights}
+\item{Weighting}{logical, whether to compute (asymptotic binomial precision)
+weights}
 
-\item{Acutoff}{numeric, cutoff on "A" values to use before trimming}
+\item{Acutoff}{numeric, cutoff on \dQuote{A} values to use before trimming}
 }
 \value{
 Returns a numerical vector of normalization factors for each sample
 }
 \description{
-This function calculates the normalization factor for each sample using different methods. See details.
+This function calculates the normalization factor for each sample using
+different methods. See details.
 }
 \details{
-Originally described for normalization of RNA sequences (Robinson & Oshlack 2010), this function computes normalization (scaling) factors to convert observed library sizes into effective library sizes. It uses the method trimmed means of M-values proposed by Robinson & Oshlack (2010). See the original publication and edgeR package for more information.
+Originally described for normalization of RNA sequences
+(Robinson & Oshlack 2010), this function computes normalization (scaling)
+factors to convert observed library sizes into effective library sizes.
+It uses the method trimmed means of M-values proposed by Robinson &
+Oshlack (2010). See the original publication and \code{edgeR} package
+for more information.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
@@ -45,8 +55,11 @@ norm.fact(df)
 }
 \references{
 \itemize{
-\item{Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25}
-\item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140}
+\item{Robinson MD, Oshlack A (2010). A scaling normalization method for
+differential expression analysis of RNA-seq data. Genome Biology 11, R25}
+\item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
+package for differential expression analysis of digital gene expression
+data. Bioinformatics 26, 139-140}
 }
 }
 \author{

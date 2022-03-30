@@ -1,11 +1,13 @@
 #' Generate allele frequency table (from genotypes)
 #'
-#' Get alternative allele frequency accross all individuals per SNP from the genotype table
+#' Get alternative allele frequency accross all individuals per SNP from the
+#'  genotype table
 #'
-#' @param gtt a genotype table produced from \link[rCNV]{hetTgen} (or similar)
+#' @param gtt a genotype table produced from \code{hetTgen} (or similar)
 #' @param verbose logical. whether to show the progress of the analysis
 #'
-#' @details Use hetTgen function to generate the genotype table with the "GT" option
+#' @details Use hetTgen function to generate the genotype table with the
+#' \code{GT} option
 #'
 #' @author Piyal Karunarathne
 #' @examples

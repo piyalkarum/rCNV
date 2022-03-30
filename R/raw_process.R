@@ -101,13 +101,16 @@ gg<-function(x){
 
 #' Remove MAF allele
 #'
-#' A function to remove the alleles with minimum allele frequency and keep only a biallelic matrix when loci are multi-allelic
+#' A function to remove the alleles with minimum allele frequency and keep only
+#' a biallelic matrix when loci are multi-allelic
 #'
-#' @param h.table allele depth table generated from the function \link[rCNV]{hetTgen}
-#' @param AD logical. If TRUE a allele depth table similar to \link[rCNV]{hetTgen} output will be returns; If FALSE, individual AD values per SNP will be returned in a list.
+#' @param h.table allele depth table generated from the function \code{hetTgen}
+#' @param AD logical. If TRUE a allele depth table similar to \code{hetTgen}
+#' output will be returns; If \code{FALSE}, individual AD values per SNP will be
+#' returned in a list.
 #' @param verbose logical. Show progress
 #'
-#' @return a data frame or a list
+#' @return A data frame or a list
 #'
 #' @author Piyal Karunarathne
 #'
@@ -139,8 +142,8 @@ maf<-function(h.table,AD=TRUE,verbose=TRUE){
 
 #' Import VCF file
 #'
-#' Function to import raw single/multi-sample VCF files.
-#' The function required the R-package "data.table" for faster importing.
+#' Function to import raw single and multi-sample VCF files.
+#' The function required the R-package \code{data.table} for faster importing.
 #'
 #' @param vcf.file.path path to the vcf file
 #' @param verbose logical. show progress
@@ -163,14 +166,22 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 
 #' Generate allele depth or genotype table
 #'
-#' hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
+#' hetTgen extracts the read depth and coverage values for each snp for all
+#' the individuals from a vcf file generated from readVCF (or GatK
+#' VariantsToTable: see details)
 #'
-#' @param vcf an imported vcf file in a list using \link[rCNV]{readVCF}
-#' @param info.type character. "AD"=allele depth value, "AD-tot"=total allele depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.
+#' @param vcf an imported vcf file in a list using \code{readVCF}
+#' @param info.type character. \code{AD}: allele depth value, {AD-tot}:total
+#' allele depth, \code{DP}=unfiltered depth (sum), \code{GT}: genotype,
+#' \code{GT-012}:genotype in 012 format, \code{GT-AB}:genotype in AB format.
+#' Default \code{AD},  See details.
 #' @param verbose logical. whether to show the progress of the analysis
 #'
-#' @details If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
-#' For info.type "GT" option is provided to extract the genotypes of individuals by snp.
+#' @details If you generate the depth values for allele by sample using GatK
+#' VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate
+#' the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
+#' For info.type \code{GT} option is provided to extract the genotypes of
+#' individuals by snp.
 #'
 #' @author Piyal Karunarathne
 #' @importFrom utils setTxtProgressBar txtProgressBar
@@ -245,17 +256,24 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
 
 #' Get missingness of individuals in raw vcf
 #'
-#' A function to get the percentage of missing data of snps per SNP and per sample
+#' A function to get the percentage of missing data of snps per SNP and per
+#' sample
 #'
-#' @param data a list containing imported vcf file using \link[rCNV]{readVCF} or genotype table generated using \link[rCNV]{hetTgen}
-#' @param type character. Get the missing percentages per sample or per SNP."samples" or "snps", default both
-#' @param plot logical. Whether to plot the missingness density with 95% quantile
+#' @param data a list containing imported vcf file using \code{readVCF} or
+#' genotype table generated using \code{hetTgen}
+#' @param type character.  Missing percentages per sample
+#' \dQuote{samples} or per SNP \dQuote{snps}, default both
+#' @param plot logical. Whether to plot the missingness density with ninety
+#' five percent quantile
 #' @param verbose logical. Whether to show progress
 #'
 #'
 #' @author Piyal Karunarathne
 #' @importFrom graphics abline polygon
 #' @importFrom stats density
+#'
+#' @returns
+#' Returns a data frame of allele depth or genotypes
 #'
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
@@ -315,14 +333,21 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 
 #' Format genotype for BayEnv and BayPass
 #'
-#' This function generates necessary genotype count formats for BayEnv and BayPass with a subset of SNPs
+#' This function generates necessary genotype count formats for BayEnv and
+#' BayPass with a subset of SNPs
 #'
-#' @param gt multi-vector. an imported data.frame of genotypes or genotype data frame generated by \link[rCNV]{hetTgen} or path to GT.FORMAT file generated from VCFTools
-#' @param info a data frame containing sample and population information. It must have "sample" and "population" columns
-#' @param snp.subset logical. whether to generate a randomly sampled subset of 1/10 snps
-#' @param verbose logical. If TRUE shows progress
+#' @param gt multi-vector. an imported data.frame of genotypes or genotype
+#' data frame generated by \code{hetTgen} or path to GT.FORMAT
+#' file generated from VCFTools
+#' @param info a data frame containing sample and population information.
+#' It must have \dQuote{sample} and \dQuote{population} columns
+#' @param snp.subset logical. whether to generate a randomly sampled tenfold
+#' subset
+#' @param verbose logical. If \code{TRUE} shows progress
 #'
-#' @return Returns a list with formated genotype data: $hor - snps in horizontal format (two lines per snp); $ver - vertical format (two column per snp); $hor.chunk - a subset snps of $hor
+#' @return Returns a list with formated genotype data: \code{$hor} - snps
+#' in horizontal format (two lines per snp); \code{$ver} - vertical format
+#' (two column per snp); \code{$hor.chunk} - a subset snps of \code{$hor}
 #'
 #' @author Piyal Karunarathne
 #'
@@ -395,15 +420,22 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
 
 #' Correct allele depth values
 #'
-#' A function to correct depth values with odd number of coverage values due to sequencing anomalies or miss classification where genotype is homozygous and depth values indicate heterozygosity.
-#' The function adds a value of one to the allele with the lowest depth value for when odd number anomalies or make the depth value zero for when miss-classified. The genotype table must be provided for the latter.
+#' A function to correct depth values with odd number of coverage values due to
+#' sequencing anomalies or miss classification where genotype is homozygous and
+#' depth values indicate heterozygosity.
+#' The function adds a value of one to the allele with the lowest depth value
+#' for when odd number anomalies or make the depth value zero for when
+#' miss-classified. The genotype table must be provided for the latter.
 #'
-#' @param het.table allele depth table generated from the function \link[rCNV]{hetTgen}
+#' @param het.table allele depth table generated from the function
+#' \code{hetTgen}
 #' @param gt.table genotype table generated from the function hetTgen
-#' @param odd.correct logical, to correct for odd number anomalies in AD values. default TRUE
-#' @param verbose logical. show progress. Default = TRUE
+#' @param odd.correct logical, to correct for odd number anomalies in AD values.
+#'  default \code{TRUE}
+#' @param verbose logical. show progress. Default \code{TRUE}
 #'
-#' @return Returns the coverage corrected allele depth table similar to the output of \link[rCNV]{hetTgen}
+#' @return Returns the coverage corrected allele depth table similar to the
+#'  output of \code{hetTgen}
 #'
 #' @author Piyal Karunarathne
 #'

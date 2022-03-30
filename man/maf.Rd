@@ -7,17 +7,20 @@
 maf(h.table, AD = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{h.table}{allele depth table generated from the function \link[rCNV]{hetTgen}}
+\item{h.table}{allele depth table generated from the function \code{hetTgen}}
 
-\item{AD}{logical. If TRUE a allele depth table similar to \link[rCNV]{hetTgen} output will be returns; If FALSE, individual AD values per SNP will be returned in a list.}
+\item{AD}{logical. If TRUE a allele depth table similar to \code{hetTgen}
+output will be returns; If \code{FALSE}, individual AD values per SNP will be
+returned in a list.}
 
 \item{verbose}{logical. Show progress}
 }
 \value{
-a data frame or a list
+A data frame or a list
 }
 \description{
-A function to remove the alleles with minimum allele frequency and keep only a biallelic matrix when loci are multi-allelic
+A function to remove the alleles with minimum allele frequency and keep only
+a biallelic matrix when loci are multi-allelic
 }
 \examples{
 mf<-maf(ADtable)

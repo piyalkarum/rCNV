@@ -18,34 +18,50 @@ allele.info(
 )
 }
 \arguments{
-\item{X}{allele depth table generated from the function \link[rCNV]{hetTgen} (non-normalized)}
+\item{X}{allele depth table generated from the function
+\code{hetTgen} (non-normalized)}
 
-\item{x.norm}{a data frame of normalized allele coverage. output of cpm.normal(). If not provided, calculated using X.}
+\item{x.norm}{a data frame of normalized allele coverage, output of
+\code{cpm.normal}. If not provided, calculated using \code{X}.}
 
-\item{method}{character. method to be used for normalization (see \link[rCNV]{cpm.normal} detials). Default="TMM"}
+\item{method}{character. method to be used for normalization
+(see \code{cpm.normal} detials). Default \code{TMM}}
 
-\item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be trimmed in log transformation}
+\item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be
+trimmed in log transformation}
 
-\item{sumTrim}{numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"}
+\item{sumTrim}{numeric. amount of trim to use on the combined absolute
+levels (\dQuote{A} values) for method \code{TMM}}
 
-\item{Weighting}{logical, whether to compute (asymptotic binomial precision) weights}
+\item{Weighting}{logical, whether to compute (asymptotic binomial precision)
+weights}
 
-\item{Acutoff}{numeric, cutoff on "A" values to use before trimming}
+\item{Acutoff}{numeric, cutoff on \dQuote{A} values to use before trimming}
 
-\item{plot.allele.cov}{logical, plot comparative plots of allele depth coverage in homozygotes and heterozygotes}
+\item{plot.allele.cov}{logical, plot comparative plots of allele depth
+coverage in homozygotes and heterozygotes}
 
 \item{verbose}{logical, whether to print progress}
 
-\item{...}{further arguments to be passed to \link[graphics]{plot}}
+\item{\dots}{further arguments to be passed to \code{plot}}
 }
 \value{
-Returns a data frame of median allele ratio, proportion of heterozygotes, number of heterozygotes, and allele probability at different assumptions with their chi-square significance
+Returns a data frame of median allele ratio, proportion of
+heterozygotes, number of heterozygotes, and allele probability at different
+assumptions with their chi-square significance
 }
 \description{
-The function to calculate allele median ratios, proportion of heterozygotes and allele probability values under different assumptions (see details), and their chi-square significance values for duplicate detection
+The function to calculate allele median ratios, proportion of heterozygotes
+and allele probability values under different assumptions (see details),
+and their chi-square significance values for duplicate detection
 }
 \details{
-Allele information generated here are individual SNP based and presents the proportion of heterozygotes, number of samples, and deviation of allele detection from a 1:1 ratio of reference and alternative alleles. The significance of the deviation is tested with Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }}, and chi-square test (see references for more details on the method).
+Allele information generated here are individual SNP based and presents the
+proportion of heterozygotes, number of samples, and deviation of allele
+detection from a 1:1 ratio of reference and alternative alleles.
+The significance of the deviation is tested with Z-score test
+\eqn{Z =\frac{\frac{N}{2}-N_{A}}{\sigma_{x}}},
+and chi-square test (see references for more details on the method).
 }
 \examples{
 \dontrun{data(ADtable)
@@ -54,7 +70,10 @@ AI<-allele.info(ADtable,x.norm=ADnorm)}
 }
 \references{
 \itemize{
-\item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.}
+\item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017).
+Paralogs are revealed by proportion of heterozygotes and deviations in read
+ratios in genotyping‐by‐sequencing data from natural populations.
+Molecular Ecology Resources, 17(4), 656-669.}
 \item{Karunarathne et al. 2022 (to be added)}
 }
 }

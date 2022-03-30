@@ -15,33 +15,44 @@ dupGet(
 )
 }
 \arguments{
-\item{data}{data frame of the output of \link[rCNV]{allele.info}}
+\item{data}{data frame of the output of \code{allele.info}}
 
 \item{test}{character. type of test to be used for significance. See detials}
 
-\item{intersection}{logical, whether to use the intersection of the methods specified in test (if more than one)}
+\item{intersection}{logical, whether to use the intersection of the methods
+specified in \code{test} (if more than one)}
 
-\item{method}{character. method for testing excess of heterozygotes. Fisher exact test ("fisher") or Chi squre test ("chi.sq")}
+\item{method}{character. method for testing excess of heterozygotes.
+Fisher exact test (\code{fisher}) or Chi squre test (\code{chi.sq})}
 
-\item{plot}{logical. whether to plot the detected singlets and duplicates on allele ratio vs. proportion of heterozygotes plot.}
+\item{plot}{logical. whether to plot the detected singlets and duplicates
+on allele ratio vs. proportion of heterozygotes plot.}
 
 \item{verbose}{logical. show progress}
 
-\item{...}{additional parameters to be passed on to \link[graphics]{plot}}
+\item{\dots}{additional parameters passed on to \code{plot}}
 }
 \value{
 Returns a data frame of snps/alleles with their duplication status
 }
 \description{
-Detect duplicated snps using excess of heterozygotes (alleles that do not follow HWE) and snp deviates (alleles that do not follow a normal/chi-square distribution). See details.
+Detect duplicated snps using excess of heterozygotes
+(alleles that do not follow HWE) and snp deviates
+(alleles that do not follow a normal or chi-square distribution).
+See details.
 }
 \details{
-Duplicates are detected with both excess of heterozygosity according to HWE and deviant SNPs where deviants are detected using the following methods \cr
+Duplicates are detected with both excess of heterozygosity
+according to HWE and deviant SNPs where deviants are detected using the
+following methods:
 \enumerate{
-\item Z-score test \deqn{Z =  \frac{ \frac{N}{2} -  N_{A}  }{    \sigma _{x}   }} \cr
-\item chi-square test (see references for more details on the method) \cr
-Users can pick among Z-score for heterozygotes (z.het, chi.het), all allele combinations (z.all, chi.all) and the assumption of no probe bias p=0.5 (z.05, chi.05)
+\item Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}
+\item chi-square test (see references for more details on the method)
 }
+
+Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
+all allele combinations (\code{z.all, chi.all}) and the assumption of no
+probe bias p=0.5 (\code{z.05, chi.05})
 }
 \examples{
 \dontrun{data(alleleINF)

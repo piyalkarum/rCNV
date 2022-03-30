@@ -7,26 +7,34 @@
 vst(AD, pops, id.list = NULL, qGraph = TRUE, ...)
 }
 \arguments{
-\item{AD}{data frame of total allele depth values of (duplicated, if id.list is not provided) SNPs}
+\item{AD}{data frame of total allele depth values of (duplicated, if
+\code{id.list} is not provided) SNPs}
 
-\item{pops}{character. A vector of population names for each individual. Must be the same length as the number of samples in AD}
+\item{pops}{character. A vector of population names for each individual.
+Must be the same length as the number of samples in AD}
 
-\item{id.list}{character. A vector of duplicated SNP IDs. Must match the IDs in the AD data frame}
+\item{id.list}{character. A vector of duplicated SNP IDs. Must match the IDs
+in the AD data frame}
 
-\item{qGraph}{logical. Plot the network plot based on Vst values (see details)}
+\item{qGraph}{logical. Plot the network plot based on Vst values
+(see details)}
 
-\item{...}{additional arguments passed to \link[qgraph]{qgraph}}
+\item{\dots}{additional arguments passed to \code{qgraph}}
 }
 \value{
 Returns a matrix of pairwise Vst values for populations
 }
 \description{
-This function calculates Vst (variant fixation index) for populations given a list of duplicated loci
+This function calculates Vst (variant fixation index) for populations given
+a list of duplicated loci
 }
 \details{
 Vst is calculated with the following equation
-\deqn{ V_{T} =   \frac{ V_{S} }{ V_{T} } } where VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size (see reference for more details)
-See qgraph help for details on qgraph output
+\deqn{V_{T} = \frac{ V_{S} }{V_{T}}} where VT is the variance of normalized
+read depths among all individuals from the two populations and VS is the
+average of the variance within each population, weighed for population size
+(see reference for more details)
+See \code{qgraph} help for details on qgraph output
 }
 \examples{
 \dontrun{data(alleleINF)
@@ -38,7 +46,8 @@ vst(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 
 }
 \references{
-Redon, Richard, et al. "Global variation in copy number in the human genome." nature 444.7118 (2006): 444-454
+Redon, Richard, et al. Global variation in copy number in the human genome.
+nature 444.7118 (2006): 444-454
 }
 \author{
 Piyal Karunarathne

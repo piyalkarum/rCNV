@@ -66,13 +66,19 @@ plot.svd <- function(MR,cols=c("red","cyan")){
 
 #' Simulate Allele Frequencies
 #'
-#' This function simulates allele frequencies of a desired population size under HWE
-#' @param n desired populations size (set this value same as your actual population size for an accurate simulation)
-#' @param nrun number of simulations to run on each allele frequency. The higher this number, the closer the simulations will be to the theoretical values (at the cost of computer power); 10000 is an optimal value.
+#' This function simulates allele frequencies of a desired population size
+#'  under HWE
+#' @param n desired populations size (set this value same as your actual
+#'  population size for an accurate simulation)
+#' @param nrun number of simulations to run on each allele frequency.
+#' The higher this number, the closer the simulations will be to the
+#' theoretical values (at the cost of computer power); 10000 is an optimal value.
 #' @param res desired resolution of the theoretical allele frequency
 #' @param plot logical. whether to plot the simulation
 #'
-#' @return A list of two matrices: 1. allele_freqs: theoretical allele frequency, 2. simulated_freqs: simulated frequencies at different confidence intervals
+#' @return A list of two matrices:
+#' 1. allele_freqs: theoretical allele frequency
+#' 2. simulated_freqs: simulated frequencies at different confidence intervals
 #'
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
@@ -116,16 +122,21 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 
 #' Simulate median allele ratios for varying no. of samples and depth coverage
 #'
-#' This function will simulate the expected median allele ratios under HWE for given ranges of no. of samples and depth coverage values.
-#' This is useful if you need to find the cutoff values of allele ratios for different no. of samples and depth of coverage values in your dataset.
+#' This function will simulate the expected median allele ratios under HWE
+#' for given ranges of no. of samples and depth coverage values.
+#' This is useful if you need to find the cutoff values of allele ratios for
+#' different no. of samples and depth of coverage values in your dataset.
 #'
 #' @param cov.len max value of depth of coverage to be simulated
 #' @param sam.len maximum no. of samples to be simulated
-#' @param incr a vector of two integers indicating increment size for both depth and no. samples ranges
-#' @param plot logical. Whether to plot the output (a plot of no. samples vs median depth of coverage colored by median allele ratios)
+#' @param incr a vector of two integers indicating increment size for both
+#' depth and no. samples ranges
+#' @param plot logical. Whether to plot the output (a plot of no. samples
+#' vs median depth of coverage colored by median allele ratios)
 #' @param plot.cols character. Two colors to add to the gradient
 #'
-#' @return A matrix of median allele ratios where rows are the number of samples and columns are depth of coverage values
+#' @return A matrix of median allele ratios where rows are the number of
+#' samples and columns are depth of coverage values
 #'
 #' @author Pascal Milesi, Piyal Karunarathne
 #'

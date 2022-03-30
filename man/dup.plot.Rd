@@ -9,13 +9,16 @@ dup.plot(ds, ...)
 \arguments{
 \item{ds}{a data frame of detected duplicates}
 
-\item{...}{other graphical parameters to be passed to the function \link[graphics]{plot}}
+\item{\dots}{other graphical parameters to be passed to the function
+\code{plot}}
 }
 \value{
-Plots duplicates on proportion of heterozygotes vs allele median ratio
+Plots duplicates on proportion of heterozygotes vs allele
+median ratio
 }
 \description{
-The function plots detected duplicates from functions "sig.snps", and "dupGet"
+The function plots detected duplicates from functions \code{sig.snps}, and
+\code{dupGet}
 }
 \examples{
 \dontrun{data(alleleINF)

@@ -167,16 +167,26 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 
 #' Calculate normalization factor for each sample
 #'
-#' This function calculates the normalization factor for each sample using different methods. See details.
+#' This function calculates the normalization factor for each sample using
+#'  different methods. See details.
 #'
-#' @param df a data frame or matrix of allele depth values (total depth per snp per sample)
-#' @param method character. method to be used (see detials). Default="TMM"
-#' @param logratioTrim numeric. percentage value (0 - 1) of variation to be trimmed in log transformation
-#' @param sumTrim numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"
-#' @param Weighting logical, whether to compute (asymptotic binomial precision) weights
-#' @param Acutoff numeric, cutoff on "A" values to use before trimming
+#' @param df a data frame or matrix of allele depth values
+#'  (total depth per snp per sample)
+#' @param method character. method to be used (see detials). Default \code{TMM}
+#' @param logratioTrim numeric. percentage value (0 - 1) of variation to be
+#' trimmed in log transformation
+#' @param sumTrim numeric. amount of trim to use on the combined absolute
+#' levels (\dQuote{A} values) for method \code{TMM}
+#' @param Weighting logical, whether to compute (asymptotic binomial precision)
+#'  weights
+#' @param Acutoff numeric, cutoff on \dQuote{A} values to use before trimming
 #'
-#' @details Originally described for normalization of RNA sequences (Robinson & Oshlack 2010), this function computes normalization (scaling) factors to convert observed library sizes into effective library sizes. It uses the method trimmed means of M-values proposed by Robinson & Oshlack (2010). See the original publication and edgeR package for more information.
+#' @details Originally described for normalization of RNA sequences
+#' (Robinson & Oshlack 2010), this function computes normalization (scaling)
+#' factors to convert observed library sizes into effective library sizes.
+#'  It uses the method trimmed means of M-values proposed by Robinson &
+#'   Oshlack (2010). See the original publication and \code{edgeR} package
+#'   for more information.
 #'
 #' @return Returns a numerical vector of normalization factors for each sample
 #'
@@ -184,8 +194,11 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #'
 #' @references
 #' \itemize{
-#'  \item{Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25}
-#'  \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140}
+#'  \item{Robinson MD, Oshlack A (2010). A scaling normalization method for
+#'  differential expression analysis of RNA-seq data. Genome Biology 11, R25}
+#'  \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
+#'  package for differential expression analysis of digital gene expression
+#'  data. Bioinformatics 26, 139-140}
 #' }
 #'
 #' @examples
@@ -220,27 +233,52 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 
 #' Calculate normalized depth for alleles
 #'
-#' This function outputs the normalized depth values separately for each allele, calculated using normalization factor with trimmed mean of M-values of sample libraries, median ratios normalization or quantile normalization, See details.
+#' This function outputs the normalized depth values separately for each allele,
+#'  calculated using normalization factor with trimmed mean of M-values of
+#'  sample libraries, median ratios normalization or quantile normalization,
+#'   See details.
 #'
-#' @param het.table allele depth table generated from the function \link[rCNV]{hetTgen}
-#' @param method character. method to be used (see detials). Default="TMM"
-#' @param logratioTrim numeric. percentage value (0 - 1) of variation to be trimmed in log transformation
-#' @param sumTrim numeric. amount of trim to use on the combined absolute levels ("A" values) for method="TMM"
-#' @param Weighting logical, whether to compute (asymptotic binomial precision) weights
-#' @param Acutoff numeric, cutoff on "A" values to use before trimming (only for TMM(ex))
+#' @param het.table allele depth table generated from the function
+#' \code{hetTgen}
+#' @param method character. method to be used (see detials). Default \code{TMM}
+#' @param logratioTrim numeric. percentage value (0 - 1) of variation to be
+#' trimmed in log transformation
+#' @param sumTrim numeric. amount of trim to use on the combined absolute
+#' levels (\dQuote{A} values) for method \code{TMM}
+#' @param Weighting logical, whether to compute (asymptotic binomial precision)
+#'  weights
+#' @param Acutoff numeric, cutoff on \dQuote{A} values to use before trimming
+#' (only for TMM(ex))
 #' @param verbose logical. show progress
 #'
-#' @details This function converts an observed depth value table to an effective depth value table using several normaliztion methods; 1. TMM normalization (See the original publication for more information). It is different from the function normz only in calculation of the counts per million is for separate alleles instead of the total depth. The "TMMex" method is an extension of the "TMM" method for large data sets containing SNPs exceeding 10000; 2. The method "MedR" is median ratio normalization; 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a comparison of methods).
+#' @details This function converts an observed depth value table to an
+#' effective depth value table using several normaliztion methods;
+#' 1. TMM normalization (See the original publication for more information).
+#'  It is different from the function \code{normz} only in calculation of the
+#'   counts per million is for separate alleles instead of the total depth.
+#'    The \code{TMMex} method is an extension of the \code{TMM} method for
+#'    large data sets containing SNPs exceeding 10000
+#' 2. The method \code{MedR} is median ratio normalization;
+#' 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a
+#' comparison of methods).
 #'
-#' @return Returns a list with (AD), a data frame of normalized depth values similar to the output of \link[rCNV]{hetTgen} function and (outliers) a list of outlier sample names
+#' @return Returns a list with (AD), a data frame of normalized depth values
+#'  similar to the output of \code{hetTgen} function and
+#'  (outliers) a list of outlier sample names
 #'
 #' @author Piyal Karunarathne, Qiujie Zhou
 #'
 #' @references
 #' \itemize{
-#'  \item{Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25}
-#'  \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26, 139-140}
-#'  \item{Maza, Elie, et al. "Comparison of normalization methods for differential gene expression analysis in RNA-Seq experiments: a matter of relative size of studied transcriptomes." Communicative & integrative biology 6.6 (2013): e25849}
+#'  \item{Robinson MD, Oshlack A (2010). A scaling normalization method for
+#'  differential expression analysis of RNA-seq data. Genome Biology 11, R25}
+#'  \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
+#'  package for differential expression analysis of digital gene expression
+#'  data. Bioinformatics 26, 139-140}
+#'  \item{Maza, Elie, et al. "Comparison of normalization methods for
+#'  differential gene expression analysis in RNA-Seq experiments: a matter of
+#'  relative size of studied transcriptomes." Communicative & integrative
+#'  biology 6.6 (2013): e25849}
 #' }
 #'
 #' @examples

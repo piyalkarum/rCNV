@@ -12,12 +12,19 @@ data(ADtable)
 }
 \description{
 Example SNPs data of Chinook Salmon from Larson et al. et al. 2014.
-The data contains only a partial snps data set of RadSeq data after filtering.
+The data contains only a partial snps data set of RadSeq data after
+filtering.
 }
 \references{
 \itemize{
-\item{Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K., Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves shallow population structure to inform conservation of Chinook salmon (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369.}
-\item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.}
+\item{Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K., Templin,
+W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves shallow
+population structure to inform conservation of Chinook salmon
+(Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369.}
+\item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017).
+Paralogs are revealed by proportion of heterozygotes and deviations in
+read ratios in genotyping‐by‐sequencing data from natural populations.
+Molecular Ecology Resources, 17(4), 656-669.}
 }
 }
 \keyword{datasets}

@@ -11,18 +11,26 @@ hetTgen(
 )
 }
 \arguments{
-\item{vcf}{an imported vcf file in a list using \link[rCNV]{readVCF}}
+\item{vcf}{an imported vcf file in a list using \code{readVCF}}
 
-\item{info.type}{character. "AD"=allele depth value, "AD-tot"=total allele depth, "DP"=unfiltered depth (sum), "GT"=genotype, "GT-012"=genotype in 012 format, "GT-AB"=genotype in AB format. Default "AD",  See details.}
+\item{info.type}{character. \code{AD}: allele depth value, {AD-tot}:total
+allele depth, \code{DP}=unfiltered depth (sum), \code{GT}: genotype,
+\code{GT-012}:genotype in 012 format, \code{GT-AB}:genotype in AB format.
+Default \code{AD},  See details.}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
 \description{
-hetTgen extracts the read depth and coverage values for each snp for all the individuals from a vcf file generated from readVCF (or GatK VariantsToTable: see details)
+hetTgen extracts the read depth and coverage values for each snp for all
+the individuals from a vcf file generated from readVCF (or GatK
+VariantsToTable: see details)
 }
 \details{
-If you generate the depth values for allele by sample using GatK VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
-For info.type "GT" option is provided to extract the genotypes of individuals by snp.
+If you generate the depth values for allele by sample using GatK
+VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate
+the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
+For info.type \code{GT} option is provided to extract the genotypes of
+individuals by snp.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")

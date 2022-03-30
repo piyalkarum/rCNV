@@ -50,13 +50,20 @@ return(V)}
 
 #' Determine per sample heterozygosity and inbreeding coefficient
 #'
-#' This function will calculate the heterozygosity on a per-sample basis from vcf files (snps), and most importantly inbreeding coefficient which is used to filter out the samples with bad mapping quality.
-#' @param vcf an imported vcf file in in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}
-#' @param plot logical. Whether to plot a boxplot of inbreeding coefficients for populations. A list of populations must be provided
-#' @param pops character. A list of population names with the same length and order as the number of samples in the vcf
+#' This function will calculate the heterozygosity on a per-sample basis from
+#' vcf files (snps), and most importantly inbreeding coefficient which is used
+#'  to filter out the samples with bad mapping quality.
+#' @param vcf an imported vcf file in in a list using
+#' \code{readVCF} or a data frame of genotypes generated using
+#' \code{hetTgen}
+#' @param plot logical. Whether to plot a boxplot of inbreeding coefficients
+#' for populations. A list of populations must be provided
+#' @param pops character. A list of population names with the same length and
+#' order as the number of samples in the vcf
 #' @param verbose logical. Show progress
 #' @importFrom graphics boxplot
-#' @return Returns a data frame of expected "E(Hom)", observed "O(Hom)" homozygotes with their inbreeding coefficients.
+#' @return Returns a data frame of expected \dQuote{E(Hom)}, observed
+#' \dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
 #'
 #' @author Piyal Karunarathne, Pascal Milesi
 #'
@@ -101,11 +108,16 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 
 #' Determine pairwise relatedness
 #'
-#' Relatedness is determined according to genome-wide relationship assessment of Yang et al. 2010 equation 6, on a per sample basis (with itself and others), using SNPs.
+#' Relatedness is determined according to genome-wide relationship assessment
+#' of Yang et al. 2010 equation 6, on a per sample basis (with itself and
+#' others), using SNPs.
 #'
-#' @param vcf an imported vcf file in a list using \link[rCNV]{readVCF} or a data frame of genotypes generated using \link[rCNV]{hetTgen}
-#' @param plot logical. Whether to plot relatedness of samples against themselves, among themselves and outliers
-#' @param threshold numerical. A value indicating to filter the individuals of relatedness among themselves. Default=0.5 (siblings)
+#' @param vcf an imported vcf file in a list using \code{readVCF}
+#'  or a data frame of genotypes generated using \code{hetTgen}
+#' @param plot logical. Whether to plot relatedness of samples against
+#' themselves, among themselves and outliers
+#' @param threshold numerical. A value indicating to filter the individuals of
+#' relatedness among themselves. Default \code{0.5} (siblings)
 #' @param verbose logical. Show progress.
 #' @importFrom graphics hist
 #'
@@ -113,12 +125,15 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #' A data frame of individuals and relatedness score Ajk
 #'
 #' @details
-#' According to Yang et al. (2010), outbreeding non-related pairs should have a relatedness value of 0 while the individual with itself will have a relatedness value of 1. Relatedness value of ~0.5 indicates siblings.
+#' According to Yang et al. (2010), outbreeding non-related pairs should have a
+#' relatedness value of zero while the individual with itself will have a
+#' relatedness value of one. Relatedness value of ~0.5 indicates siblings.
 #'
 #' @author Piyal Karunarathne
 #'
-#' @references Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a large proportion of the heritability for human height. Nat Genet 42, 565–569 (2010).
-#' https://doi.org/10.1038/ng.608
+#' @references Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a
+#' large proportion of the heritability for human height. Nat Genet 42, 565–569
+#'  (2010).
 #'
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
@@ -179,32 +194,45 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
   return(T2)
 }
 
-#' Get sequencing quality statistics of raw VCF files (with GatK generated vcf files only)
+#' Get sequencing quality statistics of raw VCF files
+#' (with GatK generated vcf files only)
 #'
-#' This function will generate a table similar to VariantsToTable option in GatK from raw vcf files for filtering purposes. The fucntion will aslo plot all the parameters (see details & values).
+#' This function will generate a table similar to VariantsToTable option in
+#'  GatK from raw vcf files for filtering purposes. The fucntion will aslo
+#'  plot all the parameters (see details & values).
 #'
-#' @param vcf an imported vcf file in data.frame or matrix format using  \link[rCNV]{readVCF}
+#' @param vcf an imported vcf file in data.frame or matrix format using
+#' \code{readVCF}
 #' @param plot logical. Whether to plot the (12) parameters
-#' @param ... other arguments passed on to \link[graphics]{plot} (e.g. col,border)
+#' @param ... other arguments passed on to \code{plot}
+#' (e.g. col,border)
 #'
 #' @importFrom stats density
 #' @importFrom graphics polygon
 #'
-#' @return Returns a data frame with quality parameters from the info. field of the vcf\cr
+#' @return Returns a data frame with quality parameters from the info. field of
+#'  the vcf
 #' \itemize{
-#'  \item{QUAL: The Phred-scaled probability that a REF/ALT polymorphism exists at this site given sequencing data}
+#'  \item{QUAL: The Phred-scaled probability that a REF/ALT polymorphism exists
+#'   at this site given sequencing data}
 #'  \item{AC: Allele count}
 #'  \item{AF: Allele frequencey}
 #'  \item{DP: unfiltered depth}
-#'  \item{QD: QualByDepth - This is the variant confidence (from the QUAL field) divided by the unfiltered depth of non-hom-ref samples}
-#'  \item{FS: FisherStrand - This is the Phred-scaled probability that there is strand bias at the site}
-#'  \item{SOR: StrandOddsRatio - This is another way to estimate strand bias using a test similar to the symmetric odds ratio test}
-#'  \item{MQ: RMSMappingQuality - This is the root mean square mapping quality over all the reads at the site}
-#'  \item{MQRankSum: MappingQualityRankSumTest - This is the u-based z-approximation from the Rank Sum Test for mapping qualities}
-#'  \item{ReadPosRankSum: ReadPosRankSumTest - This is the u-based z-approximation from the Rank Sum Test for site position within reads}
+#'  \item{QD: QualByDepth - This is the variant confidence (from the QUAL
+#'  field) divided by the unfiltered depth of non-hom-ref samples}
+#'  \item{FS: FisherStrand - This is the Phred-scaled probability that there is
+#'   strand bias at the site}
+#'  \item{SOR: StrandOddsRatio - This is another way to estimate strand bias
+#'  using a test similar to the symmetric odds ratio test}
+#'  \item{MQ: RMSMappingQuality - This is the root mean square mapping quality
+#'   over all the reads at the site}
+#'  \item{MQRankSum: MappingQualityRankSumTest - This is the u-based
+#'  z-approximation from the Rank Sum Test for mapping qualities}
+#'  \item{ReadPosRankSum: ReadPosRankSumTest - This is the u-based
+#'  z-approximation from the Rank Sum Test for site position within reads}
 #' }
 #' @details
-#' For more details see https://gatk.broadinstitute.org/hc/en-us/articles/360035890471-Hard-filtering-germline-short-variants
+#' For more details see instructtions of GatK
 #'
 #' @author Piyal Karunarathne
 #'

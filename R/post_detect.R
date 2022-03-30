@@ -10,14 +10,20 @@ wind<-function(xx,dd){
 
 #' Validate detected duplicates
 #'
-#' This function will validate the detected duplicated-SNPs using a moving window approach (see details)
+#' This function will validate the detected duplicated-SNPs using a moving
+#' window approach (see details)
 #'
-#' @param d.detect a data frame of detected SNPs of duplicates/singlets (output of \link[rCNV]{dupGet})
-#' @param window.size numerical. a single value of the desired moving window size (default=100 bp)
+#' @param d.detect a data frame of detected SNPs of duplicates and singlets
+#'  (output of \code{dupGet})
+#' @param window.size numerical. a single value of the desired moving window
+#'  size (default \code{100} bp)
 #'
-#' @details Chromosome positions correctly ordered according to a reference sequence is necessary for this function to work properly. Therefore, this function is still in development for non-mapped reference sequences.
+#' @details Chromosome positions correctly ordered according to a reference
+#' sequence is necessary for this function to work properly. Therefore, this
+#' function is still in development for non-mapped reference sequences.
 #'
-#' @return A data frame of scaffold names and their average presence in the scaffold.
+#' @return A data frame of scaffold names and their average presence in the
+#' scaffold.
 #'
 #' @author Piyal Karunarathne
 #'
@@ -74,13 +80,18 @@ dup.validate<-function(d.detect,window.size=100){
 
 #' Calculate population-wise Vst
 #'
-#' This function calculates Vst (variant fixation index) for populations given a list of duplicated loci
+#' This function calculates Vst (variant fixation index) for populations given
+#'  a list of duplicated loci
 #'
-#' @param AD data frame of total allele depth values of (duplicated, if id.list is not provided) SNPs
-#' @param pops character. A vector of population names for each individual. Must be the same length as the number of samples in AD
-#' @param id.list character. A vector of duplicated SNP IDs. Must match the IDs in the AD data frame
-#' @param qGraph logical. Plot the network plot based on Vst values (see details)
-#' @param ... additional arguments passed to \link[qgraph]{qgraph}
+#' @param AD data frame of total allele depth values of (duplicated, if
+#' \code{id.list} is not provided) SNPs
+#' @param pops character. A vector of population names for each individual.
+#'  Must be the same length as the number of samples in AD
+#' @param id.list character. A vector of duplicated SNP IDs. Must match the IDs
+#'  in the AD data frame
+#' @param qGraph logical. Plot the network plot based on Vst values
+#' (see details)
+#' @param \dots additional arguments passed to \code{qgraph}
 #'
 #' @importFrom qgraph qgraph
 #' @importFrom grDevices boxplot.stats
@@ -91,11 +102,15 @@ dup.validate<-function(d.detect,window.size=100){
 #' @return Returns a matrix of pairwise Vst values for populations
 #'
 #' @details Vst is calculated with the following equation
-#' \deqn{ V_{T} =   \frac{ V_{S} }{ V_{T} } } where VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size (see reference for more details)
-#' See qgraph help for details on qgraph output
+#' \deqn{V_{T} = \frac{ V_{S} }{V_{T}}} where VT is the variance of normalized
+#'  read depths among all individuals from the two populations and VS is the
+#'  average of the variance within each population, weighed for population size
+#'   (see reference for more details)
+#' See \code{qgraph} help for details on qgraph output
 #'
 #' @references
-#' Redon, Richard, et al. "Global variation in copy number in the human genome." nature 444.7118 (2006): 444-454
+#' Redon, Richard, et al. Global variation in copy number in the human genome.
+#' nature 444.7118 (2006): 444-454
 #'
 #' @author Piyal Karunarathne
 #'
