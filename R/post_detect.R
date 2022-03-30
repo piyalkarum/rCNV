@@ -123,7 +123,7 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
   tmp<-data.frame(ind=nm,pop=pops,t(AD))
   # Vst - for CNVs
   # Vt-Vs/Vt
-  ## VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size
+  # VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size
   Vst<-combn_pb(pop,2,function(x){
     jj<-tmp[tmp$pop==x[1],-c(1:2)]
     kk<-tmp[tmp$pop==x[2],-c(1:2)]

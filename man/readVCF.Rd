@@ -12,7 +12,7 @@ readVCF(vcf.file.path, verbose = FALSE)
 \item{verbose}{logical. show progress}
 }
 \value{
-Returns a list with vcf table in a data frame $vcf, excluding meta data. The meta data is stored in a second element with $met
+Returns a list with vcf table in a data frame, excluding meta data.
 }
 \description{
 Function to import raw single/multi-sample VCF files.

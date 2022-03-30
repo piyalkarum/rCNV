@@ -3,4 +3,5 @@
 ## Changes
 * All the major functions completed
 * bugs fixed
+* Website updated
 * this is the first release of the package

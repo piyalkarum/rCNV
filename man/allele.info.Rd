@@ -54,8 +54,8 @@ AI<-allele.info(ADtable,x.norm=ADnorm)}
 }
 \references{
 \itemize{
-\item{}{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.}
-\item{}{Karunarathne et al. 2022 (to be added)}
+\item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.}
+\item{Karunarathne et al. 2022 (to be added)}
 }
 }
 \author{

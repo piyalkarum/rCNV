@@ -145,7 +145,7 @@ maf<-function(h.table,AD=TRUE,verbose=TRUE){
 #' @param vcf.file.path path to the vcf file
 #' @param verbose logical. show progress
 #'
-#' @return Returns a list with vcf table in a data frame $vcf, excluding meta data. The meta data is stored in a second element with $met
+#' @return Returns a list with vcf table in a data frame, excluding meta data.
 #' @importFrom data.table fread
 #'
 #' @author Piyal Karunarathne
