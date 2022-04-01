@@ -20,10 +20,10 @@ A data frame or a list
 }
 \description{
 A function to remove the alleles with minimum allele frequency and keep only
-a biallelic matrix when loci are multi-allelic
+a bi-allelic matrix when loci are multi-allelic
 }
 \examples{
-mf<-maf(ADtable)
+\dontrun{mf<-maf(ADtable)}
 
 }
 \author{

@@ -18,7 +18,7 @@ cpm.normal(
 \item{het.table}{allele depth table generated from the function
 \code{hetTgen}}
 
-\item{method}{character. method to be used (see detials). Default \code{TMM}}
+\item{method}{character. method to be used (see details). Default \code{TMM}}
 
 \item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be
 trimmed in log transformation}
@@ -47,7 +47,7 @@ See details.
 }
 \details{
 This function converts an observed depth value table to an
-effective depth value table using several normaliztion methods;
+effective depth value table using several normalization methods;
 \enumerate{
 \item TMM normalization (See the original publication for more information).
 It is different from the function \code{normz} only in calculation of the
@@ -71,7 +71,7 @@ ADnormalized<-cpm.normal(ADtable)}
 differential expression analysis of RNA-seq data. Genome Biology 11, R25}
 \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
 package for differential expression analysis of digital gene expression
-data. Bioinformatics 26, 139-140}
+data. Bioinformatics 26}
 \item{Maza, Elie, et al. "Comparison of normalization methods for
 differential gene expression analysis in RNA-Seq experiments: a matter of
 relative size of studied transcriptomes." Communicative & integrative

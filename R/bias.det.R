@@ -58,7 +58,7 @@ get.pvals<-function(x,df,p.cal){
 #' @param x.norm a data frame of normalized allele coverage, output of
 #' \code{cpm.normal}. If not provided, calculated using \code{X}.
 #' @param method character. method to be used for normalization
-#' (see \code{cpm.normal} detials). Default \code{TMM}
+#' (see \code{cpm.normal} details). Default \code{TMM}
 #' @param logratioTrim numeric. percentage value (0 - 1) of variation to be
 #'  trimmed in log transformation
 #' @param sumTrim numeric. amount of trim to use on the combined absolute
@@ -91,8 +91,8 @@ get.pvals<-function(x,df,p.cal){
 #' \itemize{
 #'  \item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017).
 #'  Paralogs are revealed by proportion of heterozygotes and deviations in read
-#'   ratios in genotyping‐by‐sequencing data from natural populations.
-#'    Molecular Ecology Resources, 17(4), 656-669.}
+#'   ratios in genotyping by sequencing data from natural populations.
+#'    Molecular Ecology Resources, 17(4)}
 #'  \item{Karunarathne et al. 2022 (to be added)}
 #' }
 #'

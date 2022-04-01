@@ -20,7 +20,7 @@ subset}
 \item{verbose}{logical. If \code{TRUE} shows progress}
 }
 \value{
-Returns a list with formated genotype data: \code{$hor} - snps
+Returns a list with formatted genotype data: \code{$hor} - snps
 in horizontal format (two lines per snp); \code{$ver} - vertical format
 (two column per snp); \code{$hor.chunk} - a subset snps of \code{$hor}
 }

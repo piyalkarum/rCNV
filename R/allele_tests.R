@@ -1,6 +1,6 @@
 #' Generate allele frequency table (from genotypes)
 #'
-#' Get alternative allele frequency accross all individuals per SNP from the
+#' Get alternative allele frequency across all individuals per SNP from the
 #'  genotype table
 #'
 #' @param gtt a genotype table produced from \code{hetTgen} (or similar)

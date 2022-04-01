@@ -17,7 +17,7 @@ sig.hets(
 function \code{allele.info}}
 
 \item{method}{character. Method for testing significance. Fisher exact test
-(\code{fisher}) or Chi squre test (\code{chi.sq})}
+(\code{fisher}) or Chi-square test (\code{chi.sq})}
 
 \item{plot}{logical. Whether to plot the identified duplicated snps with
 the expected values}

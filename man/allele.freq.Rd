@@ -12,7 +12,7 @@ allele.freq(gtt, verbose = TRUE)
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
 \description{
-Get alternative allele frequency accross all individuals per SNP from the
+Get alternative allele frequency across all individuals per SNP from the
 genotype table
 }
 \details{

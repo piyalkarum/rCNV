@@ -172,7 +172,7 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #'
 #' @param df a data frame or matrix of allele depth values
 #'  (total depth per snp per sample)
-#' @param method character. method to be used (see detials). Default \code{TMM}
+#' @param method character. method to be used (see details). Default \code{TMM}
 #' @param logratioTrim numeric. percentage value (0 - 1) of variation to be
 #' trimmed in log transformation
 #' @param sumTrim numeric. amount of trim to use on the combined absolute
@@ -198,7 +198,7 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #'  differential expression analysis of RNA-seq data. Genome Biology 11, R25}
 #'  \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
 #'  package for differential expression analysis of digital gene expression
-#'  data. Bioinformatics 26, 139-140}
+#'  data. Bioinformatics 26}
 #' }
 #'
 #' @examples
@@ -240,7 +240,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #'
 #' @param het.table allele depth table generated from the function
 #' \code{hetTgen}
-#' @param method character. method to be used (see detials). Default \code{TMM}
+#' @param method character. method to be used (see details). Default \code{TMM}
 #' @param logratioTrim numeric. percentage value (0 - 1) of variation to be
 #' trimmed in log transformation
 #' @param sumTrim numeric. amount of trim to use on the combined absolute
@@ -252,7 +252,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #' @param verbose logical. show progress
 #'
 #' @details This function converts an observed depth value table to an
-#' effective depth value table using several normaliztion methods;
+#' effective depth value table using several normalization methods;
 #' 1. TMM normalization (See the original publication for more information).
 #'  It is different from the function \code{normz} only in calculation of the
 #'   counts per million is for separate alleles instead of the total depth.
@@ -274,7 +274,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #'  differential expression analysis of RNA-seq data. Genome Biology 11, R25}
 #'  \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
 #'  package for differential expression analysis of digital gene expression
-#'  data. Bioinformatics 26, 139-140}
+#'  data. Bioinformatics 26}
 #'  \item{Maza, Elie, et al. "Comparison of normalization methods for
 #'  differential gene expression analysis in RNA-Seq experiments: a matter of
 #'  relative size of studied transcriptomes." Communicative & integrative

@@ -19,7 +19,7 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @param a.info allele info table generated from filtered vcfs using the
 #' function \code{allele.info}
 #' @param method character. Method for testing significance. Fisher exact test
-#'  (\code{fisher}) or Chi squre test (\code{chi.sq})
+#'  (\code{fisher}) or Chi-square test (\code{chi.sq})
 #' @param plot logical. Whether to plot the identified duplicated snps with
 #' the expected values
 #' @param verbose logical, if TRUE, the progress is shown
@@ -121,11 +121,11 @@ dup.plot<-function(ds,...){
 #'  See details.
 #'
 #' @param data data frame of the output of \code{allele.info}
-#' @param test character. type of test to be used for significance. See detials
+#' @param test character. type of test to be used for significance. See details
 #' @param intersection logical, whether to use the intersection of the methods
 #'  specified in \code{test} (if more than one)
 #' @param method character. method for testing excess of heterozygotes.
-#'  Fisher exact test (\code{fisher}) or Chi squre test (\code{chi.sq})
+#'  Fisher exact test (\code{fisher}) or Chi-square test (\code{chi.sq})
 #' @param plot logical. whether to plot the detected singlets and duplicates
 #'  on allele ratio vs. proportion of heterozygotes plot.
 #' @param verbose logical. show progress

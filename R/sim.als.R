@@ -125,7 +125,7 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #' This function will simulate the expected median allele ratios under HWE
 #' for given ranges of no. of samples and depth coverage values.
 #' This is useful if you need to find the cutoff values of allele ratios for
-#' different no. of samples and depth of coverage values in your dataset.
+#' different no. of samples and depth of coverage values in your data set.
 #'
 #' @param cov.len max value of depth of coverage to be simulated
 #' @param sam.len maximum no. of samples to be simulated

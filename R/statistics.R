@@ -122,17 +122,17 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #' @importFrom graphics hist
 #'
 #' @return
-#' A data frame of individuals and relatedness score Ajk
+#' A data frame of individuals and relatedness score \eqn{A_{jk}}
 #'
 #' @details
-#' According to Yang et al. (2010), outbreeding non-related pairs should have a
+#' According to Yang et al. (2010), out breeding non-related pairs should have a
 #' relatedness value of zero while the individual with itself will have a
 #' relatedness value of one. Relatedness value of ~0.5 indicates siblings.
 #'
 #' @author Piyal Karunarathne
 #'
 #' @references Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a
-#' large proportion of the heritability for human height. Nat Genet 42, 565–569
+#' large proportion of the heritability for human height. Nat Genet 42, 565569
 #'  (2010).
 #'
 #' @examples
@@ -198,7 +198,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 #' (with GatK generated vcf files only)
 #'
 #' This function will generate a table similar to VariantsToTable option in
-#'  GatK from raw vcf files for filtering purposes. The fucntion will aslo
+#'  GatK from raw vcf files for filtering purposes. The function will also
 #'  plot all the parameters (see details & values).
 #'
 #' @param vcf an imported vcf file in data.frame or matrix format using
@@ -220,7 +220,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 #'  \item{DP: unfiltered depth}
 #'  \item{QD: QualByDepth - This is the variant confidence (from the QUAL
 #'  field) divided by the unfiltered depth of non-hom-ref samples}
-#'  \item{FS: FisherStrand - This is the Phred-scaled probability that there is
+#'  \item{FS: FisherStrand - This is the Phred scaled probability that there is
 #'   strand bias at the site}
 #'  \item{SOR: StrandOddsRatio - This is another way to estimate strand bias
 #'  using a test similar to the symmetric odds ratio test}
@@ -228,11 +228,11 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 #'   over all the reads at the site}
 #'  \item{MQRankSum: MappingQualityRankSumTest - This is the u-based
 #'  z-approximation from the Rank Sum Test for mapping qualities}
-#'  \item{ReadPosRankSum: ReadPosRankSumTest - This is the u-based
+#'  \item{ReadPosRankSum: ReadPosRankSumTest: This is the u-based
 #'  z-approximation from the Rank Sum Test for site position within reads}
 #' }
 #' @details
-#' For more details see instructtions of GatK
+#' For more details see instructions of GatK
 #'
 #' @author Piyal Karunarathne
 #'

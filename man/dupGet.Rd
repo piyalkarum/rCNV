@@ -17,13 +17,13 @@ dupGet(
 \arguments{
 \item{data}{data frame of the output of \code{allele.info}}
 
-\item{test}{character. type of test to be used for significance. See detials}
+\item{test}{character. type of test to be used for significance. See details}
 
 \item{intersection}{logical, whether to use the intersection of the methods
 specified in \code{test} (if more than one)}
 
 \item{method}{character. method for testing excess of heterozygotes.
-Fisher exact test (\code{fisher}) or Chi squre test (\code{chi.sq})}
+Fisher exact test (\code{fisher}) or Chi-square test (\code{chi.sq})}
 
 \item{plot}{logical. whether to plot the detected singlets and duplicates
 on allele ratio vs. proportion of heterozygotes plot.}

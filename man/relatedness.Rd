@@ -19,7 +19,7 @@ relatedness among themselves. Default \code{0.5} (siblings)}
 \item{verbose}{logical. Show progress.}
 }
 \value{
-A data frame of individuals and relatedness score Ajk
+A data frame of individuals and relatedness score \eqn{A_{jk}}
 }
 \description{
 Relatedness is determined according to genome-wide relationship assessment
@@ -27,7 +27,7 @@ of Yang et al. 2010 equation 6, on a per sample basis (with itself and
 others), using SNPs.
 }
 \details{
-According to Yang et al. (2010), outbreeding non-related pairs should have a
+According to Yang et al. (2010), out breeding non-related pairs should have a
 relatedness value of zero while the individual with itself will have a
 relatedness value of one. Relatedness value of ~0.5 indicates siblings.
 }
@@ -39,7 +39,7 @@ relate<-relatedness(vcf)
 }
 \references{
 Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a
-large proportion of the heritability for human height. Nat Genet 42, 565–569
+large proportion of the heritability for human height. Nat Genet 42, 565569
 (2010).
 }
 \author{

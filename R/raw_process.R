@@ -102,7 +102,7 @@ gg<-function(x){
 #' Remove MAF allele
 #'
 #' A function to remove the alleles with minimum allele frequency and keep only
-#' a biallelic matrix when loci are multi-allelic
+#' a bi-allelic matrix when loci are multi-allelic
 #'
 #' @param h.table allele depth table generated from the function \code{hetTgen}
 #' @param AD logical. If TRUE a allele depth table similar to \code{hetTgen}
@@ -115,7 +115,7 @@ gg<-function(x){
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' mf<-maf(ADtable)
+#' \dontrun{mf<-maf(ADtable)}
 #'
 #' @export
 maf<-function(h.table,AD=TRUE,verbose=TRUE){
@@ -345,7 +345,7 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' subset
 #' @param verbose logical. If \code{TRUE} shows progress
 #'
-#' @return Returns a list with formated genotype data: \code{$hor} - snps
+#' @return Returns a list with formatted genotype data: \code{$hor} - snps
 #' in horizontal format (two lines per snp); \code{$ver} - vertical format
 #' (two column per snp); \code{$hor.chunk} - a subset snps of \code{$hor}
 #'

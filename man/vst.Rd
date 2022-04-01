@@ -47,7 +47,7 @@ vst(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 }
 \references{
 Redon, Richard, et al. Global variation in copy number in the human genome.
-nature 444.7118 (2006): 444-454
+nature 444.7118 (2006)
 }
 \author{
 Piyal Karunarathne

@@ -33,7 +33,7 @@ samples and columns are depth of coverage values
 This function will simulate the expected median allele ratios under HWE
 for given ranges of no. of samples and depth coverage values.
 This is useful if you need to find the cutoff values of allele ratios for
-different no. of samples and depth of coverage values in your dataset.
+different no. of samples and depth of coverage values in your data set.
 }
 \examples{
 \dontrun{depthVsSample(cov.len=50,sam.len=100)}

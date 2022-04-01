@@ -17,7 +17,7 @@ norm.fact(
 \item{df}{a data frame or matrix of allele depth values
 (total depth per snp per sample)}
 
-\item{method}{character. method to be used (see detials). Default \code{TMM}}
+\item{method}{character. method to be used (see details). Default \code{TMM}}
 
 \item{logratioTrim}{numeric. percentage value (0 - 1) of variation to be
 trimmed in log transformation}
@@ -59,7 +59,7 @@ norm.fact(df)
 differential expression analysis of RNA-seq data. Genome Biology 11, R25}
 \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
 package for differential expression analysis of digital gene expression
-data. Bioinformatics 26, 139-140}
+data. Bioinformatics 26}
 }
 }
 \author{

@@ -18,6 +18,6 @@ The data has been normalized with TMM
 Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K.,
 Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves
 shallow population structure to inform conservation of Chinook salmon
-(Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369
+(Oncorhynchus tshawytscha). Evolutionary Applications, 7(3)
 }
 \keyword{datasets}

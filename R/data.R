@@ -11,8 +11,8 @@
 #'
 #' @references
 #' \itemize{
-#'  \item{Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K., Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves #' shallow population structure to inform conservation of Chinook salmon (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369}
-#'  \item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotyping‐by‐sequencing data from natural populations. Molecular Ecology Resources, 17(4), 656-669.}
+#'  \item{Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K., Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves #' shallow population structure to inform conservation of Chinook salmon (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3)}
+#'  \item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017). Paralogs are revealed by proportion of heterozygotes and deviations in read ratios in genotypingbysequencing data from natural populations. Molecular Ecology Resources, 17(4)}
 #' }
 #'
 #' @source \href{https://zenodo.org/record/5025423#.Yj2XKRDMLyQ}{Chinook Salmon sequence reads McKinney et al. 2017}
@@ -40,8 +40,8 @@
 #'  (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369.}
 #'  \item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017).
 #'   Paralogs are revealed by proportion of heterozygotes and deviations in
-#'   read ratios in genotyping‐by‐sequencing data from natural populations.
-#'   Molecular Ecology Resources, 17(4), 656-669.}
+#'   read ratios in genotyping by sequencing data from natural populations.
+#'   Molecular Ecology Resources, 17(4)}
 #' }
 #'
 'ADtable'
@@ -58,7 +58,7 @@
 #' @references Larson, W. A., Seeb, L. W., Everett, M. V., Waples, R. K.,
 #' Templin, W. D., & Seeb, J. E. (2014). Genotyping by sequencing resolves
 #' shallow population structure to inform conservation of Chinook salmon
-#' (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369
+#' (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3)
 #'
 'ADnorm'
 

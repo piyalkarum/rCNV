@@ -23,8 +23,8 @@ population structure to inform conservation of Chinook salmon
 (Oncorhynchus tshawytscha). Evolutionary Applications, 7(3), 355-369.}
 \item{McKinney, G. J., Waples, R. K., Seeb, L. W., & Seeb, J. E. (2017).
 Paralogs are revealed by proportion of heterozygotes and deviations in
-read ratios in genotyping‐by‐sequencing data from natural populations.
-Molecular Ecology Resources, 17(4), 656-669.}
+read ratios in genotyping by sequencing data from natural populations.
+Molecular Ecology Resources, 17(4)}
 }
 }
 \keyword{datasets}
