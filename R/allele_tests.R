@@ -8,6 +8,7 @@
 #'
 #' @details Use hetTgen function to generate the genotype table with the
 #' \code{GT} option
+#' @return Returns a data frame of allele frequencies calculated from genotypes
 #'
 #' @author Piyal Karunarathne
 #' @examples

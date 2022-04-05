@@ -20,7 +20,7 @@ order as the number of samples in the vcf}
 \item{verbose}{logical. Show progress}
 }
 \value{
-Returns a data frame of expected \dQuote{E(Hom)}, observed
+Returns a data frame of expected \dQuote{E(Hom)} and observed
 \dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
 }
 \description{

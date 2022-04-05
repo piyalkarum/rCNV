@@ -62,7 +62,7 @@ return(V)}
 #' order as the number of samples in the vcf
 #' @param verbose logical. Show progress
 #' @importFrom graphics boxplot
-#' @return Returns a data frame of expected \dQuote{E(Hom)}, observed
+#' @return Returns a data frame of expected \dQuote{E(Hom)} and observed
 #' \dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
 #'
 #' @author Piyal Karunarathne, Pascal Milesi
@@ -174,6 +174,9 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
     diff = T2[T2[,1] != T2[,2], ]
     outliers = diff[diff[,3] > threshold, ]
 
+    opars<-par(no.readonly = TRUE)
+    on.exit(par(opars))
+
     par(mfrow=c(3, 1))
     hist(same[,3],
          main="Samples against themselves",
@@ -210,7 +213,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 #' @importFrom stats density
 #' @importFrom graphics polygon
 #'
-#' @return Returns a data frame with quality parameters from the info. field of
+#' @return Returns a data frame with quality parameters from the INFO. field of
 #'  the vcf
 #' \itemize{
 #'  \item{QUAL: The Phred-scaled probability that a REF/ALT polymorphism exists
@@ -265,7 +268,9 @@ vcf.stat<-function(vcf,plot=TRUE,...){
   colnames(tbb)<-c("AC","AF","DP","MQ","QD","FS","SOR","HET","MQRankSum","ReadPosRankSum","InbrCo")
   tbb<-data.frame(cbind(vcf[,c(1:3,6)],tbb))
   if(plot){
-    #par(mfrow=c(4,3))
+    opars<-par(no.readonly = TRUE)
+    on.exit(par(opars))
+    par(mfrow=c(4,3))
     pl<-list(...)
     if(is.null(pl$col)) pl$col<-"lightblue"
     if(is.null(pl$border)) pl$border<-"firebrick"

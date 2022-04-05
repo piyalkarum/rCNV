@@ -16,7 +16,7 @@ should end in the name as the vcf file and .vcf. See examples}
 the file will be \code{.gz} compressed}
 }
 \value{
-export a vcf file
+Exports a vcf file to a given destination
 }
 \description{
 A function to export tables/matrices in VCF format to VCF files

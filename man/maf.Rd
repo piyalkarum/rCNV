@@ -16,7 +16,7 @@ returned in a list.}
 \item{verbose}{logical. Show progress}
 }
 \value{
-A data frame or a list
+A data frame or a list of minimum allele frequency removed allele depth
 }
 \description{
 A function to remove the alleles with minimum allele frequency and keep only

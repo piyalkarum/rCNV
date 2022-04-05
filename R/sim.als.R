@@ -36,6 +36,8 @@ makeTransparent = function(..., alpha=0.5) {
 
 #5 plot depth vs samples
 plot.svd <- function(MR,cols=c("red","cyan")){
+  opars<-par(no.readonly = TRUE)
+  on.exit(par(opars))
   colfunc <- colorRampPalette(cols)
   cols<-makeTransparent(colfunc(10),alpha = 0.7)
   MR2 <- MR

@@ -17,7 +17,7 @@ vcf.stat(vcf, plot = TRUE, ...)
 (e.g. col,border)}
 }
 \value{
-Returns a data frame with quality parameters from the info. field of
+Returns a data frame with quality parameters from the INFO. field of
 the vcf
 \itemize{
 \item{QUAL: The Phred-scaled probability that a REF/ALT polymorphism exists

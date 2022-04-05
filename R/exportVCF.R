@@ -12,7 +12,7 @@
 #' @importFrom utils packageVersion
 #' @importFrom R.utils gzip
 #'
-#' @return export a vcf file
+#' @return Exports a vcf file to a given destination
 #'
 #' @author Piyal Karunarathne
 #'

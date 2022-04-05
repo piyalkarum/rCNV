@@ -13,8 +13,8 @@ dup.plot(ds, ...)
 \code{plot}}
 }
 \value{
-Plots duplicates on proportion of heterozygotes vs allele
-median ratio
+Returns no value, only plots proportion of heterozygotes vs allele
+median ratio seperated by duplication status
 }
 \description{
 The function plots detected duplicates from functions \code{sig.snps}, and

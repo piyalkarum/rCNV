@@ -84,8 +84,8 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
 #'
 #' @importFrom colorspace rainbow_hcl
 #'
-#' @return Plots duplicates on proportion of heterozygotes vs allele
-#' median ratio
+#' @return Returns no value, only plots proportion of heterozygotes vs allele
+#' median ratio seperated by duplication status
 #'
 #' @author Piyal Karunarathne
 #'

@@ -20,6 +20,10 @@ Default \code{AD},  See details.}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
+\value{
+Returns a data frame of Allele Depth, Genotyp of SNPs for all the
+individuals extracted from a VCF file
+}
 \description{
 hetTgen extracts the read depth and coverage values for each snp for all
 the individuals from a vcf file generated from readVCF (or GatK

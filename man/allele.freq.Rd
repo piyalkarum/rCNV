@@ -11,6 +11,9 @@ allele.freq(gtt, verbose = TRUE)
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
+\value{
+Returns a data frame of allele frequencies calculated from genotypes
+}
 \description{
 Get alternative allele frequency across all individuals per SNP from the
 genotype table

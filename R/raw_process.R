@@ -110,7 +110,7 @@ gg<-function(x){
 #' returned in a list.
 #' @param verbose logical. Show progress
 #'
-#' @return A data frame or a list
+#' @return A data frame or a list of minimum allele frequency removed allele depth
 #'
 #' @author Piyal Karunarathne
 #'
@@ -182,6 +182,8 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
 #' For info.type \code{GT} option is provided to extract the genotypes of
 #' individuals by snp.
+#' @return Returns a data frame of Allele Depth, Genotyp of SNPs for all the
+#' individuals extracted from a VCF file
 #'
 #' @author Piyal Karunarathne
 #' @importFrom utils setTxtProgressBar txtProgressBar
@@ -305,6 +307,9 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
     L<-data.frame(ndat[,1:3],L)
   }
   if(plot){
+    opars<-par(no.readonly = TRUE)
+    on.exit(par(opars))
+
     if(length(type)==2){par(mfrow=c(1,2))}
     #missing samples
     if(any(type=="samples")){
@@ -322,7 +327,7 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
       text(x=quantile(L$f_miss,p=0.95)+0.02,y=max(density(L$f_miss)$y)/2,round(quantile(L$f_miss,p=0.95),3),offset=10,col=2)
       legend("topright",lty=3,col="blue",legend="95% quantile",bty="n",cex=0.8)
     }
-    par(mfrow=c(1,1))
+
   }
   if(!exists("ll")){ll<-NULL}
   if(!exists("L")){L<-NULL}
