@@ -132,8 +132,9 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
   AD<-AD[,-c(1:4)]
   if(is.character(AD[1,1])){
     tm<-apply(AD,2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+    AD<-tm
   }
-  AD<-tm
+
   AD[AD==0]<-NA
   tmp<-data.frame(ind=nm,pop=pops,t(AD))
   # Vst - for CNVs

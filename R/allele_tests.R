@@ -19,7 +19,7 @@
 #'
 #' @export
 allele.freq<-function(gtt,verbose=TRUE){
-  gs<-gtt[,-c(1:3)]
+  gs<-gtt[,-c(1:4)]
   if(verbose){
     tmp<-apply_pb(gs,1,function(x){
       x<-as.character(x)
@@ -39,6 +39,6 @@ allele.freq<-function(gtt,verbose=TRUE){
   tmp[gs=="./."]<-NaN
   colnames(tmp)<-colnames(gs)
   rownames(tmp)<-paste0(gtt[,1],".",gtt[,2])
-  tmp<-data.frame(gtt[,1:3],tmp)
+  tmp<-data.frame(gtt[,1:4],tmp)
   return(tmp)
 }

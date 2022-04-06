@@ -289,6 +289,7 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
 #' @export
 cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE){
   method<-match.arg(method)
+  if(length(method)>1){method="TMM"}
   if(verbose){
     message("calculating normalization factor")
     tdep<-apply_pb(het.table[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))),na.rm=TRUE)}))})

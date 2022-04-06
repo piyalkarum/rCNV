@@ -102,12 +102,13 @@ get.pvals<-function(x,df,p.cal){
 #'
 #' @export
 allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
-  if(!is.list(x.norm)){x.norm<-list(AD=x.norm)}
-  if(is.list(x.norm)){x.norm<-x.norm$AD}
   method=match.arg(method)
   if(is.null(x.norm)){
     x.norm<-cpm.normal(X,method=method,logratioTrim=logratioTrim,sumTrim = sumTrim,Weighting = Weighting,Acutoff = Acutoff,verbose = verbose)
   }
+  if(!is.list(x.norm)){x.norm<-list(AD=x.norm)}
+  if(is.list(x.norm)){x.norm<-x.norm$AD}
+
   if(verbose){
     message("calculating probability values of alleles")
     p.cal<-apply_pb(x.norm[,-c(1:4)],1,function(snp1){
