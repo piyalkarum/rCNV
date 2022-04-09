@@ -14,7 +14,7 @@ others), using SNPs."><meta property="og:image" content="/logo.png"><!-- mathjax
     
     <a class="navbar-brand me-2" href="../index.html">rCNV</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,18 +79,18 @@ relatedness among themselves. Default <code>0.5</code> (siblings)</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame of individuals and relatedness score Ajk</p>
+    <p>A data frame of individuals and relatedness score \(A_{jk}\)</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>According to Yang et al. (2010), outbreeding non-related pairs should have a
+    <p>According to Yang et al. (2010), out breeding non-related pairs should have a
 relatedness value of zero while the individual with itself will have a
 relatedness value of one. Relatedness value of ~0.5 indicates siblings.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a
-large proportion of the heritability for human height. Nat Genet 42, 565–569
+large proportion of the heritability for human height. Nat Genet 42, 565569
 (2010).</p>
     </div>
     <div class="section level2">
@@ -104,7 +104,7 @@ large proportion of the heritability for human height. Nat Genet 42, 565–569
 <span class="r-in"><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readVCF.html">readVCF</a></span><span class="op">(</span>vcf.file.path<span class="op">=</span><span class="va">vcf.file.path</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fread(vcf.file.path, sep = "\t", skip = "#CHROM", verbose = verbose):</span> File '/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/example.raw.vcf.gz' does not exist or is non-readable. getwd()=='/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/docs/reference'</span>
 <span class="r-in"><span class="va">relate</span><span class="op">&lt;-</span><span class="fu">relatedness</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in relatedness(vcf):</span> object 'vcf' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(vcf, "list"):</span> object 'vcf' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

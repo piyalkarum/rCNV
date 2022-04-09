@@ -270,7 +270,7 @@ vcf.stat<-function(vcf,plot=TRUE,...){
   if(plot){
     opars<-par(no.readonly = TRUE)
     on.exit(par(opars))
-    par(mfrow=c(4,3))
+    #par(mfrow=c(4,3))
     pl<-list(...)
     if(is.null(pl$col)) pl$col<-"lightblue"
     if(is.null(pl$border)) pl$border<-"firebrick"

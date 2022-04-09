@@ -14,7 +14,7 @@ to filter out the samples with bad mapping quality."><meta property="og:image" c
     
     <a class="navbar-brand me-2" href="../index.html">rCNV</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ order as the number of samples in the vcf</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a data frame of expected “E(Hom)”, observed
+    <p>Returns a data frame of expected “E(Hom)” and observed
 “O(Hom)” homozygotes with their inbreeding coefficients.</p>
     </div>
     <div class="section level2">
@@ -96,7 +96,7 @@ order as the number of samples in the vcf</p></dd>
 <span class="r-in"><span class="va">pp</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">$</span><span class="va">vcf</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span><span class="op">]</span>,<span class="fl">1</span>,<span class="fl">8</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.data.frame(x):</span> object 'vcf' not found</span>
 <span class="r-in"><span class="va">hzygots</span><span class="op">&lt;-</span><span class="fu">h.zygosity</span><span class="op">(</span><span class="va">vcf</span>,plot<span class="op">=</span><span class="cn">TRUE</span>,pops<span class="op">=</span><span class="va">pp</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h.zygosity(vcf, plot = TRUE, pops = pp):</span> object 'vcf' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(vcf, "list"):</span> object 'vcf' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
