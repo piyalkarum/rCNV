@@ -187,6 +187,9 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #'  It uses the method trimmed means of M-values proposed by Robinson &
 #'   Oshlack (2010). See the original publication and \code{edgeR} package
 #'   for more information.
+#'   The method \code{MedR} is median ratio normalization;
+#'   QN - quantile normalization (see  Maza, Elie, et al. 2013 for a
+#' comparison of methods).
 #'
 #' @return Returns a numerical vector of normalization factors for each sample
 #'
@@ -209,7 +212,7 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #'
 #'
 #' @export
-norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10){
+norm.fact<-function(df,method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10){
   if(setequal(c("CHROM","POS","ID"),colnames(df)[1:3])){df<-df[,-c(1:4)]}
   method<-match.arg(method,several.ok = TRUE)
   if(length(method)>1){ifelse(nrow(df)<10001, assign("method","TMM"),assign("method","TMMex"))}
@@ -224,6 +227,9 @@ norm.fact<-function(df,method=c("TMM","TMMex"),logratioTrim=.3, sumTrim=0.05, We
   } else if(method=="TMMex"){
     ref<-which.max(colSums(sqrt(as.matrix(df))))
     out<-apply(df,2,FUN=TMMex,ref=df[,ref],logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
+  } else if(method=="MedR"){
+    pseudo<- apply(df,1,function(xx){exp(mean(log(as.numeric(xx)[as.numeric(xx)>0])))})
+    out<-  apply(df,2,function(xx){median(as.numeric(xx)/pseudo,na.rm=T)})
   }
   out<-data.frame(lib.size=colSums(df),norm.factor=out)
   return(out)

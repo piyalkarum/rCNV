@@ -106,8 +106,8 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,
   if(is.null(x.norm)){
     x.norm<-cpm.normal(X,method=method,logratioTrim=logratioTrim,sumTrim = sumTrim,Weighting = Weighting,Acutoff = Acutoff,verbose = verbose)
   }
-  if(!is.list(x.norm)){x.norm<-list(AD=x.norm)}
-  if(is.list(x.norm)){x.norm<-x.norm$AD}
+  if(!inherits(x.norm,"list")){x.norm<-list(AD=x.norm)}
+  if(inherits(x.norm,"list")){x.norm<-x.norm$AD}
 
   if(verbose){
     message("calculating probability values of alleles")
