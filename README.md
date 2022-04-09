@@ -29,19 +29,23 @@ all the functions and usage are explained with ample examples.***
 
 ## Installation
 
-* CRAN link <https://cran.r-project.org/web/packages/rCNV/index.html>
+-   CRAN link <https://cran.r-project.org/web/packages/rCNV/index.html>
+
+<!-- -->
 
     install.packages("rCNV")
 
-* You can install the development version of rCNV from
-[GitHub](https://github.com/) with:
+-   You can install the development version of rCNV from
+    [GitHub](https://github.com/) with:
 
-    if (!requireNamespace("devtools", quietly = TRUE)) 
-        install.packages("devtools") 
-    devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
+<!-- -->
+
+        if (!requireNamespace("devtools", quietly = TRUE)) 
+            install.packages("devtools") 
+        devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
 
 Please don’t forget to cite us if you use the package.
 
 ## How to cite
 
-* Publication to be added
+-   Publication to be added
