@@ -2,7 +2,7 @@ Package: rCNV
 Type: Package
 Title: Detect Copy Number Variants from SNPs Data
 Version: 1.0.9000
-Date: 2021
+Date: 2022-03-29
 Authors@R: c(person(given="Piyal",family="Karunarathne", email="piyalkarumail@yahoo.com", role = c("aut", "cre"),comment = c(ORCID = "0000-0002-1934-145X")),person(given="Pascal", family="Milesi", role = "aut",comment = c(ORCID = "0000-0001-8580-4291")),person(given="Qiujie",family="Zhou", email="qiujie.zhou@ebc.uu.se", role = c("aut"),comment = c(ORCID = "0000-0001-7351-2371")))
 Maintainer: Piyal Karunarathne <piyalkarumail@yahoo.com>
 Description: Functions in this package will import filtered variant call format (VCF) files of SNPs data and generate data sets to detect copy number variants, visualize them and do downstream analyses with copy number variants(e.g. Environmental association analyses).
@@ -21,5 +21,6 @@ Suggests:
 vignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
-URL: https://piyalkarum.github.io/rCNV/
+URL: https://piyalkarum.github.io/rCNV/, https://cran.r-project.org/package=rCNV
 BugReports: https://github.com/piyalkarum/rCNV/issues
+Packaged: 2022-03-29 02:36:40 UTC; piyalkarunarathne
