@@ -348,8 +348,3 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim
   return(list(AD=out,outliers=colnames(tdep)[ot.ind]))
 }
 
-
-
-
-
-
