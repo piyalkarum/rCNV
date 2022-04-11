@@ -21,6 +21,6 @@ Suggests:
 vignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
-URL: https://piyalkarum.github.io/rCNV/, https://cran.r-project.org/package=rCNV
+URL: https://piyalkarum.github.io/rCNV/,https://cran.r-project.org/package=rCNV
 BugReports: https://github.com/piyalkarum/rCNV/issues
 Packaged: 2022-03-29 02:36:40 UTC; piyalkarunarathne
