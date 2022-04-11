@@ -345,6 +345,6 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim
   }
   out<-data.frame(het.table[,c(1:4)],t(out))
   colnames(out)<-colnames(het.table)
-  return(list(AD=out,outliers=colnames(tdep)[ot.ind]))
+  return(list(AD=out,outliers=data.frame(column=(ot.ind+4),colnames(tdep)[ot.ind])))
 }
 
