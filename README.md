@@ -29,7 +29,7 @@ all the functions and usage are explained with ample examples.***
 
 ## Installation
 
--   CRAN link <https://cran.r-project.org/web/packages/rCNV/index.html>
+-   CRAN link <https://cran.r-project.org/package=rCNV>
 
 <!-- -->
 
