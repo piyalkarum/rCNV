@@ -101,7 +101,7 @@ get.pvals<-function(x,df,p.cal){
 #' AI<-allele.info(ADtable,x.norm=ADnorm)}
 #'
 #' @export
-allele.info<-function(X,x.norm=NULL,method=c("TMM", "TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
+allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
   method=match.arg(method)
   if(is.null(x.norm)){
     x.norm<-cpm.normal(X,method=method,logratioTrim=logratioTrim,sumTrim = sumTrim,Weighting = Weighting,Acutoff = Acutoff,verbose = verbose)

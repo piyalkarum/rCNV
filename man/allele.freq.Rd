@@ -2,31 +2,39 @@
 % Please edit documentation in R/allele_tests.R
 \name{allele.freq}
 \alias{allele.freq}
-\title{Generate allele frequency table (from genotypes)}
+\title{Generate allele frequency table for individuals or populations}
 \usage{
-allele.freq(gtt, verbose = TRUE)
+allele.freq(gtt, f.typ = c("pop", "ind"), verbose = TRUE)
 }
 \arguments{
-\item{gtt}{a genotype table produced from \code{hetTgen} (or similar)}
+\item{gtt}{a list or data frame of genotype and/or allele depth table produced from \code{hetTgen} (or similar)}
+
+\item{f.typ}{character. type of allele frequency to be calculated (individual \code{"ind"} or population \code{"pop"})}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
 \value{
-Returns a data frame of allele frequencies calculated from genotypes
+Returns a data frame or a list (if both genotype and allele depth used)
+of allele frequencies
 }
 \description{
 Get alternative allele frequency across all individuals per SNP from the
-genotype table
+genotype or allele depth tables
 }
 \details{
-Use hetTgen function to generate the genotype table with the
-\code{GT} option
+If the allele frequencies to be calculated for populations from both getnotype table and the allele depth table, they must be provided in a list with element names \code{AD} for allele depth table and \code{GT} for the genotype table. See the examples.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
 het.table<-hetTgen(vcf,"GT")
-frQ<-allele.freq(het.table)
+ad.table<-hetTgen(vcf,"AD")
+
+# for individual based AF
+frQ<-allele.freq(het.table,f.typ="ind")
+
+#for population-wise and both allele depth and genotype tables
+\dontrun{frQ<-allele.freq(list(AD=ad.table,GT=het.table),f.typ="pop")}
 
 }
 \author{

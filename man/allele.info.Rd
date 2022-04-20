@@ -7,7 +7,7 @@
 allele.info(
   X,
   x.norm = NULL,
-  method = c("TMM", "TMMex"),
+  method = c("TMM", "TMMex", "MedR", "QN"),
   logratioTrim = 0.3,
   sumTrim = 0.05,
   Weighting = TRUE,
