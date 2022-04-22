@@ -64,7 +64,7 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
       if(verbose){
         tmp<-apply_pb(gs,1,function(x){
           x<-as.character(x)
-          tl<-strsplit(x,"/")
+          tl<-strsplit(x,"/") # use also pipes or anything else
           tt<-unlist(lapply(tl,function(y){length(which(y==1))/2}))
           return(tt)
         })

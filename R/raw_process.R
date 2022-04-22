@@ -213,7 +213,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
       h.table<-t(apply_pb(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))
     }
     else if(itype=="DP"){message("generating unfiltered allele depth table")
-      h.table<-t(apply_pb(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))}
+      h.table<-t(apply_pb(xx,1,function(X){do.call(cbind,lapply(X,function(x){as.numeric(paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':'))}))}))}
   } else {
     if(itype=="AD"){h.table<-t(apply(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))}
     else if(itype=="DP"){h.table<-t(apply(xx,1,function(X){do.call(cbind,lapply(X,function(x){paste(strsplit(x, ":")[[1]][as.numeric(X[1])], collapse = ':')}))}))}

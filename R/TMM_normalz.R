@@ -150,14 +150,14 @@ quantile_normalisation <- function(df,het.table=NULL,verbose=verbose){
 
 index_to_mean <- function(x,indx, my_mean, al=NULL){
   my_index<-indx[,x]
-  nr<-my_index[my_mean]
+  nr<-my_mean[my_index]
   if(!is.null(al)){
     alleles<-al[,x]
     sm<-do.call(cbind,lapply(data.table::tstrsplit(alleles,","),as.numeric))
     af<-proportions(sm,1)
     af<-round(af*nr,0)
     af<-paste0(af[,1],",",af[,2])
-    af[af=="NaN,NaN" | af=="NA,NA"] <- NA
+    af[af=="NaN,NaN" | af=="NA,NA"] <- 0
     return(af)
   } else {
     return(nr)
