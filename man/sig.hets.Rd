@@ -32,8 +32,8 @@ data with p-value indicating significance of deviation.
 }
 \description{
 This function will recognize the SNPs with a proportion of heterozygotes
-significantly higher than expected under HWE and plot putatively
-duplicated snps
+significantly higher than expected under HWE and plot deviant snps based
+only on the excess of heterozygotes.
 }
 \examples{
 \dontrun{data(alleleINF)

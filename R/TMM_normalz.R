@@ -256,6 +256,7 @@ norm.fact<-function(df,method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumT
 #' @param Acutoff numeric, cutoff on \dQuote{A} values to use before trimming
 #' (only for TMM(ex))
 #' @param verbose logical. show progress
+#' @param plot logical. Plot the boxplot of sample library sizes showing outliers
 #'
 #' @details This function converts an observed depth value table to an
 #' effective depth value table using several normalization methods;
@@ -293,7 +294,7 @@ norm.fact<-function(df,method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumT
 #'
 #'
 #' @export
-cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE){
+cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE,plot=TRUE){
   method<-match.arg(method)
   if(length(method)>1){method="TMM"}
   if(verbose){
@@ -307,7 +308,8 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim
   cl<-rep("dodgerblue",ncol(tdep))
   ot.ind<-which(colnames(tdep) %in% names(ot))
   cl[ot.ind]<-2
-  if(length(ot)>0){barplot(colSums(tdep,na.rm = T),col=cl,border=NA,xlab="sample",ylab="total depth")
+  if(length(ot)>0){
+    if(plot){barplot(colSums(tdep,na.rm = T),col=cl,border=NA,xlab="sample",ylab="total depth")}
     message("OUTLIERS DETECTED\nConsider removing the samples:")
     cat(colnames(tdep)[ot.ind])}
   if(method=="TMM" | method=="TMMex"){

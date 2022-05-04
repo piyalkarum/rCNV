@@ -42,8 +42,9 @@ Detect duplicated snps using excess of heterozygotes
 See details.
 }
 \details{
-Duplicates are detected with both excess of heterozygosity
-according to HWE and deviant SNPs where deviants are detected using the
+SNP deviants are detected with both excess of heterozygosity
+according to HWE and deviant SNPs where depth values fall outside of the
+normal distribution are detected using the
 following methods:
 \enumerate{
 \item Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}

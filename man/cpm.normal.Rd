@@ -11,7 +11,8 @@ cpm.normal(
   sumTrim = 0.05,
   Weighting = TRUE,
   Acutoff = -1e+10,
-  verbose = TRUE
+  verbose = TRUE,
+  plot = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ weights}
 (only for TMM(ex))}
 
 \item{verbose}{logical. show progress}
+
+\item{plot}{logical. Plot the boxplot of sample library sizes showing outliers}
 }
 \value{
 Returns a list with (AD), a data frame of normalized depth values

@@ -1,6 +1,9 @@
 # rCNV 1.0.9000 (developmental version)
 
-
+## Changes
+* dupGet function categorizes SNPs into deviants and non-deviants not duplicates and singlets
+* The new function cnv categorizes deviant SNPs to CNVs using the given statistical approaches
+* 
 
 # rCNV 1.0.0 (Release date: 29/03/2022)
 

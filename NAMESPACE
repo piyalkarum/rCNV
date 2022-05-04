@@ -3,6 +3,7 @@
 export(ad.correct)
 export(allele.freq)
 export(allele.info)
+export(cnv)
 export(cpm.normal)
 export(depthVsSample)
 export(dup.plot)

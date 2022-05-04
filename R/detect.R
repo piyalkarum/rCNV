@@ -13,8 +13,8 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' Identify significantly different heterozygotes from SNPs data
 #'
 #' This function will recognize the SNPs with a proportion of heterozygotes
-#'  significantly higher than expected under HWE and plot putatively
-#'  duplicated snps
+#'  significantly higher than expected under HWE and plot deviant snps based
+#'  only on the excess of heterozygotes.
 #'
 #' @param a.info allele info table generated from filtered vcfs using the
 #' function \code{allele.info}
@@ -52,7 +52,7 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
     df<-data.frame(t(apply(d,1,ex.prop,method=method)))
   }
   colnames(df)<-c("p2","het","q2","pval","delta")
-  df$dup.stats<-"singlet";df$dup.stats[which(df$pval < 0.05 & df$delta > 0 )]<-"duplicated"
+  df$dup.stats<-"non-deviant";df$dup.stats[which(df$pval < 0.05/nrow(df) & df$delta > 0 )]<-"deviant"
   if(plot){
     l<-list(...)
     if(is.null(l$cex)) l$cex=0.2
@@ -62,11 +62,11 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
     if(is.null(l$col)) cols<-makeTransparent(rainbow_hcl(2),alpha=0.3) else cols<-makeTransparent(l$col,alpha=0.3)
 
     d$Color <- cols[1]
-    d$Color [which(df$dup.stats=="duplicated")]<- cols[2]#& df$delta > 0
+    d$Color [which(df$dup.stats=="deviant")]<- cols[2]#& df$delta > 0
     plot(a.info$propHet~a.info$propHomAlt, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
          xlab="Proportion of Alternate Homozygotes",ylab="Proportion of Heterozygotes")
     lines((smm<-smooth.spline(df$het~df$q2)),col="blue")
-    legend("bottomright", c("singlet","duplicate","expected"), col = c(cols,"blue"), lty = c(0, 0, 1), lwd = c(0, 0, 1),pch = c(l$pch, l$pch, NA),
+    legend("bottomright", c("non-deviants","deviants","expected"), col = c(cols,"blue"), lty = c(0, 0, 1), lwd = c(0, 0, 1),pch = c(l$pch, l$pch, NA),
            cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
   }
   return(data.frame(cbind(a.info[,c(1:3)],df[,c(4:6)]),row.names = NULL))
@@ -104,10 +104,10 @@ dup.plot<-function(ds,...){
   if(is.null(l$alpha)) l$alpha=0.3
   if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
   ds$Color <- l$col[2]
-  ds$Color [ds$dup.stat=="duplicated"]<- l$col[1]
+  ds$Color [ds$dup.stat=="deviant"]<- l$col[1]
   plot(ds$medRatio~ds$propHet, pch=l$pch, cex=l$cex,col=ds$Color,xlim=l$xlim,ylim=l$ylim,frame=F,
        ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
-  legend("bottomright", c("duplicates","singlets"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+  legend("bottomright", c("deviants","non-deviants"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
          cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
 
 }
@@ -135,8 +135,9 @@ dup.plot<-function(ds,...){
 #'
 #' @return Returns a data frame of snps/alleles with their duplication status
 #'
-#' @details Duplicates are detected with both excess of heterozygosity
-#' according to HWE and deviant SNPs where deviants are detected using the
+#' @details SNP deviants are detected with both excess of heterozygosity
+#' according to HWE and deviant SNPs where depth values fall outside of the
+#' normal distribution are detected using the
 #'  following methods:
 #' 1. Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}
 #' 2. chi-square test (see references for more details on the method)
@@ -161,24 +162,107 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
     ht<-sig.hets(data,plot=F,verbose=verbose)
     test<-match.arg(test,several.ok = TRUE)
     if(length(test)==6){
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n excess of heterozygotes ","z.all & chi.all"))}
       pp<-data[,c("z.all","chi.all")]
     } else {
       pp<-data.frame(data[,test])
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n", " excess of heterozygotes \n ",paste0(unlist(test),collapse = "\n ")))}
     }
     if(intersection){
       df<-matrix(NA,nrow = nrow(pp),ncol = ncol(pp))
       for(i in 1:ncol(pp)){
         df[which(pp[,i]<0.05/nrow(pp)),i]<-1
       }
-      pp$dup.stat<-"singlet"
-      pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"duplicated"
+      pp$dup.stat<-"non-deviant"
+      pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"deviant"
     } else {
-      pp$dup.stat<-"singlet"
+      pp$dup.stat<-"non-deviant"
       for(i in 1:ncol(pp)){
-        pp$dup.stat[pp[,i]<0.05/nrow(pp)]<-"duplicated"
+        pp$dup.stat[pp[,i]<0.05/nrow(pp)]<-"deviant"
       }
     }
-    pp$dup.stat[which(ht$dup.stats=="duplicated")]<-"duplicated"
+    pp$dup.stat[which(ht$dup.stats=="deviant")]<-"deviant"
+    pp<-data.frame(data[,1:10],eH.pval=ht[,"pval"],eH.delta=ht[,"delta"],dup.stat=pp$dup.stat)
+
+    if(plot){
+      l<-list(...)
+      if(is.null(l$cex)) l$cex=0.2
+      if(is.null(l$pch)) l$pch=19
+      if(is.null(l$xlim)) l$xlim=c(0,1)
+      if(is.null(l$ylim)) l$ylim=c(0,1)
+      if(is.null(l$alpha)) l$alpha=0.3
+      if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
+      Color <- rep(l$col[2],nrow(pp))
+      Color[pp$dup.stat=="deviant"]<- l$col[1]
+      plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
+           ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+      legend("bottomright", c("deviants","non-deviants"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+             cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
+    }
+  }
+  return(pp)
+}
+
+
+
+
+#' Find CNVs from deviants
+#'
+#' Categorize deviant and non-deviant into "singlets" and "duplicates" based on the statistical approaches specified by the user.
+#' The intersection of all the stats provided will be used in the categorization. If one would like to use the intersection of at least two stats, this can be specified in the \code{n.ints}
+#'
+#' @param data A data frame of allele information generated with the function
+#' \code{allele.info}
+#' @param test vector of characters. Type of test to be used for significance.
+#' See details
+#' @param plot logical. Plot the detection of duplicates. default \code{TRUE}
+#' @param verbose logical. show progress
+#' @param ... other arguments to be passed to \code{plot}
+#'
+#' @return Returns a data frame of SNPs with their detected duplication status
+#'
+#'#' @importFrom colorspace terrain_hcl
+#'
+#' @details SNP deviants are detected with both excess of heterozygosity
+#' according to HWE and deviant SNPs where depth values fall outside of the
+#' normal distribution are detected using the
+#'  following methods:
+#' 1. Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}
+#' 2. chi-square test (see references for more details on the method)
+#'
+#' Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
+#' all allele combinations (\code{z.all, chi.all}) and the assumption of no
+#' probe bias p=0.5 (\code{z.05, chi.05})
+#'
+#' @author Piyal Karunarathne
+#'
+#' @examples
+#' \dontrun{data(alleleINF)
+#' DD<-cnv(alleleINF)}
+#'
+#' @export
+cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),plot=TRUE,verbose=TRUE,...){
+  #data check
+  data<-as.data.frame(data)
+  if(!any(colnames(data)=="propHet")){
+    stop("please provide the data with the output of allele.info()")
+  } else {
+    ht<-data[,c("eH.pval","eH.delta")]
+    test<-match.arg(test,several.ok = TRUE)
+    if(length(test)==6){
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n excess of heterozygotes ","z.all & chi.all"))}
+      pp<-data[,c("z.all","chi.all")]
+    } else {
+      pp<-data.frame(data[,test])
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n", "excess of heterozygotes \n",paste0(unlist(test),collapse = "\n")))}
+    }
+    df<-matrix(NA,nrow = nrow(pp),ncol = ncol(pp))
+    for(i in 1:ncol(pp)){
+      df[which(pp[,i]<0.05/nrow(pp)),i]<-1
+    }
+    pp$dup.stat<-"singlet"
+    pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"duplicated"
+    pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"duplicated"
     pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
 
     if(plot){
@@ -199,7 +283,6 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
   }
   return(pp)
 }
-
 
 
 
