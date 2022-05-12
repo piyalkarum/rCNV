@@ -10,6 +10,34 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
   return(c(eX/n,pval,delta))
 }
 
+#1 pvals for sig.hets when AD table is provided
+get.eHpvals<-function(df,method=c("fisher","chi.sq")){
+  snp1<-df[-c(1:4)]
+  y<-data.frame(do.call(rbind,strsplit(as.character(unlist(snp1)),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+  rr1<-y[,2]/rowSums(y,na.rm = T)
+  snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
+  if(nrow(snp1het)>3){
+    propHet<-nrow(na.omit(snp1het))/length(na.omit(rr1))
+    medRatio<-median(proportions(as.matrix(snp1het),margin = 1)[,2],na.rm = T)
+    homalt<-sum(rr1==1,na.rm=T)
+    homref<-sum(rr1==0,na.rm=T)
+    Nsamp=nrow(snp1het)+homalt+homref
+    propHomAlt<-homalt/Nsamp
+    rs<-c(homref,nrow(snp1het),homalt,Nsamp)
+    n<-unlist(c(rs[4]))
+    p<-(rs[1]+rs[2]/2)/n
+    ob<-unlist(c(rs[1:3]))
+    eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
+    delta <- rs[2]-(2*p*(1-p) * n)
+    stat<-match.arg(method)
+    pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq.test(cbind(ob,eX)))$p.value)
+    ll<-c(medRatio,propHomAlt,propHet,eX/n,pval,delta)
+  } else {
+    ll<-NA
+  }
+  return(ll)
+}
+
 #' Identify significantly different heterozygotes from SNPs data
 #'
 #' This function will recognize the SNPs with a proportion of heterozygotes
@@ -42,17 +70,33 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #' @importFrom colorspace rainbow_hcl
 #' @export
 sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
-  d<-a.info[,c("NHomRef","NHet","NHomAlt","Nsamp")]
-  colnames(d)<-c("h1","het","h2","truNsample")
-  method<-match.arg(method)
-  if(verbose){
-    message("assessing excess of heterozygotes")
-    df<-data.frame(t(apply_pb(d,1,ex.prop,method=method)))
+  if(!any(colnames(a.info)=="NHomRef")){
+    if(verbose){message("assessing excess of heterozygotes")
+      df<-apply_pb(a.info,1,get.eHpvals,method=method)
+    } else {df<-apply(a.info,1,get.eHpvals,method=method)}
+    df<-data.frame(do.call(rbind,df))
+    colnames(df)<-c("medRatio","propHomAlt","propHet","p2","het","q2","eH.pval","eH.delta")
+    #df<-na.omit(df)
   } else {
-    df<-data.frame(t(apply(d,1,ex.prop,method=method)))
+    d<-a.info[,c("NHomRef","NHet","NHomAlt","Nsamp")]
+    colnames(d)<-c("h1","het","h2","truNsample")
+    method<-match.arg(method)
+    if(verbose){
+      message("assessing excess of heterozygotes")
+      df<-data.frame(t(apply_pb(d,1,ex.prop,method=method)))
+    } else {
+      df<-data.frame(t(apply(d,1,ex.prop,method=method)))
+    }
+    colnames(df)<-c("p2","het","q2","eH.pval","eH.delta")
+    df$propHomAlt <- a.info$propHomAlt
+    df$propHet<-a.info$propHet
+    df$medRatio<-a.info$medRatio
   }
-  colnames(df)<-c("p2","het","q2","eH.pval","eH.delta")
+
   df$dup.stat<-"non-deviant";df$dup.stat[which(df$eH.pval < 0.05/nrow(df) & df$eH.delta > 0 )]<-"deviant"
+  d<-na.omit(df[,c("p2","het","q2")])
+  df<-na.omit(data.frame(cbind(a.info[,c(1:4)],df[,c("medRatio","propHomAlt","propHet","eH.pval","eH.delta","dup.stat")]),row.names = NULL))
+
   if(plot){
     l<-list(...)
     if(is.null(l$cex)) l$cex=0.2
@@ -62,15 +106,18 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
     if(is.null(l$col)) cols<-makeTransparent(rainbow_hcl(2),alpha=0.3) else cols<-makeTransparent(l$col,alpha=0.3)
 
     d$Color <- cols[1]
-    d$Color [which(df$dup.stats=="deviant")]<- cols[2]#& df$delta > 0
-    plot(a.info$propHet~a.info$propHomAlt, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
+    d$Color [which(df$dup.stat=="deviant")]<- cols[2]#& df$delta > 0
+    plot(df$propHet~df$propHomAlt, pch=l$pch, cex=l$cex,col=d$Color,xlim=l$xlim,ylim=l$ylim,
          xlab="Proportion of Alternate Homozygotes",ylab="Proportion of Heterozygotes")
-    lines((smm<-smooth.spline(df$het~df$q2)),col="blue")
+    lines((smm<-smooth.spline(d$het~d$q2)),col="blue")
     legend("bottomright", c("non-deviants","deviants","expected"), col = c(cols,"blue"), lty = c(0, 0, 1), lwd = c(0, 0, 1),pch = c(l$pch, l$pch, NA),
            cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
   }
-  return(data.frame(cbind(a.info[,c(1:3)],df[,c(4:6)]),row.names = NULL))
+
+  return(df)
 }
+
+
 
 
 #' Plot duplicates

@@ -5,6 +5,7 @@
 * The new function cnv categorizes deviant SNPs to CNVs using the given statistical approaches
 * 
 * allele.info calculates excess of heterozygotes in addition to Z-score and chi-square values
+* sig.hets function also accepts allele depth table for input
 
 # rCNV 1.0.0 (Release date: 29/03/2022)
 
