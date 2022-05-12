@@ -186,7 +186,7 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN"),logratio
   pvals<-cbind(X[,1:3],pvals)
   pvals<-na.omit(pvals)
   ht<-sig.hets(pvals,plot = FALSE, verbose = verbose)
-  pvals<-data.frame(pvals,eH.pval=ht[,"pval"],eH.delta=ht[,"delta"])
+  pvals<-data.frame(pvals,eH.pval=ht[,"eH.pval"],eH.delta=ht[,"eH.delta"])
 
   return(pvals)
 }

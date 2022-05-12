@@ -51,8 +51,8 @@ sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...
   } else {
     df<-data.frame(t(apply(d,1,ex.prop,method=method)))
   }
-  colnames(df)<-c("p2","het","q2","pval","delta")
-  df$dup.stats<-"non-deviant";df$dup.stats[which(df$pval < 0.05/nrow(df) & df$delta > 0 )]<-"deviant"
+  colnames(df)<-c("p2","het","q2","eH.pval","eH.delta")
+  df$dup.stat<-"non-deviant";df$dup.stat[which(df$eH.pval < 0.05/nrow(df) & df$eH.delta > 0 )]<-"deviant"
   if(plot){
     l<-list(...)
     if(is.null(l$cex)) l$cex=0.2
@@ -104,10 +104,11 @@ dup.plot<-function(ds,...){
   if(is.null(l$alpha)) l$alpha=0.3
   if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
   ds$Color <- l$col[2]
-  ds$Color [ds$dup.stat=="deviant"]<- l$col[1]
+  st<-sort(unique(ds$dup.stat))
+  ds$Color [ds$dup.stat==st[1]]<- l$col[1]
   plot(ds$medRatio~ds$propHet, pch=l$pch, cex=l$cex,col=ds$Color,xlim=l$xlim,ylim=l$ylim,frame=F,
        ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
-  legend("bottomright", c("deviants","non-deviants"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+  legend("bottomright", st, col = makeTransparent(l$col,alpha=1), pch=l$pch,
          cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
 
 }
@@ -159,7 +160,14 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
   if(!any(colnames(data)=="propHet")){
     stop("please provide the data with the output of allele.info()")
   } else {
-    ht<-sig.hets(data,plot=F,verbose=verbose)
+    if(!(any(colnames(data)=="eH.pval"))) {
+      ht<-sig.hets(data,plot=F,verbose=verbose)
+    } else {
+      ht <-data[,c("eH.pval","eH.delta")]
+      ht$dup.stat<-"non-deviant"
+      ht$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"deviant"
+    }
+
     test<-match.arg(test,several.ok = TRUE)
     if(length(test)==6){
       if(verbose){cat(paste0("categorizing deviant SNPs with \n excess of heterozygotes ","z.all & chi.all"))}
@@ -181,8 +189,8 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
         pp$dup.stat[pp[,i]<0.05/nrow(pp)]<-"deviant"
       }
     }
-    pp$dup.stat[which(ht$dup.stats=="deviant")]<-"deviant"
-    pp<-data.frame(data[,1:10],eH.pval=ht[,"pval"],eH.delta=ht[,"delta"],dup.stat=pp$dup.stat)
+    pp$dup.stat[which(ht$dup.stat=="deviant")]<-"deviant"
+    pp<-data.frame(data[,1:10],eH.pval=ht[,"eH.pval"],eH.delta=ht[,"eH.delta"],dup.stat=pp$dup.stat)
 
     if(plot){
       l<-list(...)
@@ -202,9 +210,6 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
   }
   return(pp)
 }
-
-
-
 
 #' Find CNVs from deviants
 #'
