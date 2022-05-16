@@ -273,7 +273,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #'
 #' @return Returns a data frame of SNPs with their detected duplication status
 #'
-#'#' @importFrom colorspace terrain_hcl
+#' @importFrom colorspace terrain_hcl
 #'
 #' @details SNP deviants are detected with both excess of heterozygosity
 #' according to HWE and deviant SNPs where depth values fall outside of the

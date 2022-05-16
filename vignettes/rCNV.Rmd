@@ -210,7 +210,26 @@ head(deviants)
 
 The function also plots the deviants with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of `dupGet()` using `dup.plot()` fucntion.
 
+![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with deviant alleles](devPlot.png){width=400}
+
+### 2.3 Filtering putative duplicates
+Putative duplicates are filtered from the deviant SNPs using a combination of at least two statistics used in deviant detection. i.e., the SNPs that are detected by the intersection between excess of heterozygotes, Z-score distribution and Chi-square distribution are flagged as putative duplicated. The users can pick a range of optimal statistics (e.g. `z.all`,`chi.all`,`z.05`,`chi.05`, etc.) depending on the nature (also sequencing technology) of the underlying data. The function `cnv()` is dedicated for this purpose.
+
+```{r eval=FALSE}
+CV<-cnv(alleleINF, test=c("z.05","chi.05"))
+# see the difference between deviants and duplicates
+table(deviants$dup.stat)
+table(CV$dup.stat)
+```
+
 ![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates](dupPlot.png){width=400}
+
+```{r eval=TRUE,echo=FALSE}
+CV<-cnv(alleleINF, test=c("z.05","chi.05"),verbose = F,plot = F)
+# see the difference between deviants and duplicates
+table(deviants$dup.stat)
+table(CV$dup.stat)
+```
 
 
 ## 3. POST-DETECTION

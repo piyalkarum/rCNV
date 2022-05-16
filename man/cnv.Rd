@@ -27,8 +27,6 @@ See details}
 }
 \value{
 Returns a data frame of SNPs with their detected duplication status
-
-#' @importFrom colorspace terrain_hcl
 }
 \description{
 Categorize deviant and non-deviant into "singlets" and "duplicates" based on the statistical approaches specified by the user.

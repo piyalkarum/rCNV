@@ -77,7 +77,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Detecting CNV from SNPs: a quick guide to rCNV</h1>
                         <h4 data-toc-skip class="author">Piyal Karunarathne</h4>
             
-            <h4 data-toc-skip class="date">Last updated: 04 May, 2022</h4>
+            <h4 data-toc-skip class="date">Last updated: 16 May, 2022</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/piyalkarum/rCNV/blob/HEAD/vignettes/rCNV.Rmd" class="external-link"><code>vignettes/rCNV.Rmd</code></a></small>
       <div class="d-none name"><code>rCNV.Rmd</code></div>
@@ -611,8 +611,27 @@ C
 <span class="co">#&gt; 17482   105 0.8303502  3.1428571 non-deviant</span></code></pre>
 <p>The function also plots the deviants with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of <code><a href="../reference/dupGet.html">dupGet()</a></code> using <code><a href="../reference/dup.plot.html">dup.plot()</a></code> fucntion.</p>
 <div class="figure">
+<img src="devPlot.png" width="400" alt=""><p class="caption">Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with deviant alleles</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="filtering-putative-duplicates">2.3 Filtering putative duplicates<a class="anchor" aria-label="anchor" href="#filtering-putative-duplicates"></a>
+</h3>
+<p>Putative duplicates are filtered from the deviant SNPs using a combination of at least two statistics used in deviant detection. i.e., the SNPs that are detected by the intersection between excess of heterozygotes, Z-score distribution and Chi-square distribution are flagged as putative duplicated. The users can pick a range of optimal statistics (e.g. <code>z.all</code>,<code>chi.all</code>,<code>z.05</code>,<code>chi.05</code>, etc.) depending on the nature (also sequencing technology) of the underlying data. The function <code><a href="../reference/cnv.html">cnv()</a></code> is dedicated for this purpose.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">CV</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/cnv.html">cnv</a></span><span class="op">(</span><span class="va">alleleINF</span>, test<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.05"</span>,<span class="st">"chi.05"</span><span class="op">)</span><span class="op">)</span>
+<span class="co"># see the difference between deviants and duplicates</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">deviants</span><span class="op">$</span><span class="va">dup.stat</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">CV</span><span class="op">$</span><span class="va">dup.stat</span><span class="op">)</span></code></pre></div>
+<div class="figure">
 <img src="dupPlot.png" width="400" alt=""><p class="caption">Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates</p>
 </div>
+<pre><code><span class="co">#&gt; </span>
+<span class="co">#&gt;     deviant non-deviant </span>
+<span class="co">#&gt;         360        2497</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; duplicated    singlet </span>
+<span class="co">#&gt;        411       2446</span></code></pre>
 </div>
 </div>
 <div class="section level2">
