@@ -4,7 +4,7 @@
 \alias{vst}
 \title{Calculate population-wise Vst}
 \usage{
-vst(AD, pops, id.list = NULL, qGraph = TRUE, ...)
+vst(AD, pops, id.list = NULL, qGraph = TRUE, verbose = TRUE, ...)
 }
 \arguments{
 \item{AD}{data frame of total allele depth values of (duplicated, if
@@ -18,6 +18,8 @@ in the AD data frame}
 
 \item{qGraph}{logical. Plot the network plot based on Vst values
 (see details)}
+
+\item{verbose}{logical. show progress}
 
 \item{\dots}{additional arguments passed to \code{qgraph}}
 }

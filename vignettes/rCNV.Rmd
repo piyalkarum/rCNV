@@ -233,11 +233,37 @@ table(CV$dup.stat)
 
 
 ## 3. POST-DETECTION
-|       TBA
+
 ### 3.1 Duplicate list and validation
+We test the validity of detected duplicates in two way: 1. direct detection through a sliding window and 2. variant fixation index
+
+* The sliding window method assess the duplication along chromosomes/scaffolds on a 10,000 bp sliding window. This step assumes that putative duplicates are accompanied by flanking alleles/SNPs withing the sliding window. The putative duplicates that do not follow this assumption will be flagged as low-confident and can be removed if desired.    
+** This method is still under beta-testing **
+
+* Variant fixation index (V_ST) is equivalent to population fixation index (F_ST) and calculated as V_ST= V_S/V_T where VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size; and used to identify distinct CNV groups between populations (See Dennis et al., 2017; Weir & Cockerham, 1984)
+The function `vst` can be used to calculate the V_ST values per population and plot as a network qgraph.
+
+```{r,eval=FALSE}
+vdata<-readRDS("../testDATA/lobster_data4Vst.rds")
+# get the total depth values of the duplicated snps
+# You can either use the following line to get the total depth of the samples or use the "tot" option of the hetTgen function to generate the total depth table
+dd<-rCNV:::apply_pb(vdata[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+pops<-substr(colnames(dd),1,4)
+dd<-data.frame(vdata[,1:4],dd)
+Vs<-vst(dd,pops=pops)
+```
+```{r,echo=FALSE}
+vdata<-readRDS("../testDATA/lobster_data4Vst.rds")
+dd<-apply(vdata[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+pops<-substr(colnames(dd),1,4)
+dd<-data.frame(vdata[,1:4],dd)
+Vs<-vst(dd,pops=pops,verbose=F)
+```
+
+See `qgraph` help for the interpretation of the network analysis.
 
 ### 3.2 Relative copy number
-
+TBA
 
 
 

@@ -91,6 +91,7 @@ dup.validate<-function(d.detect,window.size=100){
 #'  in the AD data frame
 #' @param qGraph logical. Plot the network plot based on Vst values
 #' (see details)
+#' @param verbose logical. show progress
 #' @param \dots additional arguments passed to \code{qgraph}
 #'
 #' @importFrom qgraph qgraph
@@ -123,7 +124,7 @@ dup.validate<-function(d.detect,window.size=100){
 #' vst(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 #'
 #' @export
-vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
+vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,verbose=TRUE,...){
   if(!is.null(id.list)){
     AD<-AD[match(id.list,AD$ID),]
   }
@@ -140,26 +141,42 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,...){
   # Vst - for CNVs
   # Vt-Vs/Vt
   # VT is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size
-  Vst<-combn_pb(pop,2,function(x){
-    jj<-tmp[tmp$pop==x[1],-c(1:2)]
-    kk<-tmp[tmp$pop==x[2],-c(1:2)]
-    ft<-ncol(jj)
-    ll<-lapply(1:ft, function(y){
-      vt<-var(c(jj[,y],kk[,y]),na.rm=T)
-      vs<-(var(jj[,y],na.rm=T)*length(na.omit(jj[,y]))+
-             var(kk[,y],na.rm=T)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
-      return((vt-vs)/vt)
-    })
-    vst<-mean(unlist(ll),na.rm = T)
-    return(matrix(vst,dimnames=list(x[1],x[2])))
-  },simplify = F)
+ if(verbose){
+   Vst<-combn_pb(pop,2,function(x){
+     jj<-tmp[tmp$pop==x[1],-c(1:2)]
+     kk<-tmp[tmp$pop==x[2],-c(1:2)]
+     ft<-ncol(jj)
+     ll<-lapply(1:ft, function(y){
+       vt<-var(c(jj[,y],kk[,y]),na.rm=T)
+       vs<-(var(jj[,y],na.rm=T)*length(na.omit(jj[,y]))+
+              var(kk[,y],na.rm=T)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
+       return((vt-vs)/vt)
+     })
+     vst<-mean(unlist(ll),na.rm = T)
+     return(matrix(vst,dimnames=list(x[1],x[2])))
+   },simplify = F)
+ } else {
+   Vst<-combn(pop,2,function(x){
+     jj<-tmp[tmp$pop==x[1],-c(1:2)]
+     kk<-tmp[tmp$pop==x[2],-c(1:2)]
+     ft<-ncol(jj)
+     ll<-lapply(1:ft, function(y){
+       vt<-var(c(jj[,y],kk[,y]),na.rm=T)
+       vs<-(var(jj[,y],na.rm=T)*length(na.omit(jj[,y]))+
+              var(kk[,y],na.rm=T)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
+       return((vt-vs)/vt)
+     })
+     vst<-mean(unlist(ll),na.rm = T)
+     return(matrix(vst,dimnames=list(x[1],x[2])))
+   },simplify = F)
+ }
   mt<-matrix(NA,nrow=length(pop),ncol=length(pop))
   dimnames(mt)<-list(pop,pop)
   for(i in 1:length(Vst)){
     mt[colnames(Vst[[i]]),rownames(Vst[[i]])]<-Vst[[i]]
   }
   if(qGraph){
-    qgraph::qgraph(1/mt,layout="spring", ...=...)
+    suppressWarnings(qgraph::qgraph(1/mt,layout="spring", ...=...))
   }
   return(mt)
 }
