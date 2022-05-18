@@ -43,12 +43,12 @@ dup.validate<-function(d.detect,window.size=100){
           dpp<-NULL
           for(i in 1:(length(vv)-mw)){
             tmp<-unlist(vv)[i:(i+mw)]
-            ss<-sum(tmp=="singleton")
+            ss<-sum(tmp=="singlet")
             dd<-sum(tmp=="duplicated")
             dpp[i]<-dd/(dd+ss)
           }
           dpp[dpp==0]<-NA
-          return(cbind(mean(dpp,na.rm = T),length(yy),sum(vv=="duplicated"),sum(vv=="singleton")))
+          return(cbind(mean(dpp,na.rm = T),length(yy),sum(vv=="duplicated"),sum(vv=="singlet")))
         }
       },mw=mw)
       dp<-do.call(rbind,yl)
@@ -57,23 +57,23 @@ dup.validate<-function(d.detect,window.size=100){
       dp<-NULL
       for(i in 1:(length(yy)-mw)){
         tmp<-unlist(yy)[i:(i+mw)]
-        ss<-sum(tmp=="singleton")
+        ss<-sum(tmp=="singlet")
         dd<-sum(tmp=="duplicated")
         dp[i]<-dd/(dd+ss)
       }
       dp[dp==0]<-NA
       dp<-mean(dp,na.rm = T)
-      dp<-cbind(x,dp,length(yy),sum(yy=="duplicated"),sum(yy=="singleton"))
+      dp<-cbind(x,dp,length(yy),sum(yy=="duplicated"),sum(yy=="singlet"))
     }
   } else {
-    dp<-sum(yy=="duplicated")/(sum(yy=="duplicated")+sum(yy=="singleton"))
-    dp<-cbind(x,dp,length(yy),sum(yy=="duplicated"),sum(yy=="singleton"))
+    dp<-sum(yy=="duplicated")/(sum(yy=="duplicated")+sum(yy=="singlet"))
+    dp<-cbind(x,dp,length(yy),sum(yy=="duplicated"),sum(yy=="singlet"))
   }
   return(dp)
   },mw=window.size,gg=gg)
   dup.ratio<-do.call(rbind,means)
   dup.ratio[dup.ratio=="NaN"]<-0
-  colnames(dup.ratio)<-c("Scaffold","dupl.ratio","scaf.length","no.duplicates","no.singletons")
+  colnames(dup.ratio)<-c("Scaffold","dupl.ratio","scaf.length","no.duplicates","no.singlets")
   return(data.frame(dup.ratio))
 }
 
