@@ -1,7 +1,7 @@
 #helpers
 # 1. moving window average
 wind<-function(xx,dd){
-  d<-dd[dd[,1]==xx,c(2,8)]
+  d<-dd[dd[,1]==xx,c("POS","dup.stat")]
   xx<-unlist(xx)
   tmp<-cbind(min(d[,1]):max(d[,1]),d[match(min(d[,1]):max(d[,1]),d[,1]),2])
   tmp[is.na(tmp)]<-0
@@ -17,6 +17,8 @@ wind<-function(xx,dd){
 #'  (output of \code{dupGet})
 #' @param window.size numerical. a single value of the desired moving window
 #'  size (default \code{100} bp)
+#' @param scaf.size numerical. scaffold size to be checked. i.e. the split size of the fragment to be checked with the specified window size.
+#' default=10000
 #'
 #' @details Chromosome positions correctly ordered according to a reference
 #' sequence is necessary for this function to work properly. Therefore, this
@@ -28,55 +30,54 @@ wind<-function(xx,dd){
 #' @author Piyal Karunarathne
 #'
 #' @export
-dup.validate<-function(d.detect,window.size=100){
-  nm<-unique(d.detect$Scaffold)
+dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
+  nm<-unique(d.detect[,1])
   gg<-lapply(nm,wind,dd=d.detect)
   names(gg)<-nm
   means<-lapply_pb(nm,function(x,mw,gg){yy<-unlist(gg[names(gg)==x])
   ll<-mw+(mw/2)
   if(length(yy)>ll){
-    if(length(yy)>20000){
-      y.list<-split(yy, ceiling(seq_along(yy)/10000))
+    if(length(yy)>2*scaf.size){
+      y.list<-split(yy, ceiling(seq_along(yy)/scaf.size))
       yl<-lapply(y.list,function(v,mw){
         vv<-unlist(v)
         if(length(vv)>ll){
           dpp<-NULL
           for(i in 1:(length(vv)-mw)){
             tmp<-unlist(vv)[i:(i+mw)]
-            ss<-sum(tmp=="singlet")
-            dd<-sum(tmp=="duplicated")
+            ss<-sum(tmp=="singlet" | tmp=="non-deviant")
+            dd<-sum(tmp=="duplicated" | tmp=="deviant")
             dpp[i]<-dd/(dd+ss)
           }
           dpp[dpp==0]<-NA
-          return(cbind(mean(dpp,na.rm = T),length(yy),sum(vv=="duplicated"),sum(vv=="singlet")))
+          return(cbind(mean(dpp,na.rm = T),length(yy),sum(vv=="duplicated" | vv=="deviant"),sum(vv=="singlet" | vv=="non-deviant")))
         }
       },mw=mw)
       dp<-do.call(rbind,yl)
-      dp<-cbind(x,dp)
+      dp<-cbind(paste0(x,".",1:length(y.list)),dp)
     } else {
       dp<-NULL
       for(i in 1:(length(yy)-mw)){
-        tmp<-unlist(yy)[i:(i+mw)]
-        ss<-sum(tmp=="singlet")
-        dd<-sum(tmp=="duplicated")
+        tmp<-unname(unlist(yy)[i:(i+mw)])
+        ss<-sum(tmp=="singlet" | tmp=="non-deviant")
+        dd<-sum(tmp=="duplicated" | tmp=="deviant")
         dp[i]<-dd/(dd+ss)
       }
       dp[dp==0]<-NA
       dp<-mean(dp,na.rm = T)
-      dp<-cbind(x,dp,length(yy),sum(yy=="duplicated"),sum(yy=="singlet"))
+      dp<-cbind(x,dp,length(yy),sum(yy=="duplicated" | yy=="deviant"),sum(yy=="singlet" | yy=="non-deviant"))
     }
   } else {
-    dp<-sum(yy=="duplicated")/(sum(yy=="duplicated")+sum(yy=="singlet"))
-    dp<-cbind(x,dp,length(yy),sum(yy=="duplicated"),sum(yy=="singlet"))
+    dp<-sum(yy=="duplicated" | yy=="deviant")/(sum(yy=="duplicated" | yy=="deviant")+sum(yy=="singlet" | yy=="non-deviant"))
+    dp<-cbind(x,dp,length(yy),sum(yy=="duplicated" | yy=="deviant"),sum(yy=="singlet" | yy=="non-deviant"))
   }
   return(dp)
   },mw=window.size,gg=gg)
   dup.ratio<-do.call(rbind,means)
   dup.ratio[dup.ratio=="NaN"]<-0
-  colnames(dup.ratio)<-c("Scaffold","dupl.ratio","scaf.length","no.duplicates","no.singlets")
+  colnames(dup.ratio)<-c("CHROM","dp.ratio","CHROM.length","no.duplicates","no.singlets")
   return(data.frame(dup.ratio))
 }
-
 
 #' Calculate population-wise Vst
 #'
