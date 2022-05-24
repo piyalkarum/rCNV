@@ -50,7 +50,7 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
             dpp[i]<-dd/(dd+ss)
           }
           dpp[dpp==0]<-NA
-          return(cbind(mean(dpp,na.rm = T),length(yy),sum(vv=="duplicated" | vv=="deviant"),sum(vv=="singlet" | vv=="non-deviant")))
+          return(cbind(mean(dpp,na.rm = TRUE),length(yy),sum(vv=="duplicated" | vv=="deviant"),sum(vv=="singlet" | vv=="non-deviant")))
         }
       },mw=mw)
       dp<-do.call(rbind,yl)
@@ -64,7 +64,7 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
         dp[i]<-dd/(dd+ss)
       }
       dp[dp==0]<-NA
-      dp<-mean(dp,na.rm = T)
+      dp<-mean(dp,na.rm = TRUE)
       dp<-cbind(x,dp,length(yy),sum(yy=="duplicated" | yy=="deviant"),sum(yy=="singlet" | yy=="non-deviant"))
     }
   } else {
@@ -148,32 +148,32 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,verbose=TRUE,...){
      kk<-tmp[tmp$pop==x[2],-c(1:2)]
      ft<-ncol(jj)
      ll<-lapply(1:ft, function(y){
-       vt<-var(c(jj[,y],kk[,y]),na.rm=T)
-       vs<-(var(jj[,y],na.rm=T)*length(na.omit(jj[,y]))+
-              var(kk[,y],na.rm=T)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
+       vt<-var(c(jj[,y],kk[,y]),na.rm=TRUE)
+       vs<-(var(jj[,y],na.rm=TRUE)*length(na.omit(jj[,y]))+
+              var(kk[,y],na.rm=TRUE)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
        return((vt-vs)/vt)
      })
-     vst<-mean(unlist(ll),na.rm = T)
+     vst<-mean(unlist(ll),na.rm = TRUE)
      return(matrix(vst,dimnames=list(x[1],x[2])))
-   },simplify = F)
+   },simplify = FALSE)
  } else {
    Vst<-combn(pop,2,function(x){
      jj<-tmp[tmp$pop==x[1],-c(1:2)]
      kk<-tmp[tmp$pop==x[2],-c(1:2)]
      ft<-ncol(jj)
      ll<-lapply(1:ft, function(y){
-       vt<-var(c(jj[,y],kk[,y]),na.rm=T)
-       vs<-(var(jj[,y],na.rm=T)*length(na.omit(jj[,y]))+
-              var(kk[,y],na.rm=T)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
+       vt<-var(c(jj[,y],kk[,y]),na.rm=TRUE)
+       vs<-(var(jj[,y],na.rm=TRUE)*length(na.omit(jj[,y]))+
+              var(kk[,y],na.rm=TRUE)*length(na.omit(kk[,y])))/(length(na.omit(jj[,y]))+length(na.omit(kk[,y])))
        return((vt-vs)/vt)
      })
-     vst<-mean(unlist(ll),na.rm = T)
+     vst<-mean(unlist(ll),na.rm = TRUE)
      return(matrix(vst,dimnames=list(x[1],x[2])))
-   },simplify = F)
+   },simplify = FALSE)
  }
   mt<-matrix(NA,nrow=length(pop),ncol=length(pop))
   dimnames(mt)<-list(pop,pop)
-  for(i in 1:length(Vst)){
+  for(i in seq_along(Vst)){
     mt[colnames(Vst[[i]]),rownames(Vst[[i]])]<-Vst[[i]]
   }
   if(qGraph){

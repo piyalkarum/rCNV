@@ -3,33 +3,33 @@
 get.pvals<-function(x,df,p.cal){
   snp1<-df[x,-c(1:4)]
   y<-data.frame(do.call(rbind,strsplit(as.character(unlist(snp1)),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
-  rr1<-y[,2]/rowSums(y,na.rm = T)
-  snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
-  homalt<-sum(rr1==1,na.rm=T)
-  homref<-sum(rr1==0,na.rm=T)
-  Nsamp=nrow(snp1het)+homalt+homref
+  rr1<-y[,2]/rowSums(y,na.rm = TRUE)
+  snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
+  homalt<-sum(rr1==1,na.rm=TRUE)
+  homref<-sum(rr1==0,na.rm=TRUE)
+  Nsamp <- nrow(snp1het)+homalt+homref
   if(nrow(snp1het)>3){
     propHet<-nrow(na.omit(snp1het))/length(na.omit(rr1))
-    medRatio<-median(proportions(as.matrix(snp1het),margin = 1)[,2],na.rm = T)
+    medRatio<-median(proportions(as.matrix(snp1het),margin = 1)[,2],na.rm = TRUE)
     p.sum<-p.cal[x,2]
     p.05<-0.5
     p.all<-p.cal[x,1]
-    n<-unname(rowSums(snp1het,na.rm = T))
-    chi.het<-sum((n*p.sum-snp1het[,2])^2/(n*p.sum),na.rm = T)
+    n<-unname(rowSums(snp1het,na.rm = TRUE))
+    chi.het<-sum((n*p.sum-snp1het[,2])^2/(n*p.sum),na.rm = TRUE)
     chi.het.sum<-chi.het
-    chi.05<-sum((n*p.05-snp1het[,2])^2/(n*p.05),na.rm = T)
+    chi.05<-sum((n*p.05-snp1het[,2])^2/(n*p.05),na.rm = TRUE)
     chi.0.5.sum<-chi.05
     chi.all<-sum((n*p.all-snp1het[,2])^2/(n*p.all))
     chi.all.sum<-chi.all
     z <- (n*p.sum-snp1het[,2])/sqrt(n*p.sum*(1-p.sum))
-    z.het.sum<-sum(z,na.rm = T)
-    z<-pnorm(sum(z,na.rm = T),0,sqrt(nrow(snp1het)))
+    z.het.sum<-sum(z,na.rm = TRUE)
+    z<-pnorm(sum(z,na.rm = TRUE),0,sqrt(nrow(snp1het)))
     z.05 <- (n*p.05-snp1het[,2])/sqrt(n*p.05*(1-p.05))
-    z.05.sum<-sum(z.05,na.rm = T)
-    z.05<-pnorm(sum(z.05,na.rm = T),0,sqrt(nrow(snp1het)))
+    z.05.sum<-sum(z.05,na.rm = TRUE)
+    z.05<-pnorm(sum(z.05,na.rm = TRUE),0,sqrt(nrow(snp1het)))
     z.all<- (n*p.all-snp1het[,2])/sqrt(n*p.all*(1-p.all))
-    z.all.sum<-sum(z.all,na.rm = T)
-    z.all<-pnorm(sum(z.all,na.rm = T),0,sqrt(nrow(snp1het)))
+    z.all.sum<-sum(z.all,na.rm = TRUE)
+    z.all<-pnorm(sum(z.all,na.rm = TRUE),0,sqrt(nrow(snp1het)))
     ll<-data.frame(NHet=nrow(snp1het),propHet,medRatio,NHomRef=homref,NHomAlt=homalt,propHomAlt=homalt/Nsamp,Nsamp,
                    pAll=p.all,pHet=p.sum,fis=1-(nrow(snp1het)/(2*(homref+(nrow(snp1het)/2))*(homalt+(nrow(snp1het)/2)))),
                    z.het=ifelse(z>0.5, (1-z)*2, z*2),
@@ -114,11 +114,11 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN"),logratio
     p.cal<-apply_pb(x.norm[,-c(1:4)],1,function(snp1){
       y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
       rr1<-y[,2]/rowSums(y)
-      snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
-      homalt<-sum(rr1==1,na.rm=T)
-      homref<-sum(rr1==0,na.rm=T)
-      covrefhomo<-sum(y[c(rr1 == 0,na.rm = T),],na.rm = T)
-      covalthomo<-sum(y[c(rr1 == 1,na.rm = T),],na.rm = T)
+      snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
+      homalt<-sum(rr1==1,na.rm=TRUE)
+      homref<-sum(rr1==0,na.rm=TRUE)
+      covrefhomo<-sum(y[c(rr1 == 0,na.rm = TRUE),],na.rm = TRUE)
+      covalthomo<-sum(y[c(rr1 == 1,na.rm = TRUE),],na.rm = TRUE)
       covalt<-sum(y[,2])
       covref<-sum(y[,1])
       if(nrow(snp1het)>3){
@@ -134,11 +134,11 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN"),logratio
     p.cal<-apply(x.norm[,-c(1:4)],1,function(snp1){
       y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
       rr1<-y[,2]/rowSums(y)
-      snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
-      homalt<-sum(rr1==1,na.rm=T)
-      homref<-sum(rr1==0,na.rm=T)
-      covrefhomo<-sum(y[c(rr1 == 0,na.rm = T),],na.rm = T)
-      covalthomo<-sum(y[c(rr1 == 1,na.rm = T),],na.rm = T)
+      snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
+      homalt<-sum(rr1==1,na.rm=TRUE)
+      homref<-sum(rr1==0,na.rm=TRUE)
+      covrefhomo<-sum(y[c(rr1 == 0,na.rm = TRUE),],na.rm = TRUE)
+      covalthomo<-sum(y[c(rr1 == 1,na.rm = TRUE),],na.rm = TRUE)
       covalt<-sum(y[,2])
       covref<-sum(y[,1])
       if(nrow(snp1het)>3){
