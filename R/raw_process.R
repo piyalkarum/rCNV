@@ -205,7 +205,6 @@ hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),ve
   itype<-substr(info.type,1,2)
 
   adn <- sapply(strsplit(unlist(vcf[,"FORMAT"], use.names = FALSE),":"), function(x)match(itype, x))
-  #  adn<-unname(unlist(lapply(unlist(vcf[,"FORMAT"]),function(i){which(strsplit(i,":")[[1]]==itype)})))
   max_adn <- max(adn) + 1L
   ind <- cbind(seq_along(adn), adn)
   xx<-data.frame(vcf[,-c(1:9)])
@@ -214,8 +213,8 @@ hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),ve
     h.table <- matrix(NA_integer_, nrow(xx), ncol(xx))
     if(verbose) message("generating total depth values")
     for(i in seq_len(ncol(xx))){
-      tmp <- str_split_fixed(xx[,i], ":", max_adn)[ind]
-      tmp <- str_split_fixed(tmp, ",", 2L)
+      tmp <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
+      tmp <- stringr::str_split_fixed(tmp, ",", 2L)
       h.table[, i] <- as.numeric(tmp[,1]) + as.numeric(tmp[,2]) ## as.integer???
     }
   }
@@ -223,7 +222,7 @@ hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),ve
     h.table <- matrix(NA_character_, nrow(xx), ncol(xx))
     if(verbose) message("generating table")
     for(i in seq_len(ncol(xx))){
-      h.table[, i] <- str_split_fixed(xx[,i], ":", max_adn)[ind]
+      h.table[, i] <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
     }
     if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}
   }
