@@ -7,7 +7,7 @@ Authors@R: c(person(given="Piyal",family="Karunarathne", email="piyalkarumail@ya
 Maintainer: Piyal Karunarathne <piyalkarumail@yahoo.com>
 Description: Functions in this package will import filtered variant call format (VCF) files of SNPs data and generate data sets to detect copy number variants, visualize them and do downstream analyses with copy number variants(e.g. Environmental association analyses).
 License: AGPL (>= 3)
-Imports: data.table, graphics, colorspace, R.utils, qgraph
+Imports: data.table, graphics, colorspace, R.utils, qgraph, stringr
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2

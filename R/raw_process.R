@@ -193,7 +193,67 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' het.table<-hetTgen(vcf)
 #'
 #' @export
-hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verbose=TRUE){
+hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verbose=TRUE){
+  if(inherits(vcf,"list")){vcf<-vcf$vcf}
+  if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
+  if(any(nchar(vcf$ALT)>1)){
+    warning("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps")
+  }
+  if(inherits(vcf,"list")){vcf<-vcf$vcf}
+
+  info.type<-match.arg(info.type)
+  itype<-substr(info.type,1,2)
+
+  adn <- sapply(strsplit(unlist(vcf[,"FORMAT"], use.names = FALSE),":"), function(x)match(itype, x))
+  #  adn<-unname(unlist(lapply(unlist(vcf[,"FORMAT"]),function(i){which(strsplit(i,":")[[1]]==itype)})))
+  max_adn <- max(adn) + 1L
+  ind <- cbind(seq_along(adn), adn)
+  xx<-data.frame(vcf[,-c(1:9)])
+
+  if(info.type=="AD-tot"){
+    h.table <- matrix(NA_integer_, nrow(xx), ncol(xx))
+    if(verbose) message("generating total depth values")
+    for(i in seq_len(ncol(xx))){
+      tmp <- str_split_fixed(xx[,i], ":", max_adn)[ind]
+      tmp <- str_split_fixed(tmp, ",", 2L)
+      h.table[, i] <- as.numeric(tmp[,1]) + as.numeric(tmp[,2]) ## as.integer???
+    }
+  }
+  else {
+    h.table <- matrix(NA_character_, nrow(xx), ncol(xx))
+    if(verbose) message("generating table")
+    for(i in seq_len(ncol(xx))){
+      h.table[, i] <- str_split_fixed(xx[,i], ":", max_adn)[ind]
+    }
+    if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}
+  }
+
+  if(info.type=="GT-012"){
+    h.table[h.table=="0/0"]<-0
+    h.table[h.table=="1/1"]<-1
+    h.table[h.table=="1/0" | h.table=="0/1"] <- 2
+    h.table[h.table=="./."| h.table=="."]<-NA
+  }
+  if(info.type=="GT-AB"){
+    h.table[h.table=="0/0"]<-"AA"
+    h.table[h.table=="1/1"]<-"BB"
+    h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
+    h.table[h.table=="./."| h.table=="."]<- -9
+  }
+  if(info.type=="AD" ){
+    h.table[h.table=="./." | h.table=="." | is.na(h.table)]<-"0,0"
+  }
+  if(info.type=="DP"){
+    h.table[is.character(h.table)]<-0
+    h.table[is.na(h.table)]<-0
+  }
+  het.table<-as.data.frame(cbind(vcf[,c(1:3,5)],h.table))
+  colnames(het.table)<-c("CHROM",colnames(vcf)[c(2,3,5,10:ncol(vcf))])
+  return(het.table)
+}
+
+
+hetTgen_old<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verbose=TRUE){
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
   if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
   if(any(nchar(vcf$ALT)>1)){
@@ -241,7 +301,7 @@ hetTgen<-function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verb
     h.table[h.table=="0/0"]<-"AA"
     h.table[h.table=="1/1"]<-"BB"
     h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
-    h.table[h.table=="./."| h.table=="."]<--9
+    h.table[h.table=="./."| h.table=="."]<- -9
   }
   if(info.type=="AD" ){
     h.table[h.table=="./." | h.table=="." | is.na(h.table)]<-"0,0"

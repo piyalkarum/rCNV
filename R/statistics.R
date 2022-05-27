@@ -10,7 +10,7 @@
 ## Which rearranges to give
 ##    F = (O-E)/(N-E)
 
-het.sity<-function(ind){
+het.sity_old<-function(ind){
   O<-length(which(ind=="0/0"))+length(which(ind=="1/1"))
   N<-length(which(ind=="0/0"))+length(which(ind=="1/1"))+length(which(ind=="0/1"))+length(which(ind=="1/0"))
   alle<-unname(unlist(lapply(ind,strsplit,split="/")))
@@ -18,6 +18,17 @@ het.sity<-function(ind){
   q<-length(which(alle=="1"))/(length(which(alle=="0"))+length(which(alle=="1")))
   E<-(p^2+q^2)*N
   FF<-(O-E)/(N-E)
+  return(c(O,E,N,FF))
+}
+
+het.sity <- function(ind){
+  tab <- table(factor(ind, levels=c("0/0", "1/1", "1/0", "0/1", "./.", ".")))
+  O <- tab["0/0"] + tab["1/1"]
+  N <- tab["0/0"] + tab["1/1"] + tab["0/1"] + tab["1/0"]
+  p <- (2 * tab["0/0"] + tab["0/1"] + tab["1/0"])/ (2*N)
+  q <- 1 - p
+  E <-(p^2+q^2)*N
+  FF <-(O-E)/(N-E)
   return(c(O,E,N,FF))
 }
 
