@@ -95,9 +95,9 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
   }
   if(verbose){
     message("assessing per sample homozygosity")
-    hh<-t(apply_pb(gtt[,-c(1:3)],2,het.sity))
+    hh<-t(apply_pb(gtt[,-c(1:4)],2,het.sity))
   } else {
-    hh<-t(apply(gtt[,-c(1:3)],2,het.sity))
+    hh<-t(apply(gtt[,-c(1:4)],2,het.sity))
   }
   hh<-data.frame(rownames(hh),hh)
   colnames(hh)<-c("ind","O(Hom)","E(Hom)","total","Fis")
@@ -160,7 +160,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
     vcf<-vcf$vcf
     gtt<-hetTgen(vcf,"GT",verbose=verbose)
   }
-  gt<-gtt[,-c(1:3)]
+  gt<-gtt[,-c(1:4)]
   freq<-apply(gt,1,function(xx){aal<-unlist(strsplit(as.character(xx),"/"))
   return(length(which(aal=="1"))/(length(which(aal=="0"))+length(which(aal=="1"))))})
 
