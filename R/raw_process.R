@@ -64,6 +64,16 @@ combn_pb <- function(X, size, FUN, ...)
   res
 }
 
+#for loop progress bar
+
+# for(i in seq_along(xx)) {
+#   pb <- txtProgressBar(min = 0, max = length(xx), style = 3, width = 50, char = "=")
+#   setTxtProgressBar(pb, i)
+#   ### code
+# }
+# close(pb)
+
+
 
 #(extra) generate colors for Rmarkdown docs [extracted from Rmarkdown guide book]
 colorize <- function(x, color) {
@@ -213,6 +223,10 @@ hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),ve
     h.table <- matrix(NA_integer_, nrow(xx), ncol(xx))
     if(verbose) message("generating total depth values")
     for(i in seq_len(ncol(xx))){
+      if(verbose){
+        pb <- txtProgressBar(min = 0, max = ncol(xx), style = 3, width = 50, char = "=")
+        setTxtProgressBar(pb, i)
+      }
       tmp <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
       tmp <- stringr::str_split_fixed(tmp, ",", 2L)
       h.table[, i] <- as.numeric(tmp[,1]) + as.numeric(tmp[,2]) ## as.integer???
@@ -222,11 +236,15 @@ hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),ve
     h.table <- matrix(NA_character_, nrow(xx), ncol(xx))
     if(verbose) message("generating table")
     for(i in seq_len(ncol(xx))){
+      if(verbose){
+        pb <- txtProgressBar(min = 0, max = ncol(xx), style = 3, width = 50, char = "=")
+        setTxtProgressBar(pb, i)
+      }
       h.table[, i] <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
     }
     if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}
   }
-
+close(pb)
   if(info.type=="GT-012"){
     h.table[h.table=="0/0"]<-0
     h.table[h.table=="1/1"]<-1
@@ -405,13 +423,15 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' file generated from VCFTools
 #' @param info a data frame containing sample and population information.
 #' It must have \dQuote{sample} and \dQuote{population} columns
-#' @param snp.subset logical. whether to generate a randomly sampled tenfold
+#' @param format character. output format i.e., for BayPass or BayEnv
+#' @param snp.subset numerical. number of randomly selected subsets of SNPs.
+#' \code{default = NULL}
 #' subset
 #' @param verbose logical. If \code{TRUE} shows progress
 #'
-#' @return Returns a list with formatted genotype data: \code{$hor} - snps
-#' in horizontal format (two lines per snp); \code{$ver} - vertical format
-#' (two column per snp); \code{$hor.chunk} - a subset snps of \code{$hor}
+#' @return Returns a list with formatted genotype data: \code{$bayenv} - snps
+#' in horizontal format - for BayEnv (two lines per snp); \code{$baypass} - vertical format - for BayPass
+#' (two column per snp); \code{$sub.bp} - subsets snps for BayPass \code{$sub.be} - subsets of snps for BayEnv
 #'
 #' @author Piyal Karunarathne
 #'
@@ -423,12 +443,12 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' GT<-gt.format(het.table,info)}
 #'
 #' @export
-gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
+gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL,verbose=FALSE) {
   if(is.character(gt)){
     gt <-as.data.frame(fread(gt))
     gts <-gt[,-c(1,2)]
   } else {
-    gts<-gt[,-c(1,2)]
+    gts<-gt[,-c(1:4)]
   }
   if(is.character(info)){
     pop.col<-NULL
@@ -439,47 +459,81 @@ gt.format <- function(gt,info,snp.subset=FALSE,verbose=FALSE) {
   }
   rownames(gts)<-paste(gt$CHROM,gt$POS,sep=".")
   pp<-na.omit(unique(info$population))
-
   infos<-as.character(info$population)
- if(verbose){
-   pgt.h<-lapply_pb(pp,function(x,gts,info){
-     tm <- as.data.frame(gts[,which(info==x)])
-     gtt <- lapply(1:nrow(tm),function(y,tm){gg(as.character(tm[y,]))},tm=tm)
-     gf <- t(do.call(cbind,gtt))
-     colnames(gf)<-x
-     return(gf)
-   },gts=gts,info=infos)
- } else {
-   pgt.h<-lapply(pp,function(x,gts,info){
-     tm <- as.data.frame(gts[,which(info==x)])
-     gtt <- lapply(1:nrow(tm),function(y,tm){gg(as.character(tm[y,]))},tm=tm)
-     gf <- t(do.call(cbind,gtt))
-     colnames(gf)<-x
-     return(gf)
-   },gts=gts,info=infos)
- }
-  pgt.h<-do.call(cbind,pgt.h)
-  nm <- unlist(lapply(rownames(gts),FUN=function(x)c(paste0(x,"~1"),paste0(x,"~2"))))
-  rownames(pgt.h)<-nm
-  pgt.h <- as.matrix(pgt.h)
-  pgt.h[which(is.na(pgt.h))] <- 0
-  if(snp.subset){
-    message("subsetting")
-    rn<-sample(1:10,nrow(gts),replace = T)
-    snps<-rownames(gts)
-    chu<-lapply_pb(1:10,function(nn,pgt.h,snps,rn){
-      sset<-snps[rn==nn]
-      tmp0<-NULL
-      for(k in seq_along(sset)){
-        tmp<-pgt.h[grep(sset[k],rownames(pgt.h)),]
-        tmp0<-rbind(tmp0,tmp)
-      }
-      return(tmp0)
-    },pgt.h=pgt.h,snps=snps,rn=rn)
-  } else { chu <- NULL}
-  return(list(hor=pgt.h,ver=t(pgt.h),subsets=chu,pop=as.character(pp)))
-}
+  format<-match.arg(format,several.ok = TRUE)
+  if(any(format=="bpass")){
+    if(verbose){
+      message("formating BayPass")
+      pgt.b<-lapply_pb(pp,function(x,gts,info){
+        tm <- as.data.frame(gts[,which(infos==x)])
+        gtt <- lapply(1:nrow(tm),function(y,tm){gg(as.character(tm[y,]))},tm=tm)
+        gf <- do.call(rbind,gtt)
+        return(gf)
+      },gts=gts,info=infos)
+    } else {
+      pgt.b<-lapply(pp,function(x,gts,info){
+        tm <- as.data.frame(gts[,which(infos==x)])
+        gtt <- lapply(1:nrow(tm),function(y,tm){gg(as.character(tm[y,]))},tm=tm)
+        gf <- do.call(rbind,gtt)
+        return(gf)
+      },gts=gts,info=infos)
+    }
+    pgt.b<-do.call(cbind,pgt.b)
+    nm <- unlist(lapply(pp,FUN=function(x)c(paste0(x,"~1"),paste0(x,"~2"))))
+    colnames(pgt.b)<-nm
+    pgt.b <- as.matrix(pgt.b)
+    pgt.b[which(is.na(pgt.b))] <- 0
+    rownames(pgt.b)<-paste0(gt$CHROM,".",gt$POS)
+    if(!is.null(snp.subset)){
+      rn<-sample(1:snp.subset,nrow(gts),replace = T)
+      chu.b<-lapply(1:snp.subset,function(nn,pgt.b,rn){
+        tmp<-pgt.b[which(rn==nn),]
+        return(tmp)
+      },pgt.b=pgt.b,rn=rn)
+    } else { chu.b <- NULL}
+  }
 
+  if(any(format=="benv")){
+    if(verbose){
+      message("formating BayEnv")
+      pgt.e<-lapply_pb(pp,function(x,gts,info){
+        tm <- as.data.frame(gts[,which(infos==x)])
+        gtt <- lapply(1:nrow(tm),function(y,tm){gg(as.character(tm[y,]))},tm=tm)
+        gf <- t(do.call(cbind,gtt))
+        colnames(gf)<-x
+        return(gf)
+      },gts=gts,info=infos)
+    } else {
+      pgt.e<-lapply(pp,function(x,gts,info){
+        tm <- as.data.frame(gts[,which(infos==x)])
+        gtt <- lapply(1:nrow(tm),function(y,tm){gg(as.character(tm[y,]))},tm=tm)
+        gf <- t(do.call(cbind,gtt))
+        colnames(gf)<-x
+        return(gf)
+      },gts=gts,info=infos)
+    }
+
+    pgt.e<-do.call(cbind,pgt.e)
+    nm <- unlist(lapply(rownames(gts),FUN=function(x)c(paste0(x,"~1"),paste0(x,"~2"))))
+    rownames(pgt.e)<-nm
+    pgt.e <- as.matrix(pgt.e)
+    pgt.e[which(is.na(pgt.e))] <- 0
+    if(!is.null(snp.subset)){
+      rn<-sample(1:snp.subset,nrow(gts),replace = T)
+      snps<-rownames(gts)
+      chu.e<-lapply(1:snp.subset,function(nn,pgt.e,snps,rn){
+        sset<-snps[rn==nn]
+        tmp0<-NULL
+        for(k in seq_along(sset)){
+          tmp<-pgt.e[grep(sset[k],rownames(pgt.h)),]
+          tmp0<-rbind(tmp0,tmp)
+        }
+        return(tmp0)
+      },pgt.e=pgt.e,snps=snps,rn=rn)
+    } else { chu.e <- NULL}
+  }
+  return(list(baypass=pgt.b,bayenv=pgt.e,sub.bp=chu.b,sub.be=chu.e,pop=as.character(pp)))
+}
 
 
 #' Correct allele depth values

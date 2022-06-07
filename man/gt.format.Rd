@@ -4,7 +4,13 @@
 \alias{gt.format}
 \title{Format genotype for BayEnv and BayPass}
 \usage{
-gt.format(gt, info, snp.subset = FALSE, verbose = FALSE)
+gt.format(
+  gt,
+  info,
+  format = c("benv", "bpass"),
+  snp.subset = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{gt}{multi-vector. an imported data.frame of genotypes or genotype
@@ -14,15 +20,18 @@ file generated from VCFTools}
 \item{info}{a data frame containing sample and population information.
 It must have \dQuote{sample} and \dQuote{population} columns}
 
-\item{snp.subset}{logical. whether to generate a randomly sampled tenfold
+\item{format}{character. output format i.e., for BayPass or BayEnv}
+
+\item{snp.subset}{numerical. number of randomly selected subsets of SNPs.
+\code{default = NULL}
 subset}
 
 \item{verbose}{logical. If \code{TRUE} shows progress}
 }
 \value{
-Returns a list with formatted genotype data: \code{$hor} - snps
-in horizontal format (two lines per snp); \code{$ver} - vertical format
-(two column per snp); \code{$hor.chunk} - a subset snps of \code{$hor}
+Returns a list with formatted genotype data: \code{$bayenv} - snps
+in horizontal format - for BayEnv (two lines per snp); \code{$baypass} - vertical format - for BayPass
+(two column per snp); \code{$sub.bp} - subsets snps for BayPass \code{$sub.be} - subsets of snps for BayEnv
 }
 \description{
 This function generates necessary genotype count formats for BayEnv and

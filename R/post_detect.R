@@ -13,7 +13,7 @@ wind<-function(xx,dd){
 #' This function will validate the detected duplicated-SNPs using a moving
 #' window approach (see details)
 #'
-#' @param d.detect a data frame of detected SNPs of duplicates and singlets
+#' @param d.detect a data frame of detected duplicates or deviants from the outputs of \code{dupGet} or \code{cnv}
 #'  (output of \code{dupGet})
 #' @param window.size numerical. a single value of the desired moving window
 #'  size (default \code{100} bp)
