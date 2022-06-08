@@ -244,7 +244,7 @@ hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),ve
     }
     if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}
   }
-close(pb)
+if(verbose) {close(pb)}
   if(info.type=="GT-012"){
     h.table[h.table=="0/0"]<-0
     h.table[h.table=="1/1"]<-1
@@ -525,7 +525,7 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL,verbose=F
         sset<-snps[rn==nn]
         tmp0<-NULL
         for(k in seq_along(sset)){
-          tmp<-pgt.e[grep(sset[k],rownames(pgt.h)),]
+          tmp<-pgt.e[grep(sset[k],rownames(pgt.e)),]
           tmp0<-rbind(tmp0,tmp)
         }
         return(tmp0)
