@@ -601,14 +601,16 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
    if(verbose){
      message("correcting odd number anomalies")
      vv<-apply_pb(X,2,function(sam){
-       dl<-lapply(sam,function(y){
-         l<-as.numeric(unlist(strsplit(y,",")))
-         if((sum(l,na.rm=TRUE)%%2)!=0){
-           if(any(l==0)){l}else{
-             l[which.min(l)]<-l[which.min(l)]+1}
-         }
-         return(paste0(l,collapse = ","))
-       })
+       sam<-unname(unlist(sam))
+       tmp <- stringr::str_split_fixed(sam, ",", 2L)
+       tmp<-cbind(as.integer(tmp[,1]),as.integer(tmp[,2]))
+       tch<-which((rowSums(tmp,na.rm=TRUE)%%2)!=0)
+       for(i in tch){
+         tm<-tmp[i,]
+         if(any(tm==0)){tm[which.max(tm)]<-tm[which.max(tm)]+1L}else{tm[which.min(tm)]<-tm[which.min(tm)]+1L}
+         tmp[i,]<-tm
+       }
+       return(paste0(tmp[,1],",",tmp[,2]))
      })
      if(inherits(vv,"list")){
        vv<-do.call(cbind,vv)

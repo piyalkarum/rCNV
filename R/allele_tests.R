@@ -53,15 +53,14 @@ allele.freq1<-function(gtt,verbose=TRUE){
 #' \dontrun{frQ<-allele.freq(list(AD=ad.table,GT=het.table),f.typ="pop")}
 #'
 #' @export
-
 allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
   ty<-match.arg(f.typ,several.ok = T)
   if(length(ty)>1){stop("Please select one output type for f.typ=")}
   if(ty=="ind"){
     if(!inherits(gtt,"list")){gs<-gtt[,-c(1:4)]}
     if(grepl("/",gs[1,1],fixed = T)){
-      message("genotype table provided\ncalculating allele frequency from genotype")
       if(verbose){
+        message("genotype table provided\ncalculating allele frequency from genotype")
         tmp<-apply_pb(gs,1,function(x){
           x<-as.character(x)
           tl<-strsplit(x,"/") # use also pipes or anything else
@@ -83,8 +82,9 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
       tmp<-data.frame(gtt[,1:4],tmp)
       return(tmp)
     } else if (grepl(",",gs[1,1],fixed = T)){
-      message("allele depth table provided\ncalculating allele frequency from allele depth")
+
       if(verbose){
+        message("allele depth table provided\ncalculating allele frequency from allele depth")
         tmp<-apply_pb(gs,1,function(snp1){
           y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
           tt<-proportions(as.matrix(y),margin = 1)[,2]
@@ -110,8 +110,9 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
       if(length(gtt)>1){ad<-gtt$AD[,-c(1:4)]
       gt<-gtt$GT[,-c(1:4)]
       #### for GT ###
-      message("AF from genotype")
+
       if(verbose){
+        message("AF from genotype")
         tmp.g<-apply_pb(gt,1,function(x){
           x<-as.character(x)
           tl<-strsplit(x,"/")
@@ -128,8 +129,9 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
       }
       #########
       ### for AD ###
-      message("AF from allele depth")
+
       if(verbose){
+        message("AF from allele depth")
         tmp.a<-apply_pb(ad,1,function(snp1){
           y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
           tt<-colMeans(proportions(as.matrix(y),margin = 1),na.rm = T)[2]
@@ -146,8 +148,9 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
 
       } else if(length(gtt)==1){ gs<-gtt[1][,-c(1:4)]
       if(grepl("/",gs[1,1],fixed = T)){
-        message("genotype table provided\ncalculating allele frequency from genotype")
+
         if(verbose){
+          message("genotype table provided\ncalculating allele frequency from genotype")
           tmp<-apply_pb(gs,1,function(x){
             x<-as.character(x)
             tl<-strsplit(x,"/")
@@ -164,8 +167,9 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
         }
         return(tmp)
       } else if(grepl(",",gs[1,1],fixed = T)){
-        message("allele depth table provided\ncalculating allele frequency from allele depth")
+
         if(verbose){
+          message("allele depth table provided\ncalculating allele frequency from allele depth")
           tmp<-apply_pb(gs,1,function(snp1){
             y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
             tt<-colMeans(proportions(as.matrix(y),margin = 1),na.rm = T)[2]
@@ -182,10 +186,11 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
       }
       }
     } else {
-      gs<-gtt[,-c(1:4)]
+      if(any(colnames(gtt)=="CHROM")){gs<-gtt[,-c(1:4)]} else {gs<-gtt}
       if(grepl("/",gs[1,1],fixed = T)){
-        message("genotype table provided\ncalculating allele frequency from genotype")
+
         if(verbose){
+          message("genotype table provided\ncalculating allele frequency from genotype")
           tmp<-apply_pb(gs,1,function(x){
             x<-as.character(x)
             tl<-strsplit(x,"/")
@@ -202,8 +207,9 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
         }
         return(tmp)
       } else if(grepl(",",gs[1,1],fixed = T)){
-        message("allele depth table provided\ncalculating allele frequency from allele depth")
+
         if(verbose){
+          message("allele depth table provided\ncalculating allele frequency from allele depth")
           tmp<-apply_pb(gs,1,function(snp1){
             y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
             tt<-colMeans(proportions(as.matrix(y),margin = 1),na.rm = T)[2]
