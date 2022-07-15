@@ -267,6 +267,8 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' \code{allele.info}
 #' @param test vector of characters. Type of test to be used for significance.
 #' See details
+#' @param filter character. Type of filter to be used for filtering CNVs.
+#' default \code{kmeans}. See details.
 #' @param plot logical. Plot the detection of duplicates. default \code{TRUE}
 #' @param verbose logical. show progress
 #' @param ... other arguments to be passed to \code{plot}
@@ -274,6 +276,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' @return Returns a data frame of SNPs with their detected duplication status
 #'
 #' @importFrom colorspace terrain_hcl
+#' @importFrom stats kmeans
 #'
 #' @details SNP deviants are detected with both excess of heterozygosity
 #' according to HWE and deviant SNPs where depth values fall outside of the
@@ -285,6 +288,12 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
 #' all allele combinations (\code{z.all, chi.all}) and the assumption of no
 #' probe bias p=0.5 (\code{z.05, chi.05})
+#'
+#' \code{filter} will determine whether the \code{intersection} or \code{kmeans}
+#' clustering of the provided \code{test}s should be used in filtering CNVs.
+#' The intersection uses threshold values for filtering and kmeans use
+#' unsupervised clustering. Kmeans clustering is recommended if one is uncertain
+#' about the threshold values.
 #'
 #' @author Piyal Karunarathne
 #'
@@ -300,6 +309,9 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
     stop("please provide the output of allele.info()")
   } else {
     ht<-data[,c("eH.pval","eH.delta")]
+    filter<-match.arg(filter,several.ok = TRUE)
+    if(length(filter)>1){filter="kmeans"}
+
     test<-match.arg(test,several.ok = TRUE)
     if(length(test)==6){
       if(verbose){cat(paste0("categorizing deviant SNPs with \n excess of heterozygotes ","z.all & chi.all"))}
@@ -324,7 +336,7 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
       candidate<-data.frame(data[,test]/data[,"NHet"],data[,c("eH.delta","cv")])
       candidate<-scale(candidate)
       cls<-kmeans(candidate, centers=2, nstart = 20)
-      pp$dup.stat<-rep("singlet",nrow(AI))
+      pp$dup.stat<-rep("singlet",nrow(data))
       mn<-which.min(table(cls$cluster))
       pp$dup.stat[which(cls$cluster==mn)]<-"duplicated"
       pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"duplicated"

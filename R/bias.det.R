@@ -147,7 +147,7 @@ get.pvals<-function(x,df,p.cal){
 #' AI<-allele.info(ADtable,x.norm=ADnorm)}
 #'
 #' @export
-allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
+allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN","pca"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
   method=match.arg(method)
   if(is.null(x.norm)){
     x.norm<-cpm.normal(X,method=method,logratioTrim=logratioTrim,sumTrim = sumTrim,Weighting = Weighting,Acutoff = Acutoff,verbose = verbose)
@@ -158,7 +158,10 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN"),logratio
   if(verbose){
     message("calculating probability values of alleles")
     p.cal<-apply_pb(x.norm[,-c(1:4)],1,function(snp1){
-      y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+      if(is.character(unname(unlist(snp1[1])))){
+        y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")))
+        y[,1]<-as.numeric(y[,1])
+        y[,2]<-as.numeric(y[,2])} else {y<-snp1}
       rs<-rowSums(y)
       rs[rs==0]<-NA
       cv<-sd(rs,na.rm = TRUE)/mean(rs,na.rm = TRUE)
@@ -181,7 +184,10 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN"),logratio
     })
   } else {
     p.cal<-apply(x.norm[,-c(1:4)],1,function(snp1){
-      y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+      if(is.character(unname(unlist(snp1[1])))){
+        y<-data.frame(do.call(rbind,strsplit(as.character(snp1),",")))
+        y[,1]<-as.numeric(y[,1])
+        y[,2]<-as.numeric(y[,2])} else {y<-snp1}
       rs<-rowSums(y)
       rs[rs==0]<-NA
       cv<-sd(rs,na.rm = TRUE)/mean(rs,na.rm = TRUE)

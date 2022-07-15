@@ -20,6 +20,9 @@ cnv(
 \item{test}{vector of characters. Type of test to be used for significance.
 See details}
 
+\item{filter}{character. Type of filter to be used for filtering CNVs.
+default \code{kmeans}. See details.}
+
 \item{plot}{logical. Plot the detection of duplicates. default \code{TRUE}}
 
 \item{verbose}{logical. show progress}
@@ -46,6 +49,12 @@ following methods:
 Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
 all allele combinations (\code{z.all, chi.all}) and the assumption of no
 probe bias p=0.5 (\code{z.05, chi.05})
+
+\code{filter} will determine whether the \code{intersection} or \code{kmeans}
+clustering of the provided \code{test}s should be used in filtering CNVs.
+The intersection uses threshold values for filtering and kmeans use
+unsupervised clustering. Kmeans clustering is recommended if one is uncertain
+about the threshold values.
 }
 \examples{
 \dontrun{data(alleleINF)
