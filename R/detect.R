@@ -293,7 +293,65 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' DD<-cnv(alleleINF)}
 #'
 #' @export
-cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),plot=TRUE,verbose=TRUE,...){
+cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),plot=TRUE,verbose=TRUE,...){
+  #data check
+  data<-as.data.frame(data)
+  if(!any(colnames(data)=="propHet")){
+    stop("please provide the output of allele.info()")
+  } else {
+    ht<-data[,c("eH.pval","eH.delta")]
+    test<-match.arg(test,several.ok = TRUE)
+    if(length(test)==6){
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n excess of heterozygotes ","z.all & chi.all"))}
+      pp<-data[,c("z.all","chi.all")]
+    } else {
+      pp<-data.frame(data[,test])
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n", "excess of heterozygotes \n",paste0(unlist(test),collapse = "\n")))}
+    }
+    df<-matrix(NA,nrow = nrow(pp),ncol = ncol(pp))
+    for(i in 1:ncol(pp)){
+      df[which(pp[,i]<0.05/nrow(pp)),i]<-1
+    }
+    if(filter=="intersection"){
+      pp$dup.stat<-"singlet"
+      pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"duplicated"
+      pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"duplicated"
+      pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
+    }
+
+    if(filter=="kmeans"){
+      test<-paste0(test,".sum")
+      candidate<-data.frame(data[,test]/data[,"NHet"],data[,c("eH.delta","cv")])
+      candidate<-scale(candidate)
+      cls<-kmeans(candidate, centers=2, nstart = 20)
+      pp$dup.stat<-rep("singlet",nrow(AI))
+      mn<-which.min(table(cls$cluster))
+      pp$dup.stat[which(cls$cluster==mn)]<-"duplicated"
+      pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"duplicated"
+      pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
+    }
+
+    if(plot){
+      l<-list(...)
+      if(is.null(l$cex)) l$cex=0.2
+      if(is.null(l$pch)) l$pch=19
+      if(is.null(l$xlim)) l$xlim=c(0,1)
+      if(is.null(l$ylim)) l$ylim=c(0,1)
+      if(is.null(l$alpha)) l$alpha=0.3
+      if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
+      Color <- rep(l$col[2],nrow(pp))
+      Color[pp$dup.stat=="duplicated"]<- l$col[1]
+      plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
+           ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+      legend("bottomright", c("duplicates","singlets"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+             cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
+    }
+  }
+  return(pp)
+}
+
+
+cnv0<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),plot=TRUE,verbose=TRUE,...){
   #data check
   data<-as.data.frame(data)
   if(!any(colnames(data)=="propHet")){
@@ -335,7 +393,6 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),p
   }
   return(pp)
 }
-
 
 
 

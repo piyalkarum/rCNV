@@ -268,6 +268,9 @@ norm.fact<-function(df,method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumT
 #' 2. The method \code{MedR} is median ratio normalization;
 #' 3. QN - quantile normalization (see  Maza, Elie, et al. 2013 for a
 #' comparison of methods).
+#' 4. PCA - a modified Kaiser's Rule applied to depth values: Sample variation
+#' of eigen values smaller than 0.7 are removed (i.e., the first eigen value < 0.7)
+#' to eliminate the effect of the library size of samples
 #'
 #' @return Returns a list with (AD), a data frame of normalized depth values
 #'  similar to the output of \code{hetTgen} function and
@@ -294,7 +297,101 @@ norm.fact<-function(df,method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumT
 #'
 #'
 #' @export
-cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE,plot=TRUE){
+cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE,plot=TRUE){
+  method<-match.arg(method)
+  if(length(method)>1){method="TMM"}
+  if(verbose){
+    message("calculating normalization factor")
+    tdep<-apply_pb(het.table[,-c(1:4)],2,function(tmp){
+      tmp <- stringr::str_split_fixed(tmp, ",", 2L)
+      tt <- as.integer(tmp[,1]) + as.integer(tmp[,2])
+      return(tt)
+    })
+  } else {
+    tdep<-apply(het.table[,-c(1:4)],2,function(tmp){
+      tmp <- stringr::str_split_fixed(tmp, ",", 2L)
+      tt <- as.integer(tmp[,1]) + as.integer(tmp[,2])
+      return(tt)
+    })
+  }
+
+  #find and warn about outliers
+  ot<-boxplot.stats(colSums(tdep,na.rm = T))$out
+  cl<-rep("dodgerblue",ncol(tdep))
+  ot.ind<-which(colnames(tdep) %in% names(ot))
+  cl[ot.ind]<-2
+  if(length(ot)>0){
+    if(plot){barplot(colSums(tdep,na.rm = T),col=cl,border=NA,xlab="sample",ylab="total depth")}
+    message("OUTLIERS DETECTED\nConsider removing the samples:")
+    cat(colnames(tdep)[ot.ind])}
+  if(method=="TMM" | method=="TMMex"){
+    nf<-norm.fact(tdep,method = method,logratioTrim=logratioTrim,sumTrim=sumTrim,Weighting=Weighting,Acutoff=Acutoff)
+    if(verbose){
+      message("\ncalculating normalized depth")
+      out<-apply_pb(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+    } else {
+      out<-apply(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/(nf[,1]*nf[,2]))*1e6,2)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+    }
+  } else if(method=="MedR") {
+    pseudo<- apply(tdep,1,function(xx){exp(mean(log(as.numeric(xx)[as.numeric(xx)>0])))})
+    nf<-  apply(tdep,2,function(xx){median(as.numeric(xx)/pseudo,na.rm=T)})
+    if(verbose){
+      message("\ncalculating normalized depth")
+      out<-apply_pb(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/nf),0)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+    } else {
+      out<-apply(het.table[,-c(1:4)],1, function(X){y<-data.frame(do.call(rbind,strsplit(as.character(X),",")))
+      y[,1]<-as.numeric(y[,1]);if(ncol(y)>1){y[,2]<-as.numeric(y[,2])}
+      nt<-round((y/nf),0)
+      if(ncol(nt)>1){paste0(nt[,1],",",nt[,2])}else{nt[,1]}})
+
+    }
+  } else if(method=="QN"){
+    out<-t(do.call(cbind,quantile_normalisation(tdep,het.table,verbose=verbose)))
+  }
+
+  else if(method=="pca"){
+    if(verbose){message("\ncalculating normalized depth")}
+    new.mat <- t(tdep) ### check the direction to confirm if this step need to be done
+    colmean <- colMeans(new.mat)
+    colsd <- apply(new.mat, 2, sd)
+    new.mat <- apply(new.mat, 2, scale,scale = TRUE) #### essential before SVD
+    test.la.svd <- La.svd(new.mat)
+    u <- test.la.svd$u
+    d <- test.la.svd$d
+    vt <- test.la.svd$vt
+    ## optimal PCs to remove with d values
+    ddl<-NULL
+    for(i in seq_along(1:50)){
+      if(i<50) ddl[i]<-d[i+1]-d[i]
+    }
+    ## modified Kaiser's Rule: Sample variation of eigen values smaller than 0.7 should be kept (i.e., the first eigen value < 0.7)
+    rmpc<-min(which(abs(ddl)<0.7))
+    #plot(d[1:50],pch=19,cex=0.5)
+    #points(rmpc,d[rmpc],cex=1.5,col="red")
+    d[1:rmpc] <- 0
+    out <- u %*% diag(d) %*% vt
+    if(verbose){out <- apply_pb(out, 1, FUN = function(x){x*colsd + colmean})}
+    else {out <- apply(out, 1, FUN = function(x){x*colsd + colmean})}#### back transform to depth matrix
+    out[out<0]<-0
+    out<-t(out)
+  }
+  out<-data.frame(het.table[,c(1:4)],t(out))
+  colnames(out)<-colnames(het.table)
+  return(list(AD=out,outliers=data.frame(column=(ot.ind+4),colnames(tdep)[ot.ind])))
+}
+
+
+
+cpm.normal0<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE,plot=TRUE){
   method<-match.arg(method)
   if(length(method)>1){method="TMM"}
   if(verbose){
