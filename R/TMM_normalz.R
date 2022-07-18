@@ -379,16 +379,33 @@ cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),lograt
     #points(rmpc,d[rmpc],cex=1.5,col="red")
     d[1:rmpc] <- 0
     out <- u %*% diag(d) %*% vt
-    if(verbose){out <- apply_pb(out, 1, FUN = function(x){x*colsd + colmean})}
-    else {out <- apply(out, 1, FUN = function(x){x*colsd + colmean})}#### back transform to depth matrix
+    out <- apply(out, 1, FUN = function(x){round(x*colsd + colmean,0)})#### back transform to depth matrix
     out[out<0]<-0
     out<-t(out)
+
+    ht<-het.table[,-c(1:4)]
+    tout<-NULL
+    for(i in 1:ncol(ht)){
+      if(verbose){
+        pb <- txtProgressBar(min = 0, max = ncol(ht), style = 3, width = 50, char = "=")
+        setTxtProgressBar(pb, i)
+      }
+      tmp <- stringr::str_split_fixed(ht[,i], ",", 2L)
+      tt<-matrix(NA,nrow = nrow(tmp),ncol = 2)
+      tt[,1]<-as.integer(tmp[,1])
+      tt[,2]<-as.integer(tmp[,2])
+      tt <- proportions(tt,margin = 1)
+      tt[is.na(tt)]<-0
+      tt<-tt*out[i,]
+      tt<-paste0(round(tt[,1],0),",",round(tt[,2],0))
+      tout<-cbind(tout,tt)
+    }
+    out<-t(tout)
   }
   out<-data.frame(het.table[,c(1:4)],t(out))
   colnames(out)<-colnames(het.table)
   return(list(AD=out,outliers=data.frame(column=(ot.ind+4),colnames(tdep)[ot.ind])))
 }
-
 
 
 cpm.normal0<-function(het.table, method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE,plot=TRUE){
