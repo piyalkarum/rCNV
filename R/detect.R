@@ -320,14 +320,14 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
       pp<-data.frame(data[,test])
       if(verbose){cat(paste0("categorizing deviant SNPs with \n", "excess of heterozygotes \n",paste0(unlist(test),collapse = "\n")))}
     }
-    df<-matrix(NA,nrow = nrow(pp),ncol = ncol(pp))
-    for(i in 1:ncol(pp)){
-      df[which(pp[,i]<0.05/nrow(pp)),i]<-1
-    }
     if(filter=="intersection"){
+
+      df<-as.data.frame(apply(pp,2,function(x){ifelse(x<0.05/length(x),1,0)}))
+      df$eH<-0
+      df$eH[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-1
       pp$dup.stat<-"singlet"
-      pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"duplicated"
-      pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"duplicated"
+      pp$dup.stat[which(rowSums(df)>=2)]<-"duplicated"
+      pp$dup.stat[which(df$eH==1)]<-"duplicated"
       pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
     }
 
