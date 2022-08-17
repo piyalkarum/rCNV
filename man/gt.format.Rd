@@ -19,8 +19,6 @@ It must have \dQuote{sample} and \dQuote{population} columns}
 \item{snp.subset}{numerical. number of randomly selected subsets of SNPs.
 \code{default = NULL}
 subset}
-
-\item{verbose}{logical. If \code{TRUE} shows progress}
 }
 \value{
 Returns a list with formatted genotype data: \code{$bayenv} - snps

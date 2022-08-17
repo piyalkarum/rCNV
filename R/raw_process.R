@@ -363,7 +363,6 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' @param snp.subset numerical. number of randomly selected subsets of SNPs.
 #' \code{default = NULL}
 #' subset
-#' @param verbose logical. If \code{TRUE} shows progress
 #'
 #' @return Returns a list with formatted genotype data: \code{$bayenv} - snps
 #' in horizontal format - for BayEnv (two lines per snp); \code{$baypass} - vertical format - for BayPass
@@ -424,7 +423,7 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
     ppp<-lapply_pb(lgt,function(X){
       out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"|")))==0)
       one<-sum((unlist(stringr::str_split(x,"|")))==1)
-      if(format=="bpass"){ot<-c(zero,one)}
+      ot<-c(zero,one)
       return(ot)},simplify = F)
       out<-do.call(rbind,out)
       colnames(out)<-NULL
