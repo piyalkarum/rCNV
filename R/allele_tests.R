@@ -222,7 +222,7 @@ allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){
             return(tt)
           })
         }
-        return(tmp)
+        return(as.data.frame(tmp))
       }
     }
   }

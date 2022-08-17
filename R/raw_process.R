@@ -379,7 +379,73 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' GT<-gt.format(het.table,info)}
 #'
 #' @export
-gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL,verbose=FALSE) {
+gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
+  if(is.character(gt)){
+    gt <-as.data.frame(fread(gt))
+    gts <-gt[,-c(1,2)]
+  } else {
+    gts<-gt[,-c(1:4)]
+  }
+  if(is.character(info)){
+    if(length(info==ncol(gts))){
+      info<-data.frame(population=info)
+    } else {
+      pop.col<-NULL
+      for(i in seq_along(info)){
+        pop.col[grep(info[i],colnames(gts))]<-info[i]
+      }
+      info<-data.frame(population=pop.col)
+    }
+  }
+  rownames(gts)<-paste(gt$CHROM,gt$POS,sep=".")
+  pp<-na.omit(unique(info$population))
+  infos<-as.character(info$population)
+  format<-match.arg(format,several.ok = TRUE)
+
+  lgt<-split.data.frame(t(gts),f=info$population)
+
+  if(any(format=="benv")){
+    message("Formating BayEnv")
+    ppe<-lapply_pb(lgt,function(X){
+      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"|")))==0)
+      one<-sum((unlist(stringr::str_split(x,"|")))==1)
+      ot<-as.data.frame(c(zero,one),col.names=F)
+      return(ot)},simplify = F)
+      out<-do.call(rbind,out)
+      colnames(out)<-NULL
+      return(out)
+    })
+    ppe<-do.call(cbind,ppe)
+    rownames(ppe)<-paste0(paste0(gt[,1],".",gt[,2]),"~",rep(c(1,2),nrow(gt)))
+  } else {ppe<-NULL}
+
+  if(any(format=="bpass")){
+    message("Formating BayPass")
+    ppp<-lapply_pb(lgt,function(X){
+      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"|")))==0)
+      one<-sum((unlist(stringr::str_split(x,"|")))==1)
+      if(format=="bpass"){ot<-c(zero,one)}
+      return(ot)},simplify = F)
+      out<-do.call(rbind,out)
+      colnames(out)<-NULL
+      return(out)
+    })
+    ppp<-do.call(cbind,ppp)
+    colnames(ppp)<-paste0(rep(names(lgt),each=2),"~",rep(c(1,2),ncol(ppp)/2))
+    rownames(ppp)<-paste0(gt[,1],".",gt[,2])
+
+    if(!is.null(snp.subset)){
+      rn<-sample(1:snp.subset,nrow(gts),replace = T)
+      rownames(gts)<-paste0(gt[,1],".",gt[,2])
+      chu.p<-split.data.frame(ppp,f=rn)
+    } else { chu.p <- NULL}
+  } else {ppp<-NULL}
+  return(list(baypass=ppp,bayenv=ppe,sub.bp=chu.p,pop=as.character(pp)))
+}
+
+
+
+gt.format0 <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL,verbose=FALSE) {
   if(is.character(gt)){
     gt <-as.data.frame(fread(gt))
     gts <-gt[,-c(1,2)]

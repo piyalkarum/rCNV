@@ -4,13 +4,7 @@
 \alias{gt.format}
 \title{Format genotype for BayEnv and BayPass}
 \usage{
-gt.format(
-  gt,
-  info,
-  format = c("benv", "bpass"),
-  snp.subset = NULL,
-  verbose = FALSE
-)
+gt.format(gt, info, format = c("benv", "bpass"), snp.subset = NULL)
 }
 \arguments{
 \item{gt}{multi-vector. an imported data.frame of genotypes or genotype
