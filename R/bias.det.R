@@ -171,10 +171,10 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN","pca"),lo
       homref<-sum(rr1==0,na.rm=TRUE)
       covrefhomo<-sum(y[c(rr1 == 0,na.rm = TRUE),],na.rm = TRUE)
       covalthomo<-sum(y[c(rr1 == 1,na.rm = TRUE),],na.rm = TRUE)
-      covalt<-sum(y[,2])
-      covref<-sum(y[,1])
+      covalt<-sum(y[,2],na.rm = TRUE)
+      covref<-sum(y[,1],na.rm = TRUE)
       if(nrow(snp1het)>3){
-        p.all<-(colSums(y)[2]/(nrow(snp1het)+(2*homalt)))/((colSums(y)[2]/(nrow(snp1het)+(2*homalt)))+(colSums(y)[1]/(nrow(snp1het)+(2*homref))))
+        p.all<-(covalt/(nrow(snp1het)+(2*homalt)))/((covalt/(nrow(snp1het)+(2*homalt)))+(covref/(nrow(snp1het)+(2*homref))))
         p.sum<-sum(snp1het[,2])/sum(snp1het)
         ll <-data.frame(p.all,p.sum,mean.a.homo=covalthomo/(2*homalt),mean.r.homo=covrefhomo/(2*homref),mean.a.het=sum(snp1het[,2])/nrow(snp1het),mean.r.het=sum(snp1het[,1])/nrow(snp1het),cv=cv)
       } else {
@@ -197,10 +197,10 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN","pca"),lo
       homref<-sum(rr1==0,na.rm=TRUE)
       covrefhomo<-sum(y[c(rr1 == 0,na.rm = TRUE),],na.rm = TRUE)
       covalthomo<-sum(y[c(rr1 == 1,na.rm = TRUE),],na.rm = TRUE)
-      covalt<-sum(y[,2])
-      covref<-sum(y[,1])
+      covalt<-sum(y[,2],na.rm = TRUE)
+      covref<-sum(y[,1],na.rm = TRUE)
       if(nrow(snp1het)>3){
-        p.all<-(colSums(y)[2]/(nrow(snp1het)+(2*homalt)))/((colSums(y)[2]/(nrow(snp1het)+(2*homalt)))+(colSums(y)[1]/(nrow(snp1het)+(2*homref))))
+        p.all<-(covalt/(nrow(snp1het)+(2*homalt)))/((covalt/(nrow(snp1het)+(2*homalt)))+(covref/(nrow(snp1het)+(2*homref))))
         p.sum<-sum(snp1het[,2])/sum(snp1het)
         ll <-data.frame(p.all,p.sum,mean.a.homo=covalthomo/(2*homalt),mean.r.homo=covrefhomo/(2*homref),mean.a.het=sum(snp1het[,2])/nrow(snp1het),mean.r.het=sum(snp1het[,1])/nrow(snp1het),cv=cv)
       } else {
@@ -214,6 +214,7 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN","pca"),lo
   } else {
     p.cal<-t(p.cal)
   }
+  p.cal[p.cal=="NaN"]<-0
   if(plot.allele.cov){
     p.list<-list(...)
     if(is.null(p.list$pch)) p.list$pch=19
