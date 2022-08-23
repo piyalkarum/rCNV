@@ -24,6 +24,8 @@ See details}
 \item{filter}{character. Type of filter to be used for filtering CNVs.
 default \code{kmeans}. See details.}
 
+\item{ft.threshold}{confidence interval for filtering \code{default = 0.05}}
+
 \item{plot}{logical. Plot the detection of duplicates. default \code{TRUE}}
 
 \item{verbose}{logical. show progress}

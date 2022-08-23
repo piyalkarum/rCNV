@@ -269,6 +269,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' See details
 #' @param filter character. Type of filter to be used for filtering CNVs.
 #' default \code{kmeans}. See details.
+#' @param ft.threshold confidence interval for filtering \code{default = 0.05}
 #' @param plot logical. Plot the detection of duplicates. default \code{TRUE}
 #' @param verbose logical. show progress
 #' @param ... other arguments to be passed to \code{plot}
