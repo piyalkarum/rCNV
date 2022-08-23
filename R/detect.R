@@ -302,9 +302,12 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' DD<-cnv(alleleINF)}
 #'
 #' @export
-cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),plot=TRUE,verbose=TRUE,...){
+cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),ft.threshold=0.05,plot=TRUE,verbose=TRUE,...){
   #data check
   data<-as.data.frame(data)
+  data$z.het.sum<-abs(data$z.het.sum)
+  data$z.05.sum<-abs(data$z.05.sum)
+  data$z.all.sum<-abs(data$z.all.sum)
   if(!any(colnames(data)=="propHet")){
     stop("please provide the output of allele.info()")
   } else {
@@ -322,7 +325,7 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
     }
     if(filter=="intersection"){
 
-      df<-as.data.frame(apply(pp,2,function(x){ifelse(x<0.05/length(x),1,0)}))
+      df<-as.data.frame(apply(pp,2,function(x){ifelse(x<ft.threshold/length(x),1,0)}))
       df$eH<-0
       df$eH[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-1
       pp$dup.stat<-"singlet"
@@ -335,7 +338,7 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
       test<-paste0(test,".sum")
       candidate<-data.frame(data[,test]/data[,"NHet"],data[,c("eH.delta","cv")])
       candidate<-scale(candidate)
-      cls<-kmeans(candidate, centers=2, nstart = 20)
+      cls<-kmeans(candidate, centers=2, nstart = 50)
       pp$dup.stat<-rep("singlet",nrow(data))
       mn<-which.min(table(cls$cluster))
       pp$dup.stat[which(cls$cluster==mn)]<-"duplicated"

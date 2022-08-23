@@ -8,6 +8,7 @@ cnv(
   data,
   test = c("z.het", "z.05", "z.all", "chi.het", "chi.05", "chi.all"),
   filter = c("intersection", "kmeans"),
+  ft.threshold = 0.05,
   plot = TRUE,
   verbose = TRUE,
   ...

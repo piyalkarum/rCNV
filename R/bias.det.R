@@ -164,7 +164,7 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN","pca"),lo
         y[,2]<-as.numeric(y[,2])} else {y<-snp1}
       rs<-rowSums(y)
       rs[rs==0]<-NA
-      cv<-sd(rs,na.rm = TRUE)/mean(rs,na.rm = TRUE)
+      cv<-sd(unlist(y),na.rm = TRUE)/mean(unlist(y),na.rm = TRUE)
       rr1<-y[,2]/rs
       snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
       homalt<-sum(rr1==1,na.rm=TRUE)
