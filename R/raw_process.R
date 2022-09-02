@@ -4,7 +4,7 @@ apply_pb <- function(X, MARGIN, FUN, ...)
   env <- environment()
   pb_Total <- sum(dim(X)[MARGIN])
   counter <- 0
-  pb <- txtProgressBar(min = 0, max = pb_Total,
+  pb <- txtProgressBar(min = 0, max = pb_Total,width = 50,
                        style = 3)
 
   wrapper <- function(...)
@@ -25,7 +25,7 @@ lapply_pb <- function(X, FUN, ...)
   env <- environment()
   pb_Total <- length(X)
   counter <- 0
-  pb <- txtProgressBar(min = 0, max = pb_Total, style = 3)
+  pb <- txtProgressBar(min = 0, max = pb_Total, width = 50,style = 3)
 
   # wrapper around FUN
   wrapper <- function(...){
@@ -48,7 +48,7 @@ combn_pb <- function(X, size, FUN, ...)
   r<-size
   pb_Total <- factorial(n)/(factorial(r)*factorial(n-r))
   counter <- 0
-  pb <- txtProgressBar(min = 0, max = pb_Total,
+  pb <- txtProgressBar(min = 0, max = pb_Total,width = 50,
                        style = 3)
 
   wrapper <- function(...)

@@ -14,7 +14,7 @@ sig.hets(
 }
 \arguments{
 \item{a.info}{allele info table generated from filtered vcfs using the
-function \code{allele.info}}
+function \code{allele.info} or allele depth table generated from \code{hetTgen}}
 
 \item{method}{character. Method for testing significance. Fisher exact test
 (\code{fisher}) or Chi-square test (\code{chi.sq})}

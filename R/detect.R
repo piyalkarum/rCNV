@@ -13,20 +13,22 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #1 pvals for sig.hets when AD table is provided
 get.eHpvals<-function(df,method=c("fisher","chi.sq")){
   snp1<-df[-c(1:4)]
-  y<-data.frame(do.call(rbind,strsplit(as.character(unlist(snp1)),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
+  y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
+  y[,1]<-as.integer(y[,1]);y[,2]<-as.integer(y[,2])
   rr1<-y[,2]/rowSums(y,na.rm = T)
   snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
-  if(nrow(snp1het)>3){
-    propHet<-nrow(na.omit(snp1het))/length(na.omit(rr1))
+  NHet<-nrow(snp1het)
+  if(NHet>3){
+    propHet<-NHet/length(na.omit(rr1))
     medRatio<-median(proportions(as.matrix(snp1het),margin = 1)[,2],na.rm = T)
     homalt<-sum(rr1==1,na.rm=T)
     homref<-sum(rr1==0,na.rm=T)
-    Nsamp=nrow(snp1het)+homalt+homref
+    Nsamp<-NHet+homalt+homref
     propHomAlt<-homalt/Nsamp
-    rs<-c(homref,nrow(snp1het),homalt,Nsamp)
-    n<-unlist(c(rs[4]))
+    rs<-c(homref,NHet,homalt,Nsamp)
+    n<-Nsamp
     p<-(rs[1]+rs[2]/2)/n
-    ob<-unlist(c(rs[1:3]))
+    ob<-c(homref,NHet,homalt)
     eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
     delta <- rs[2]-(2*p*(1-p) * n)
     stat<-match.arg(method)
@@ -45,7 +47,7 @@ get.eHpvals<-function(df,method=c("fisher","chi.sq")){
 #'  only on the excess of heterozygotes.
 #'
 #' @param a.info allele info table generated from filtered vcfs using the
-#' function \code{allele.info}
+#' function \code{allele.info} or allele depth table generated from \code{hetTgen}
 #' @param method character. Method for testing significance. Fisher exact test
 #'  (\code{fisher}) or Chi-square test (\code{chi.sq})
 #' @param plot logical. Whether to plot the identified duplicated snps with
