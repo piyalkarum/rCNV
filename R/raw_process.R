@@ -386,7 +386,7 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
     gts<-gt[,-c(1:4)]
   }
   if(is.character(info)){
-    if(length(info==ncol(gts))){
+    if(length(info)==ncol(gts)){
       info<-data.frame(population=info)
     } else {
       pop.col<-NULL
@@ -406,8 +406,8 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
   if(any(format=="benv")){
     message("Formating BayEnv")
     ppe<-lapply_pb(lgt,function(X){
-      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"|")))==0)
-      one<-sum((unlist(stringr::str_split(x,"|")))==1)
+      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
+      one<-sum((unlist(stringr::str_split(x,"/||")))==1)
       ot<-as.data.frame(c(zero,one),col.names=F)
       return(ot)},simplify = F)
       out<-do.call(rbind,out)
@@ -421,8 +421,8 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
   if(any(format=="bpass")){
     message("Formating BayPass")
     ppp<-lapply_pb(lgt,function(X){
-      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"|")))==0)
-      one<-sum((unlist(stringr::str_split(x,"|")))==1)
+      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
+      one<-sum((unlist(stringr::str_split(x,"/||")))==1)
       ot<-c(zero,one)
       return(ot)},simplify = F)
       out<-do.call(rbind,out)
