@@ -297,7 +297,114 @@ norm.fact<-function(df,method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumT
 #'
 #'
 #' @export
-cpm.normal<-function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE,plot=TRUE){
+cpm.normal <- function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),
+                       logratioTrim=.3, sumTrim=0.05, Weighting=TRUE,
+                       Acutoff=-1e10, verbose=TRUE, plot=TRUE){
+  method<-match.arg(method)
+  if(length(method)>1){method="TMM"}
+  dm <- dim(het.table)
+  pb_Total <- dm[2] - 4L
+  if(verbose){
+    message("calculating normalization factor")
+    pb <- txtProgressBar(min = 0, max = pb_Total, width = 50, style = 3)
+  }
+  #  tdep<-rCNV:::apply_pb(het.table[,-c(1:4)],2,function(tmp){
+  y1 <- y2 <- matrix(NA_integer_, dm[1], pb_Total)
+  for(i in seq_len(pb_Total)){
+    if (verbose) setTxtProgressBar(pb, i)
+    tmp <- stringr::str_split_fixed(het.table[,i+4L], ",", 2L)
+    y1[, i] <- as.integer(tmp[,1])
+    y2[, i] <- as.integer(tmp[,2])
+  }
+  if(verbose) close(pb)
+  tdep <- y1 + y2
+  colnames(tdep) <- colnames(het.table[-c(1:4)])
+
+  #find and warn about outliers
+  ot<-boxplot.stats(colSums(tdep,na.rm = T))$out
+  cl<-rep("dodgerblue",ncol(tdep))
+  ot.ind<-which(colnames(tdep) %in% names(ot))
+  cl[ot.ind]<-2
+  if(length(ot)>0){
+    if(plot){
+      barplot(colSums(tdep,na.rm = T), col=cl, border=NA, xlab="sample",
+              ylab="total depth")
+    }
+    message("OUTLIERS DETECTED\nConsider removing the samples:")
+    cat(colnames(tdep)[ot.ind])
+  }
+
+  if(method=="TMM" | method=="TMMex"){
+    if(verbose)   message("\ncalculating normalized depth")
+    nf<-norm.fact(tdep, method=method, logratioTrim=logratioTrim,
+                  sumTrim=sumTrim, Weighting=Weighting, Acutoff=Acutoff)
+    sc <- 1e6 / (nf[,1]*nf[,2])
+    y1 <- round(y1 * rep(sc, each=dm[1]), 2)
+    y2 <- round(y2 * rep(sc, each=dm[1]), 2)
+    out <- paste0(y1, ",", y2)
+    attributes(out) <- attributes(tdep)
+  } else if(method=="MedR") {
+    pseudo <- apply(tdep,1,function(xx){exp(mean(log(as.numeric(xx)[as.numeric(xx)>0])))})
+    nf <- apply(tdep,2,function(xx){median(as.numeric(xx)/pseudo,na.rm=T)})
+    if(verbose)   message("\ncalculating normalized depth")
+    y1 <- round(y1 / rep(nf, each=dm[1]), 0)
+    y2 <- round(y2 / rep(nf, each=dm[1]), 0)
+    out <- paste0(y1, ",", y2)
+    attributes(out) <- attributes(tdep)
+  } else if(method=="QN"){
+    out <- do.call(cbind,quantile_normalisation(tdep,het.table,verbose=verbose))
+  } else if(method=="pca"){
+    if(verbose){message("\ncalculating normalized depth")}
+    new.mat <- t(tdep) ### check the direction to confirm if this step need to be done
+    colmean <- colMeans(new.mat)
+    colsd <- apply(new.mat, 2, sd)
+    new.mat <- apply(new.mat, 2, scale,scale = TRUE) #### essential before SVD
+    test.la.svd <- La.svd(new.mat)
+    u <- test.la.svd$u
+    d <- test.la.svd$d
+    vt <- test.la.svd$vt
+    ## optimal PCs to remove with d values
+    ddl<-NULL
+    for(i in seq_along(1:50)){
+      if(i<50) ddl[i]<-d[i+1]-d[i]
+    }
+    ## modified Kaiser's Rule: Sample variation of eigen values smaller than 0.7 should be kept (i.e., the first eigen value < 0.7)
+    rmpc<-min(which(abs(ddl)<0.7))
+    #plot(d[1:50],pch=19,cex=0.5)
+    #points(rmpc,d[rmpc],cex=1.5,col="red")
+    d[1:rmpc] <- 0
+    out <- u %*% diag(d) %*% vt
+    out <- apply(out, 1, FUN = function(x){round(x*colsd + colmean,0)})#### back transform to depth matrix
+    out[out<0]<-0
+    out<-t(out)
+
+    ht<-het.table[,-c(1:4)]
+    tout<-NULL
+    for(i in 1:ncol(ht)){
+      if(verbose){
+        pb <- txtProgressBar(min = 0, max = ncol(ht), style = 3, width = 50, char = "=")
+        setTxtProgressBar(pb, i)
+      }
+      tmp <- stringr::str_split_fixed(ht[,i], ",", 2L)
+      tt<-matrix(NA,nrow = nrow(tmp),ncol = 2)
+      tt[,1]<-as.integer(tmp[,1])
+      tt[,2]<-as.integer(tmp[,2])
+      tt <- proportions(tt,margin = 1)
+      tt[is.na(tt)]<-0
+      tt<-tt*out[i,]
+      tt<-paste0(round(tt[,1],0),",",round(tt[,2],0))
+      tout<-cbind(tout,tt)
+    }
+    out<- out #t(tout)
+  }
+  #  browser()
+  out<-data.frame(het.table[,c(1:4)], out)
+  colnames(out)<-colnames(het.table)
+  return(list(AD=out,outliers=data.frame(column=(ot.ind+4),colnames(tdep)[ot.ind])))
+}
+
+
+cpm.normal_old <-function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,verbose=TRUE,plot=TRUE){
   method<-match.arg(method)
   if(length(method)>1){method="TMM"}
   if(verbose){
