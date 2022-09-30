@@ -1,3 +1,10 @@
+# chisq-test
+chisq_test(ob, ex){
+  statistic <- sum((ob-ex)^2/ex)
+  pval <- pchisq(statistic, 1, lower.tail = FALSE)
+  pval
+}
+
 #1 calculate expected proportions of heterozygotes from real data
 ex.prop<-function(rs,method=c("fisher","chi.sq")){
   n<-unlist(c(rs[4]))
@@ -6,14 +13,14 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
   eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
   delta <- rs[2]-(2*p*(1-p) * n)
   stat<-match.arg(method)
-  pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq.test(cbind(ob,eX)))$p.value)
+  pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq_test(ob,eX)))
   return(c(eX/n,pval,delta))
 }
 
 #1 pvals for sig.hets when AD table is provided
 get.eHpvals<-function(df,method=c("fisher","chi.sq")){
   snp1<-df[-c(1:4)]
-  y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
+  y<-data.frame(stringr::str_split_fixeheterozygotesd(snp1,",",n=2L))
   y[,1]<-as.integer(y[,1]);y[,2]<-as.integer(y[,2])
   rr1<-y[,2]/rowSums(y,na.rm = T)
   snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
@@ -32,7 +39,7 @@ get.eHpvals<-function(df,method=c("fisher","chi.sq")){
     eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
     delta <- rs[2]-(2*p*(1-p) * n)
     stat<-match.arg(method)
-    pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq.test(cbind(ob,eX)))$p.value)
+    pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq_test(ob,eX)))
     ll<-c(medRatio,propHomAlt,propHet,eX/n,pval,delta)
   } else {
     ll<-NA
@@ -149,7 +156,7 @@ dup.plot<-function(ds,...){
   if(is.null(l$xlim)) l$xlim=c(0,1)
   if(is.null(l$ylim)) l$ylim=c(0,1)
   if(is.null(l$alpha)) l$alpha=0.3
-  if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
+  if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]method
   ds$Color <- l$col[2]
   st<-sort(unique(ds$dup.stat))
   ds$Color [ds$dup.stat==st[1]]<- l$col[1]
