@@ -197,15 +197,3 @@ dp.cov2<-function(cov.i,nsamp){
 }
 
 
-depthVsSample2<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
-  cov<- seq(1,cov.len,incr[1])
-  nsamp<- seq(1,sam.len,incr[2])
-  MR<-lapply_pb(cov,function(x,nsamp){
-    tmp<-dp.cov2(cov.i=x,nsamp)
-    return(tmp)
-  },nsamp=nsamp)
-  names(MR)<-cov
-  return(MR)
-}
-
-

@@ -1,50 +1,5 @@
 # helpers
 #1. get allele based p and chi-square values for all the samples
-get.pvals0<-function(x,df,p.cal){
-  snp1<-df[x,-c(1:4)]
-  y<-data.frame(do.call(rbind,strsplit(as.character(unlist(snp1)),",")));y[,1]<-as.numeric(y[,1]);y[,2]<-as.numeric(y[,2])
-  rr1<-y[,2]/rowSums(y,na.rm = TRUE)
-  snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
-  homalt<-sum(rr1==1,na.rm=TRUE)
-  homref<-sum(rr1==0,na.rm=TRUE)
-  Nsamp <- nrow(snp1het)+homalt+homref
-  if(nrow(snp1het)>3){
-    propHet<-nrow(na.omit(snp1het))/length(na.omit(rr1))
-    medRatio<-median(proportions(as.matrix(snp1het),margin = 1)[,2],na.rm = TRUE)
-    p.sum<-p.cal[x,2]
-    p.05<-0.5
-    p.all<-p.cal[x,1]
-    n<-unname(rowSums(snp1het,na.rm = TRUE))
-    chi.het<-sum((n*p.sum-snp1het[,2])^2/(n*p.sum),na.rm = TRUE)
-    chi.het.sum<-chi.het
-    chi.05<-sum((n*p.05-snp1het[,2])^2/(n*p.05),na.rm = TRUE)
-    chi.0.5.sum<-chi.05
-    chi.all<-sum((n*p.all-snp1het[,2])^2/(n*p.all))
-    chi.all.sum<-chi.all
-    z <- (n*p.sum-snp1het[,2])/sqrt(n*p.sum*(1-p.sum))
-    z.het.sum<-sum(z,na.rm = TRUE)
-    z<-pnorm(sum(z,na.rm = TRUE),0,sqrt(nrow(snp1het)))
-    z.05 <- (n*p.05-snp1het[,2])/sqrt(n*p.05*(1-p.05))
-    z.05.sum<-sum(z.05,na.rm = TRUE)
-    z.05<-pnorm(sum(z.05,na.rm = TRUE),0,sqrt(nrow(snp1het)))
-    z.all<- (n*p.all-snp1het[,2])/sqrt(n*p.all*(1-p.all))
-    z.all.sum<-sum(z.all,na.rm = TRUE)
-    z.all<-pnorm(sum(z.all,na.rm = TRUE),0,sqrt(nrow(snp1het)))
-    ll<-data.frame(NHet=nrow(snp1het),propHet,medRatio,NHomRef=homref,NHomAlt=homalt,propHomAlt=homalt/Nsamp,Nsamp,
-                   pAll=p.all,pHet=p.sum,fis=1-(nrow(snp1het)/(2*(homref+(nrow(snp1het)/2))*(homalt+(nrow(snp1het)/2)))),
-                   z.het=ifelse(z>0.5, (1-z)*2, z*2),
-                   z.05=ifelse(z.05>0.5, (1-z.05)*2, z.05*2),
-                   z.all=ifelse(z.all>0.5, (1-z.all)*2, z.all*2),
-                   chi.het=pchisq(chi.het,nrow(snp1het)-1,lower.tail=F),
-                   chi.05=pchisq(chi.05,nrow(snp1het)-1,lower.tail = F),
-                   chi.all=pchisq(chi.all,nrow(snp1het)-1,lower.tail = F),
-                   z.het.sum,z.05.sum,z.all.sum,chi.het.sum,chi.0.5.sum,chi.all.sum)
-  } else {
-    ll<-NA
-  }
-  return(ll)
-}
-
 get.pvals<-function(x,df,p.cal){
   snp1<-unlist(df[x,-c(1:4)])
   y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
