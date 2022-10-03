@@ -1,12 +1,12 @@
 # chisq-test
-chisq_test(ob, ex){
+chisq_test<-function(ob, ex){
   statistic <- sum((ob-ex)^2/ex)
   pval <- pchisq(statistic, 1, lower.tail = FALSE)
   pval
 }
 
 #1 calculate expected proportions of heterozygotes from real data
-ex.prop<-function(rs,method=c("fisher","chi.sq")){
+ex.prop<-function(rs,method=c("chi.sq","fisher")){
   n<-unlist(c(rs[4]))
   p<-(rs[1]+rs[2]/2)/n
   ob<-unlist(c(rs[1:3]))
@@ -20,7 +20,7 @@ ex.prop<-function(rs,method=c("fisher","chi.sq")){
 #1 pvals for sig.hets when AD table is provided
 get.eHpvals<-function(df,method=c("fisher","chi.sq")){
   snp1<-df[-c(1:4)]
-  y<-data.frame(stringr::str_split_fixeheterozygotesd(snp1,",",n=2L))
+  y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
   y[,1]<-as.integer(y[,1]);y[,2]<-as.integer(y[,2])
   rr1<-y[,2]/rowSums(y,na.rm = T)
   snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==T),]
@@ -78,7 +78,7 @@ get.eHpvals<-function(df,method=c("fisher","chi.sq")){
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom colorspace rainbow_hcl
 #' @export
-sig.hets<-function(a.info,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
+sig.hets<-function(a.info,method=c("chi.sq","fisher"),plot=TRUE,verbose=TRUE,...){
   if(!any(colnames(a.info)=="NHomRef")){
     if(verbose){message("assessing excess of heterozygotes")
       df<-apply_pb(a.info,1,get.eHpvals,method=method)

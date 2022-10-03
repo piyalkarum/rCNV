@@ -6,7 +6,7 @@
 \usage{
 sig.hets(
   a.info,
-  method = c("fisher", "chi.sq"),
+  method = c("chi.sq", "fisher"),
   plot = TRUE,
   verbose = TRUE,
   ...

@@ -28,17 +28,14 @@ knitr::opts_chunk$set(
 `r rCNV:::colorize("Piyal Karunarathne, Qiujie Zhou, and Pascal Milesi","dodgerblue")`
 
 
-This tutorial provides a complete guide to detecting CNVs from SNPs data using rCNV package. This includes importing raw VCF files, filtering VCFs, normalization of read depth, categorization of SNPs into "deviants" and "non-deviants" from which  "duplicates" and "singlets" are then recognized. A brief workflow is presented in Fig 1. below.
+This tutorial provides a complete guide to detecting CNVs from SNPs data using rCNV package. This includes importing raw VCF files, filtering VCFs, normalization of read depth, categorization of SNPs into "deviants" and "non-deviants" from which  putative "duplicates" and "singlets" are then filtered. A brief workflow is presented in Fig 1. below.
 
 ![Fig. 1. Workflow of detecting CNVs with rCNV](workflow1.png){width=400}
 
-All the data used in this tutorial is available either withing the package or from the GitHub repository at **link**.
+All the data used in this tutorial is available either withing the package or from the GitHub repository at <https://github.com/piyalkarum/rCNV/tree/master/testDATA>.
 
-We provide here a complete workflow of detecting CNVs from SNPs, starting with raw (unfiltered) VCF as in the number 1 of the workflow chart. However, if one believes that they have filtered VCFs for the parameters we've mentioned (see Fig.1 and sub-sections 1.2 and 1.3), they can start from the number 2 in the workflow shown above.
+We provide here a complete workflow of detecting CNVs from SNPs, starting with raw (unfiltered) VCF as in the number 1 of the workflow chart. However, if one believes that they have filtered VCFs for the parameters we highlight (see Fig.1 and sub-sections 1.2 and 1.3), they can start from the number 2 in the workflow shown above.
 
-## 1. PRE-DETECTION
-### 1.1 Importing data
-|     Raw VCF files can be imported to rCNV R environment using the built-in function `readVCF()`. The imported vcf is stored as a data frame within a list. 
 ```{r, eval=FALSE}
 # Start by installing the package if you haven't already done so.  
 # To install the CRAN version
@@ -50,7 +47,11 @@ if (!requireNamespace("devtools", quietly = TRUE))
 devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
 ```
 
-```{r, echo=T,eval=TRUE}
+## 1. PRE-DETECTION
+### 1.1 Importing data
+|     Raw VCF files can be imported to rCNV R environment using the built-in function `readVCF()`. The imported vcf is stored as a data frame within a list. 
+
+```{r, echo=TRUE,eval=TRUE}
 library(rCNV)
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path,verbose = FALSE)
@@ -71,7 +72,8 @@ The following example demonstrates such filtering on Parrot Fish data from *McKi
 
 ```{r,echo=TRUE,eval=TRUE,fig.dim=c(6,4)}
 #download the parrotfish data file from the following link to your working directory if you do not have the github folder
-#https://drive.google.com/uc?export=download&id=141-RRGKJaioGWuJxBOAz3D-nUmNI36LZ
+#https://github.com/piyalkarum/rCNV/blob/master/testDATA/Parrotfish_sequenceReads.vcf.gz
+#and specify the path fl= to your file.
 fl<-"../testDATA/Parrotfish_sequenceReads.vcf.gz"
 parrot<-readVCF(fl,verbose=F)
 mss<-get.miss(parrot,verbose = F, plot=F)
@@ -88,14 +90,14 @@ The plot shows that there are several samples with missing data for more than 50
 
 ```{r}
 dim(parrot$vcf)
-sam<-which(mss$perSample$f_miss>0.5)+9 #here we determine the sample columns with f_miss>0.5 and add 9 to get the correct column number
+sam<-which(mss$perSample$f_miss>0.5)+9 #here we determine the sample columns with f_miss>0.5 and add 9 to get the correct column number because there are 9 more columns before the sample columns start.
 parrot<-data.frame(parrot$vcf)[,-sam]
 dim(parrot)
 ```
 We have removed 5 samples that were undesired for the analysis due to their missing data.
-Undesired SNPs can also be removed the same way; Hint: now they are in rows.
+Undesired SNPs can also be removed the same way; Note: now they are in rows.
 
-### 1.3 Assessing the relatedness among samples and heterozygosity withing
+### 1.3 Assessing the relatedness among samples and heterozygosity within
 
 The function `relatedness()` in the rCNV package will generate the relatedness index between pairs of samples according to *Yang et al. (2010)*.
 The output is a data frame with pairs of samples and the relatedness score *Ajk*. Please read *Yang et al. (2010)* for more information on the calculation of *Ajk*.
@@ -124,7 +126,7 @@ In figure 1.3.b, we can see that most of the individuals has a mean heterozygosi
 
 ## 1.4 Generating allele depth tables and normalized depth values
 
-Allele read depth table is the main data set that will be used for the rest of the analysis. Therefore, having them generated and stored for later use will immensely save a lot of time. The function `hetTgen()` is especially dedicated for this purpose. Apart from generating filtered allele depth table for separate alleles (`info.type="AD"`), the function can also generate total allele depth (`info.type="AD-tot"`), genotype table (`info.type="GT"`), etc.. See the help page of `hetTgen()` for more formats.
+Allele read depth table is the main data that will be used for the rest of the analysis. Therefore, having them generated and stored for later use will immensely save a lot of time. The function `hetTgen()` is especially dedicated for this purpose. Apart from generating filtered allele depth table for separate alleles (`info.type="AD"`), the function can also generate total allele depth (`info.type="AD-tot"`), genotype table (`info.type="GT"`), etc.. See the help page of `hetTgen()` for more formats.
 
 ```{r,eval=FALSE}
 ad.tab<-hetTgen(parrot,info.type="AD")
@@ -136,14 +138,31 @@ Table 1.4.0 Allele depth table (generated from a different data set than Parrot 
 knitr::kable(ADtable[1:6,1:6],format="html")
 ```
 
+As an additional step, rCNV framework corrects allele depth values for genotype misclassifications (where genotype and the depth values do not match) and odd number anomalies (where total depth of a loci is odd).
+
+```{r,eval=FALSE}
+#the genotype table is needed for correcting the genotype mismatches
+gt<-hetTgen(parrot,info.type = "GT")
+ad.tab<-ad.correct(ad.tab,gt.table = gt)
+```
+
+It is recommended to normalize the allele depth values across samples in order to avoid the depth variation arise from sequencing heterogeneity where some samples tend to have higher depth values compared to others due to different origin of sequencing efforts.
+We provide several methods for normalizing data.
+|       TMM = trimmed mean of M values
+|       MedR = median ratio normalization
+|       QN = quantile based normalization
+|       pca = PCA based normalization
+
+*Please read the function helps for more information on the different methods
+
 ```{r,eval=FALSE}
 #normalize depth table with cpm.normal()
-ad.nor<-cpm.normal(ad.tab)
+ad.nor<-cpm.normal(ad.tab,method="MedR")
 ad.nor[1:6,1:6]
 ```
 Table 1.4.1 Normalized allele depth table
 ```{r, echo=FALSE,cache=FALSE}
-ad.nor<-cpm.normal(ADtable,verbose = F, plot=F)
+ad.nor<-cpm.normal(ADtable,method="MedR",verbose = F, plot=F)
 knitr::kable(ad.nor$AD[1:6,1:6],format = "html")
 ```
 Compare the allele depth values between tables 1.4.0 and 1.4.1.
@@ -155,28 +174,30 @@ a. Allele ratios (across all samples), b. Proportions of homo-/heterozygotes per
 
 Alternative allele ratio is calculated across all the samples from depth values;Proportion of homo/hetero-zygotes are also calculated all the samples per SNP; Depth ratio is calculated per individual per SNP by dividing the alternative allele depth value by the sum depth value of both alleles. This is calculated for both heterozygotes and homozygotes; Z-score per SNP is calculated according to the following equation:
 
-![](eq.svg)
+![](Z2.1.svg)
 
-![](eq2.svg)
+![](Z2.2.svg)
 
-Where N is the total depth summed for all heterozygotes, N<sub>A</sub> is the depth of allele A summed for all the heterozygotes,
-*P* is the occurrence probability of allele A in heterozygotes - for unbiased sequencing this is 0.5. `allele.info()` function calculates this for both 0.5 and biased probability using the ratio between reference and alternative alleles.
+Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub>Ai</sub>* is the alternative allele read depth for heterozygote *i* at SNP *x*,
+*p* is the probability of sampling allele *A* in SNP *x* - for unbiased sequencing this is *0.5*. `allele.info()` function calculates this for both *0.5* and biased probability using the ratio between reference and alternative alleles.
 
 The Chi-squared values per SNP per sample were calculated using the following equation:
-![](eq.chi.svg)
+![](chi2.1.svg)
 
-Where *N<sub>jk</sub>* is the total depth value of SNP *k* for individual *j*, *D<sub>jk</sub>* is the depth value of the alternative allele of SNP *k*, *P<sub>j</sub>* is the occurrence probability of alternative allele at SNP *k* in heterozygotes - in unbiased sequencing, this is 0.5.  
+![](chi2.2.svg)
+
+Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub>ai</sub>* is the alternative allele read-depth for heterozugote *i* at SNP *x*, *p* is the probability of sampling allele *A* at SNP *x* in heterozygotes - in unbiased sequencing, this is *0.5*, *n* is the number of heterozygotes at SNP *x*.  
 
 ```{r,eval=FALSE}
-A.info<-allele.info(ADtable, plot.allele.cov = TRUE)
+A.info<-allele.info(X=ADtable,x.norm = ADnorm, plot.allele.cov = TRUE)
+# X is the corrected non-normalized allele depth table and x.norm is the normalized allele depth table
 head(A.info)
 ```
 ```{r,echo=FALSE}
 head(alleleINF)
 ```
 
-In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the `allele.info()` output. See below.
-ADD MORE ABOUT THE PROBE BIASE PLOTS****
+In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the `allele.info()` output.
 
 ### 2.2 Deviants detection
 
@@ -186,14 +207,15 @@ The rCNV function `dupGet()` delivers easy to pick model selections to detect de
 
 ```{r, eval=FALSE}
 # Run this code for a demonstration of the detection
-dvs<-dupGet(alleleINF)
+dvs<-dupGet(alleleINF,test = c("z.05","chi.05"))
+# z score and chi-square values given p=0.05 is used here because the data is RADseq generated and probe-biase is neglegible
 ```
 
 
 The detection of deviant SNPs is based on the **heterozygosity** within populations (or among all samples) and **allelic ratios** within such heterozygotes.
 As such, `dupGet()` function implements three methods to flag the deviant alleles; They are a) Excess of heterozygotes and b) Heterozygote SNPs that do not follow normal Z distribution, and c) Heterozygote SNPs that do not follow normal chi-square distribution.
 
-|   The proportion of heterozygotes in a population according to HWE is 2pq where as homozygotes is q<sup>2</sup>. In deviant SNPs heterozygozity is expected to be higher indicating excess of heterozygosity and thus flagged as deviant/putative-duplicates.
+|   The proportion of heterozygotes in a population according to HWE is 2pq where as homozygotes is q<sup>2</sup>. In deviant SNPs heterozygosity is expected to be higher indicating excess of heterozygosity and thus flagged as deviant/putative-duplicates.
 
 |   In non-duplicated alleles (singlets), median allele ratio must be ~0.5, however, in deviants it varies between 1:3 and 3:1. These SNP deviants are also flagged as putative duplicates. To determine the deviation, we use the Z-score values and Chi-square significance calculated in the previous step.
 
@@ -213,10 +235,10 @@ The function also plots the deviants with Allele median ratio Vs Proportion of H
 ![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with deviant alleles](devPlot.png){width=400}
 
 ### 2.3 Filtering putative duplicates
-Putative duplicates are filtered from the deviant SNPs using a combination of at least two statistics used in deviant detection. i.e., the SNPs that are detected by the intersection between excess of heterozygotes, Z-score distribution and Chi-square distribution are flagged as putative duplicated. The users can pick a range of optimal statistics (e.g. `z.all`,`chi.all`,`z.05`,`chi.05`, etc.) depending on the nature (also sequencing technology) of the underlying data. The function `cnv()` is dedicated for this purpose.
+Putative duplicates are filtered using two methods; 1) intersection: using a combination of at least two statistics used in deviant detection. i.e., excess of heterozygotes, Z-score distribution and Chi-square distribution, 2) K-means: using an unsupervised clustering based on Z-score, chi-square, excess of heterozygotes, and coefficient of variation from read-depth dispersion. The significant SNPs from either of the `filtering` are flagged as putative duplicates. The users can pick a range of optimal statistics (e.g. `z.all`,`chi.all`,`z.05`,`chi.05`, etc.) depending on the nature (also sequencing technology) of the underlying data. The function `cnv()` is dedicated for this purpose.
 
 ```{r eval=FALSE}
-CV<-cnv(alleleINF, test=c("z.05","chi.05"))
+CV<-cnv(alleleINF, test=c("z.05","chi.05"), filter = "kmeans")
 # see the difference between deviants and duplicates
 table(deviants$dup.stat)
 table(CV$dup.stat)
