@@ -5,11 +5,11 @@
 \title{Simulate median allele ratios for varying no. of samples and depth coverage}
 \usage{
 depthVsSample(
-  cov.len = 400,
-  sam.len = 1000,
-  incr = c(1, 1),
+  cov.len = 100,
+  sam.len = 100,
+  nsims = 1000,
   plot = TRUE,
-  plot.cols = c("red", "cyan")
+  col = c("#1C86EE", "#00BFFF", "#DAA520", "#FF0000")
 )
 }
 \arguments{
@@ -17,13 +17,13 @@ depthVsSample(
 
 \item{sam.len}{maximum no. of samples to be simulated}
 
-\item{incr}{a vector of two integers indicating increment size for both
+\item{nsims}{numerical. no. of simulations to be done for each combination of samples and depth
 depth and no. samples ranges}
 
 \item{plot}{logical. Whether to plot the output (a plot of no. samples
 vs median depth of coverage colored by median allele ratios)}
 
-\item{plot.cols}{character. Two colors to add to the gradient}
+\item{col}{character. Two colors to add to the gradient}
 }
 \value{
 A matrix of median allele ratios where rows are the number of

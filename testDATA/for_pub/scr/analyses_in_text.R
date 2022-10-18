@@ -124,7 +124,7 @@ polygon(density(dd,adjust = 2),col=cl[1],lwd=1.5)
 #3. Norway Spruce (subset of data from Chen et al. 2019)
 
 # allele metrics table generated with allele.info function
-AI<-readRDS("PA_gTree_AI_outlRem.rds")
+AI<-readRDS("PA_AI_outlRem.rds")
 info<-readRDS("sprucestatsscaffold.rds") # sorted list of loci on P.abies genome
 
 # Flagging deviants with p determined from probe-bias for expected allele frequency
@@ -152,7 +152,7 @@ plot(pp~AI$propHet,pch=20,cex=0.4,
 dup.plot(cv,col=cl[c(4,2)],ylim=c(0,0.8))
 
 ### density distribution plot of read-depth coverage
-bv<-readRDS("PA_gTree_ADto_CorrNor_outlRem.rds") # total allele depth table
+bv<-readRDS("PA_ADto_CorrNor_outlRem.rds") # total allele depth table
 
 sing<-bv[match(paste0(cv$CHROM,".",cv$POS)[which(cv$dup.stat=="singlet")],
                paste0(bv$CHROM,".",bv$POS)),]

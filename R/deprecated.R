@@ -535,3 +535,72 @@ depthVsSample2<-function(cov.len=400,sam.len=1000,incr=c(1,1)){
   return(MR)
 }
 
+
+depthVsSample0<-function(cov.len=400,sam.len=1000,incr=c(1,1),plot=TRUE,plot.cols=c("red","cyan")){
+  cov<- seq(1,cov.len,incr[1])
+  nsamp<- seq(1,sam.len,incr[2])
+  MR<-lapply_pb(cov,function(x,nsamp){
+    tmp<-dp.cov0(cov.i=x,nsamp)
+    return(tmp)
+  },nsamp=nsamp)
+  MR<-do.call(cbind,MR)
+  colnames(MR)<-cov
+  rownames(MR)<-nsamp
+  if(plot){
+    plot.svd0(MR,cols=plot.cols)
+  }
+  return(MR)
+  #saveRDS(MR,paste0(dirout,"/sim_SampVsDepth_",i,".rds"),compress = "gzip")
+}
+
+
+
+plot.svd0 <- function(MR,cols=c("red","cyan")){
+  opars<-par(no.readonly = TRUE)
+  on.exit(par(opars))
+  colfunc <- colorRampPalette(cols)
+  cols<-makeTransparent(colfunc(10),alpha = 0.7)
+  MR2 <- MR
+  MR2[which(MR2>0.5)]<-1-MR2[which(MR2>0.5)]
+  qtt <-quantile(MR2,p=0.05,na.rm = T)
+  qtt1 <- quantile(MR2,p=0.01,na.rm = T)
+  mn <- mean(MR2,na.rm = T)
+  md <- median(MR2,na.rm = T)
+  MR3 <- MR2
+  MR3[which(MR2>=md)]<-cols[10]
+  MR3[which(MR2<md)]<-cols[10]
+  MR3[which(MR2<mn) ]<-cols[9]
+  MR3[which(MR2<qtt) ]<-cols[2]
+  MR3[which(MR2<=qtt1)]<-cols[1]
+  mat<-apply(t(MR3),2,rev)#rotate matrix -90
+  ld <- as.raster(mat,nrow=nrow(mat))
+  legend_image <- as.raster(matrix(rev(cols), ncol=1))
+  layout(matrix(1:2,ncol=2), widths = c(3,1),heights = c(1,1))
+  par(mar=c(4,4,3,0))
+  plot(0,type="n",xlim = range(range(as.numeric(rownames(MR)))),ylim=range(range(as.numeric(colnames(MR)))),xlab="Number of samples",ylab="Median depth coverage",frame=F)
+  rasterImage(ld,0,0,1000,200)
+  par(mar=c(3,0.5,7,1))
+  plot(c(0,2),c(0,1),type = 'n', axes = F,xlab = '', ylab = '')#, main = 'legend title'
+  text(x=0.9, y = c(0.1,1), labels = c("low confidence","high confidence"),cex=0.6)
+  rasterImage(legend_image, 0, 0.1, 0.2,1)
+}
+
+
+
+dp.cov0<-function(cov.i,nsamp){
+  if(cov.i==0){return(rep(NA,length(nsamp)))}
+  if(cov.i==1){return(rep(1,length(nsamp)))} else {
+    unlist(lapply(nsamp,function(z,cov.i){
+      reads<-replicate(z,rbinom(cov.i,1,prob=0.5))
+      tt<-apply(reads,2,table)
+      if(is.list(tt)){
+        md<-median(do.call(cbind,tt)[1,]/cov.i)
+      } else if(is.matrix(tt)){
+        md<- median(proportions(apply(reads,2,table),2)[1,],na.rm = T)
+      } else {
+        md<-NA
+      }
+      return(md)
+    },cov.i))
+  }
+}
