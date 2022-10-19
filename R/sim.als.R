@@ -15,6 +15,23 @@ dp.cov<-function(depth,sam,sims){
   return(dout)
 }
 
+#2. generate Z-score confidence for allele ratios for a given number of samples for one depth value
+dp.covZ<-function(nsamp,bias,depth,sims,p){
+  dout<-lapply(bias,function(y,nsamp,depth,sims,p){rp<-replicate(n=sims,{
+    Allele1<-rbinom(n = nsamp,size = depth,prob=y)
+    Zscore<- ((depth*p) - Allele1) / sqrt(depth*p*(1-p))
+    Zsum<-sum(Zscore)
+    pval<-pnorm(q = Zsum, mean = 0, sd = sqrt(nsamp),lower.tail = F)
+  })
+  tmp<-length(which(rp <= 0.05))/sims
+  return(tmp)
+  },depth=depth,sims=sims,nsamp=nsamp,p=p) #;return(length(which(rp <= 0.05))/sims)
+  dout<-simplify2array(dout)
+  dout<-cbind(nsamp,bias,dout)
+  dout<-dout[which(dout[,3]>=0.95),]
+  return(dout)
+}
+
 
 #3 make a given vector of colors transparent to a desired opacity
 makeTransparent = function(..., alpha=0.5) {
@@ -164,34 +181,53 @@ depthVsSample<-function(cov.len=100,sam.len=100,nsims=1000,plot=TRUE,col=c("#1C8
 }
 
 
+#' Simulate and plot detection power of bias in allele ratios
 #'
-#' @noRd
+#' This function simulates 95% confidence level Z-score based detection power
+#' of allele biases for a given number of samples and a range of depths
 #'
-
-foo<-function(z,cov.i){
-  reads<-replicate(z,rbinom(cov.i,1,prob=0.5))
-  #tt<-apply(reads,2,function(x)sum(x==0)/length(x))
-  tt<-apply(reads,2,function(x)((length(x)/2)-sum(x==1))/(sqrt(length(x)*.25)))
-    return(tt)
-}
-
-dp.cov2<-function(cov.i,nsamp){
-  if(cov.i==0){return(matrix(NA,nrow=length(nsamp),ncol = 5))}
-  if(cov.i==1){return(matrix(1,nrow=length(nsamp),ncol = 5))} else {
-    tl<-lapply(nsamp,function(z,cov.i){
-      mat<-t(replicate(10000,foo(z,cov.i)))
-      q95<-median(apply(mat,1,quantile,p=.995))
-      q05<-median(apply(mat,1,quantile,p=.025))
-      mx<-median(apply(mat,1,max))
-      mm<-median(apply(mat,1,median))
-      mn<-median(apply(mat,1,min))
-      return(c(mx,mn,mm,q95,q05))
-    },cov.i)
-    tl<-do.call(rbind,tl)
-    colnames(tl)<-c("max","min","med","q95","q05")
-    rownames(tl)<-nsamp
-    return(tl)
+#' @param Dlist numerical. vector of depths values to be tested
+#' @param sam numerical. number of samples
+#' @param intensity numerical. frequency of bias
+#' @param nsims numerical. number of simulations to be done for each sample
+#' @param p numerical. expected allele ratio (0.5 for data with known
+#' sequencing biases)
+#' @param plot logical. plot the output
+#'
+#' @return Returns a list of detection probability values for the given range of
+#' samples and depth
+#'
+#' @author Pascal Milesi, Piyal Karunarathne
+#'
+#' @importFrom grDevices hcl.colors
+#'
+#' @export
+power.bias<-function(Dlist=c(2,4,8,16),sam=100,intensity=0.005,nsims=1000,p=0.5,plot=TRUE){
+  bias<-seq(0,0.5,intensity)
+  sims=nsims
+  d<-list()
+  for(i in seq_along(Dlist)){
+    pb <- txtProgressBar(min = 0, max = length(Dlist), style = 3, width = 50, char = "=")
+    setTxtProgressBar(pb, i)
+    depth=Dlist[i]
+    saml<-lapply(1:sam,FUN=dp.covZ,bias=bias,depth=depth,sims=sims,p=p)
+    saml<-do.call(rbind,saml)
+    d[[i]]<-saml[,-3]
   }
+  close(pb)
+  names(d)<-Dlist
+  if(plot){
+    cl<-hcl.colors(length(Dlist),"dark 3")
+    plot(c(0,0.5)~c(0,sam),typ="n",ylab = "Simutlated Allele Ratio",xlab = "Number of heterozygotes", main=paste0("Detection power of bias in allele ratio \n for the expected ratio of ",p))
+    for(j in seq_along(Dlist)){
+      sub<-unlist(by(d[[j]][,2],d[[j]][,1],max,simplify = F))
+      lines(smooth.spline(sub~as.numeric(names(sub)),df=20),lwd = 2,col=cl[j])
+    }
+    legend("bottomright",legend = Dlist,lwd=2,col=cl[1:length(Dlist)],title = "Depth",bty="n",cex=.8)
+  }
+  return(d)
 }
+
+
 
 
