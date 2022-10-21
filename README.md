@@ -21,7 +21,7 @@ Pascal Milesi</span>
 **rCNV** was designed to identify duplicates (CNV) from SNPs data with
 ease.
 
-<img src="vignettes/dupPlot.png" width="400" />
+<img src="vignettes/dup.plot.parrotfish.png" width="400" />
 
 ***For a comprehensive tutorial on the package, go to
 <https://piyalkarum.github.io/rCNV/> and navigate to “Get started” where

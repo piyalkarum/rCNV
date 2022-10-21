@@ -120,19 +120,12 @@ data. Bioinformatics 26</p></li>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">vcf.file.path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">path.package</a></span><span class="op">(</span><span class="st">"rCNV"</span><span class="op">)</span>, <span class="st">"/example.raw.vcf.gz"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readVCF.html">readVCF</a></span><span class="op">(</span><span class="va">vcf.file.path</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fread(vcf.file.path, sep = "\t", skip = "#CHROM", verbose = verbose):</span> File '/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/example.raw.vcf.gz' does not exist or is non-readable. getwd()=='/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/docs/reference'</span>
 <span class="r-in"><span class="va">df</span><span class="op">&lt;-</span><span class="fu"><a href="hetTgen.html">hetTgen</a></span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"AD-tot"</span>,verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in hetTgen(vcf, "AD-tot", verbose = FALSE):</span> object 'vcf' not found</span>
 <span class="r-in"><span class="fu">norm.fact</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             lib.size norm.factor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> AT_PA_06_12    31164   1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> CH_PA_02_03    90526   0.9381430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DE_PA_10_12   120888   0.9891654</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FI_PA_17_02   136291   0.9478968</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FR_PA_21_01   138419   0.9425358</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> FR_PA_21_17   122046   0.9582529</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NO_PA_13_22   116385   0.9546818</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RU_PA_19_06   154211   0.9571496</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RU_PA_26_01    85270   0.9873622</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SE_PA_16_18   113656   0.9596083</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>the condition has length &gt; 1 and only the first element will be used</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.vector(x, mode):</span> cannot coerce type 'closure' to vector of type 'any'</span>
 <span class="r-in"></span>
 <span class="r-in"></span>
 </code></pre></div>

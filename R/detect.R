@@ -336,9 +336,9 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
       df<-as.data.frame(apply(pp,2,function(x){ifelse(x<ft.threshold/length(x),1,0)}))
       df$eH<-0
       df$eH[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-1
-      pp$dup.stat<-"singlet"
-      pp$dup.stat[which(rowSums(df)>=2)]<-"duplicated"
-      pp$dup.stat[which(df$eH==1)]<-"duplicated"
+      pp$dup.stat<-"non-cnv"
+      pp$dup.stat[which(rowSums(df)>=2)]<-"cnv"
+      pp$dup.stat[which(df$eH==1)]<-"cnv"
       pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
     }
 
@@ -347,10 +347,10 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
       candidate<-data.frame(data[,test]/data[,"NHet"],data[,c("eH.delta","cv")])
       candidate<-scale(candidate)
       cls<-kmeans(candidate, centers=2, nstart = 50)
-      pp$dup.stat<-rep("singlet",nrow(data))
+      pp$dup.stat<-rep("non-cnv",nrow(data))
       mn<-which.min(table(cls$cluster))
-      pp$dup.stat[which(cls$cluster==mn)]<-"duplicated"
-      pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"duplicated"
+      pp$dup.stat[which(cls$cluster==mn)]<-"cnv"
+      pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"cnv"
       pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
     }
 
@@ -363,10 +363,10 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
       if(is.null(l$alpha)) l$alpha=0.3
       if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))
       Color <- rep(l$col[2],nrow(pp))
-      Color[pp$dup.stat=="duplicated"]<- l$col[1]
+      Color[pp$dup.stat=="cnv"]<- l$col[1]
       plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
            ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
-      legend("bottomright", c("duplicates","singlets"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+      legend("bottomright", c("CNVs","non-CNVs"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
              cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
     }
   }

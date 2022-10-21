@@ -28,9 +28,9 @@ knitr::opts_chunk$set(
 `r rCNV:::colorize("Piyal Karunarathne, Qiujie Zhou, and Pascal Milesi","dodgerblue")`
 
 
-This tutorial provides a complete guide to detecting CNVs from SNPs data using rCNV package. This includes importing raw VCF files, filtering VCFs, normalization of read depth, categorization of SNPs into "deviants" and "non-deviants" from which  putative "duplicates" and "singlets" are then filtered. A brief workflow is presented in Fig 1. below.
+This tutorial provides a complete guide to detecting CNVs from SNPs data using rCNV package. This includes importing raw VCF files, filtering them, normalization of read depth, categorization of SNPs into "deviants" and "non-deviants", and from which  SNPs located in putative CNV regions are filtered. A brief workflow is presented in Fig 1. below.
 
-![Fig. 1. Workflow of detecting CNVs with rCNV](workflow1.png){width=400}
+![Fig. 1. Workflow of detecting CNVs with rCNV](workflow2.png){width=400}
 
 All the data used in this tutorial is available either withing the package or from the GitHub repository at <https://github.com/piyalkarum/rCNV/tree/master/testDATA>.
 
@@ -71,7 +71,7 @@ vcf$vcf[1:6,c(1:7,9,10)]
 The following example demonstrates such filtering on Parrot Fish data from *McKinney et al. (2017)*.
 
 ```{r,echo=TRUE,eval=TRUE,fig.dim=c(6,4)}
-#download the parrotfish data file from the following link to your working directory if you do not have the github folder
+#download the parrotfish data (Stockwell et al. 2016) file from the following link to your working directory if you do not have the github folder
 #https://github.com/piyalkarum/rCNV/blob/master/testDATA/Parrotfish_sequenceReads.vcf.gz
 #and specify the path fl= to your file.
 fl<-"../testDATA/Parrotfish_sequenceReads.vcf.gz"
@@ -111,7 +111,7 @@ From the relatedness plots, we can see that the relatedness in Parrot fish sampl
 
 ![](relatedness.png){width=40%} ![](h.zygosity.png){width=40%}
 
-Figure 1.3.a Relatedness among samples,b Heterozygosity in Parrotfish populations
+Figure 1.3. a. Relatedness among samples, b. Heterozygosity in Parrotfish populations
 
 Heterozygosity within populations can be calclated using `h.zygosity()` function.  
 
@@ -147,20 +147,21 @@ ad.tab<-ad.correct(ad.tab,gt.table = gt)
 ```
 
 It is recommended to normalize the allele depth values across samples in order to avoid the depth variation arise from sequencing heterogeneity where some samples tend to have higher depth values compared to others due to different origin of sequencing efforts.
-We provide several methods for normalizing data.
+We provide several methods for normalizing data.  
 |       TMM = trimmed mean of M values
 |       MedR = median ratio normalization
 |       QN = quantile based normalization
 |       pca = PCA based normalization
 
-*Please read the function helps for more information on the different methods
+*Please read the function help for more information on the different methods  
 
 ```{r,eval=FALSE}
 #normalize depth table with cpm.normal()
 ad.nor<-cpm.normal(ad.tab,method="MedR")
 ad.nor[1:6,1:6]
 ```
-Table 1.4.1 Normalized allele depth table
+
+Table 1.4.1 Normalized allele depth table  
 ```{r, echo=FALSE,cache=FALSE}
 ad.nor<-cpm.normal(ADtable,method="MedR",verbose = F, plot=F)
 knitr::kable(ad.nor$AD[1:6,1:6],format = "html")
@@ -170,23 +171,26 @@ Compare the allele depth values between tables 1.4.0 and 1.4.1.
 ## 2. DETECTION
 ### 2.1 Generating allele information table
 In this step, all the statistics necessary for detecting duplicates are calculated. They include the following:
-a. Allele ratios (across all samples), b. Proportions of homo-/heterozygotes per SNP, c. Depth ratios (alternative/sum), d. Z-score, e. Chi-square significance, and f. excess of heterozygosity
+a. Allele ratios (across all samples), b. Proportions of homo-/hetero-zygotes per SNP, c. Depth ratios (alternative/sum), d. Z-score, e. Chi-square significance, and f. excess of heterozygosity
 
-Alternative allele ratio is calculated across all the samples from depth values;Proportion of homo/hetero-zygotes are also calculated all the samples per SNP; Depth ratio is calculated per individual per SNP by dividing the alternative allele depth value by the sum depth value of both alleles. This is calculated for both heterozygotes and homozygotes; Z-score per SNP is calculated according to the following equation:
+Alternative allele ratio is calculated across all the samples from depth values; Proportion of homo/hetero-zygotes are also calculated across all the samples per SNP; Depth ratio is calculated per individual per SNP by dividing the alternative allele depth value by the total depth value of both alleles. This is calculated for both heterozygotes and homozygotes;  the Z-score per SNP is calculated according to the following equation:
 
 ![](Z2.1.svg)
 
 ![](Z2.2.svg)
 
 Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub>Ai</sub>* is the alternative allele read depth for heterozygote *i* at SNP *x*,
-*p* is the probability of sampling allele *A* in SNP *x* - for unbiased sequencing this is *0.5*. `allele.info()` function calculates this for both *0.5* and biased probability using the ratio between reference and alternative alleles.
+*p* is the probability of sampling allele *A* in SNP *x* - for unbiased sequencing, this is *0.5*. The `allele.info()` function calculates this for both *0.5* and biased probability using the ratio between reference and alternative alleles.
 
-The Chi-squared values per SNP per sample were calculated using the following equation:
+The Chi-squared values per SNP per sample were calculated using the following equation:  
+
 ![](chi2.1.svg)
-
+  
 ![](chi2.2.svg)
 
-Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub>ai</sub>* is the alternative allele read-depth for heterozugote *i* at SNP *x*, *p* is the probability of sampling allele *A* at SNP *x* in heterozygotes - in unbiased sequencing, this is *0.5*, *n* is the number of heterozygotes at SNP *x*.  
+Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub>Ai</sub>* is the alternative allele read-depth for heterozugote *i* at SNP *x*, *p* is the probability of sampling allele *A* at SNP *x* in heterozygotes - in unbiased sequencing, this is *0.5*, *n* is the number of heterozygotes at SNP *x*.  
+
+In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the `allele.info()` output.  
 
 ```{r,eval=FALSE}
 A.info<-allele.info(X=ADtable,x.norm = ADnorm, plot.allele.cov = TRUE)
@@ -197,29 +201,30 @@ head(A.info)
 head(alleleINF)
 ```
 
-In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the `allele.info()` output.
 
 ### 2.2 Deviants detection
 
-In this step, we use the allele information table generated in the previous step to detect deviant SNPs based different models, which then used in the next step with the appropriate test statistic to detect duplicates.
-The rCNV function `dupGet()` delivers easy to pick model selections to detect deviant SNPs with a plotting (similar to HD plots in *McKinney et al. 2017*) option to visualize the detection.
+In this step, the allele information table generated in the previous step is used to detect deviant SNPs based on different models (statistics), which then is used in the next step with the appropriate test statistic to filter putative CNVs.
+The rCNV function `dupGet()` delivers easy to pick model selection to detect deviant SNPs with a plotting option to visualize the detection.
 
 
 ```{r, eval=FALSE}
 # Run this code for a demonstration of the detection
 dvs<-dupGet(alleleINF,test = c("z.05","chi.05"))
 # z score and chi-square values given p=0.05 is used here because the data is RADseq generated and probe-biase is neglegible
+
+head(dvs)
 ```
 
 
 The detection of deviant SNPs is based on the **heterozygosity** within populations (or among all samples) and **allelic ratios** within such heterozygotes.
-As such, `dupGet()` function implements three methods to flag the deviant alleles; They are a) Excess of heterozygotes and b) Heterozygote SNPs that do not follow normal Z distribution, and c) Heterozygote SNPs that do not follow normal chi-square distribution.
+As such, `dupGet()` function implements three methods to flag the deviant alleles; They are a) Excess of heterozygotes, b) Heterozygous SNPs with depth values that do not follow normal Z-score distribution, and c) Heterozygous SNPs with depth values that do not follow normal chi-square distribution.
 
-|   The proportion of heterozygotes in a population according to HWE is 2pq where as homozygotes is q<sup>2</sup>. In deviant SNPs heterozygosity is expected to be higher indicating excess of heterozygosity and thus flagged as deviant/putative-duplicates.
+|   The proportion of heterozygotes in a population according to HWE is 2pq where as homozygotes is q<sup>2</sup>. In deviant SNPs heterozygosity is expected to be higher indicating excess of heterozygosity and thus flagged as deviant/putative-CNVs.
 
-|   In non-duplicated alleles (singlets), median allele ratio must be ~0.5, however, in deviants it varies between 1:3 and 3:1. These SNP deviants are also flagged as putative duplicates. To determine the deviation, we use the Z-score values and Chi-square significance calculated in the previous step.
+|   In non-duplicated alleles (non-CNVs), median allele ratio must be ~0.5, however, in deviants, it varies between 1:3 and 3:1. These SNP deviants are also flagged as putative CNVs. To determine the deviation, we use the Z-score values and Chi-square significance calculated in the previous step.
 
-|   **NOTE: users can select the occurrence probability of the alternative allele based on the sequencing method and the probe bias therein. 
+|   **NOTE: users can select the expected allele frequency (p: \code{test}) of the alternative allele based on the sequencing method and the probe bias therein. See our publication <https://doi.org/10.1101/2022.10.14.512217> for more details on probe bias.
 
 ```{r,eval=FALSE}
 deviants<-dupGet(alleleINF,test = c("z.all","chi.all"),plot=TRUE,verbose = TRUE)
@@ -232,10 +237,10 @@ head(deviants)
 
 The function also plots the deviants with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of `dupGet()` using `dup.plot()` fucntion.
 
-![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with deviant alleles](devPlot.png){width=400}
+![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with deviant alleles](dev.plot2.png){width=400}
 
-### 2.3 Filtering putative duplicates
-Putative duplicates are filtered using two methods; 1) intersection: using a combination of at least two statistics used in deviant detection. i.e., excess of heterozygotes, Z-score distribution and Chi-square distribution, 2) K-means: using an unsupervised clustering based on Z-score, chi-square, excess of heterozygotes, and coefficient of variation from read-depth dispersion. The significant SNPs from either of the `filtering` are flagged as putative duplicates. The users can pick a range of optimal statistics (e.g. `z.all`,`chi.all`,`z.05`,`chi.05`, etc.) depending on the nature (also sequencing technology) of the underlying data. The function `cnv()` is dedicated for this purpose.
+### 2.3 Filtering putative CNVs
+SNPs that are located in putative CNV regions are filtered using two methods; 1) intersection: using a combination of at least two statistics used in deviant detection. i.e., excess of heterozygotes, Z-score distribution and Chi-square distribution, 2) K-means: using an unsupervised clustering based on Z-score, chi-square, excess of heterozygotes, and coefficient of variation from read-depth dispersion. The significant SNPs from either of the `filtering` are flagged as putative duplicates. The users can pick a range of optimal statistics (e.g. `z.all`,`chi.all`,`z.05`,`chi.05`, etc.) depending on the nature (also sequencing technology) of the underlying data. The function `cnv()` is dedicated for this purpose.
 
 ```{r eval=FALSE}
 CV<-cnv(alleleINF, test=c("z.05","chi.05"), filter = "kmeans")
@@ -244,7 +249,7 @@ table(deviants$dup.stat)
 table(CV$dup.stat)
 ```
 
-![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates](dupPlot.png){width=400}
+![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with putative duplicates](dup.plot.parrotfish.png){width=400}
 
 ```{r eval=TRUE,echo=FALSE}
 CV<-cnv(alleleINF, test=c("z.05","chi.05"),verbose = F,plot = F)
@@ -257,13 +262,13 @@ table(CV$dup.stat)
 ## 3. POST-DETECTION
 
 ### 3.1 Duplicate list and validation
-We test the validity of detected duplicates in two way: 1. direct detection through a sliding window and 2. variant fixation index
+We test the validity of detected duplicates in two ways: 1. direct detection through a sliding window and 2. variant fixation index
 
-* The sliding window method assess the duplication along chromosomes/scaffolds on a 10,000 bp sliding window. This step assumes that putative duplicates are accompanied by flanking alleles/SNPs withing the sliding window. The putative duplicates that do not follow this assumption will be flagged as low-confident and can be removed if desired.    
+* The sliding window method assess the duplication along chromosomes/scaffolds on a given size (e.g., 10,000 bp) sliding window. This step assumes that ideally, if a locus is truly located in a multi-copy region, close-by SNPs should also be classified as deviants while deviation caused by sequencing error should be more scattered along the genome. The putative duplicates that do not follow this assumption will be flagged as low-confident and can be removed if desired. The function `dup.validate` in the rCNV package is dedicated to detecting regions enriched for deviant SNPs within a sliding window along a chromosome, scaffold, or a sequence of any given length.     
 ** This method is still under beta-testing **
 
-* Variant fixation index ($V_{ST}$) is equivalent to population fixation index ($F_{ST}$) and calculated as $V_{ST} = V_S/V_T$ where $V_T$ is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size; and used to identify distinct CNV groups between populations (See Dennis et al., 2017; Weir & Cockerham, 1984)
-The function `vst` can be used to calculate the $V_{ST}$ values per population and plot as a network qgraph.
+* Variant fixation index ($V_{ST}$ : Redon et al. 2006) is analogous to population fixation index ($F_{ST}$) and calculated as $V_{ST} = V_S/V_T$ where $V_T$ is the variance of normalized read depths among all individuals from the two populations and VS is the average of the variance within each population, weighed for population size; and used to identify distinct CNV groups between populations (See Dennis et al., 2017; Weir & Cockerham, 1984)
+The function `vst` can be used to calculate the $V_{ST}$ values per population and plot genetic distance in a network qgraph.
 
 ```{r,eval=FALSE}
 vdata<-readRDS("../testDATA/lobster_data4Vst.rds")
@@ -287,7 +292,15 @@ See `qgraph` help for the interpretation of the network analysis.
 ### 3.2 Relative copy number
 TBA
 
+## 4. References
 
+* Karunarathne, P., Zhou, Q., & Milesi, P. (2022). rCNV: An R package for detecting copy number variants from SNPs data. BioRxiv. doi:10.1101/2022.10.14.512217  
+
+* Stockwell, B. L., Larson, W. A., Waples, R. K., Abesamis, R. A., Seeb, L. W., & Carpenter, K. E. (2016). The application of genomics to inform conservation of a functionally important reef fish (Scarus niger) in the Philippines. Conservation Genetics, 17(1), 239–249  
+
+* Yang, J., Benyamin, B., McEvoy, B. P., Gordon, S., Henders, A. K., Nyholt, D. R., … Visscher, P. M. (2010). Common SNPs explain a large proportion of the heritability for human height. Nature Genetics, 42(7), 565–569. doi: 10.1038/ng.608  
+
+* Redon, R., Ishikawa, S., Fitch, K. R., Feuk, L., Perry, G. H., Andrews, T. D., … Chen, W. (2006). Global variation in copy number in the human genome. Nature, 444(7118), 444–454.
 
 
 

@@ -5,7 +5,7 @@
 \alias{alleleINF}
 \title{Allele info example data}
 \format{
-An object of class \code{data.frame} with 2857 rows and 27 columns.
+An object of class \code{data.frame} with 2857 rows and 28 columns.
 }
 \source{
 \href{https://zenodo.org/record/5025423#.Yj2XKRDMLyQ}{Chinook Salmon sequence reads McKinney et al. 2017}

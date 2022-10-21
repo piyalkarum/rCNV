@@ -60,6 +60,8 @@ The intersection of all the stats provided will be used in the categorization. I
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">cnv</span><span class="op">(</span>
   <span class="va">data</span>,
   test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.het"</span>, <span class="st">"z.05"</span>, <span class="st">"z.all"</span>, <span class="st">"chi.het"</span>, <span class="st">"chi.05"</span>, <span class="st">"chi.all"</span><span class="op">)</span>,
+  filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"intersection"</span>, <span class="st">"kmeans"</span><span class="op">)</span>,
+  ft.threshold <span class="op">=</span> <span class="fl">0.05</span>,
   plot <span class="op">=</span> <span class="cn">TRUE</span>,
   verbose <span class="op">=</span> <span class="cn">TRUE</span>,
   <span class="va">...</span>
@@ -74,6 +76,11 @@ The intersection of all the stats provided will be used in the categorization. I
 <dt>test</dt>
 <dd><p>vector of characters. Type of test to be used for significance.
 See details</p></dd>
+<dt>filter</dt>
+<dd><p>character. Type of filter to be used for filtering CNVs.
+default <code>kmeans</code>. See details.</p></dd>
+<dt>ft.threshold</dt>
+<dd><p>confidence interval for filtering <code>default = 0.05</code></p></dd>
 <dt>plot</dt>
 <dd><p>logical. Plot the detection of duplicates. default <code>TRUE</code></p></dd>
 <dt>verbose</dt>
@@ -95,6 +102,11 @@ following methods:</p><ol><li><p>Z-score test \(Z = \frac{\frac{N}{2} -  N_{A}}{
 </ol><p>Users can pick among Z-score for heterozygotes (<code>z.het, chi.het</code>),
 all allele combinations (<code>z.all, chi.all</code>) and the assumption of no
 probe bias p=0.5 (<code>z.05, chi.05</code>)</p>
+<p><code>filter</code> will determine whether the <code>intersection</code> or <code>kmeans</code>
+clustering of the provided <code>test</code>s should be used in filtering CNVs.
+The intersection uses threshold values for filtering and kmeans use
+unsupervised clustering. Kmeans clustering is recommended if one is uncertain
+about the threshold values.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -105,7 +117,7 @@ probe bias p=0.5 (<code>z.05, chi.05</code>)</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">alleleINF</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">DD</span><span class="op">&lt;-</span><span class="fu">cnv</span><span class="op">(</span><span class="va">alleleINF</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> categorizing deviant SNPs with </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> categorizing putative duplicates with </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  excess of heterozygotes z.all &amp; chi.all</span>
 <span class="r-plt img"><img src="cnv-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>

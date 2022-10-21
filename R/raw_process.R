@@ -324,10 +324,11 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
     on.exit(par(opars))
 
     if(length(type)==2){par(mfrow=c(1,2))}
+    cl<-rCNV:::makeTransparent(c(1,2),alpha = 0.6)
     #missing samples
     if(any(type=="samples")){
       plot(density(ll$f_miss),type="n",main="Missing % per sample", xlim = c(0,1))
-      polygon(density(ll$f_miss),border="red",col="lightblue")
+      polygon(density(ll$f_miss),border=2,col=cl[1])
       abline(v=quantile(ll$f_miss,p=0.95),lty=3,col="blue")
       text(x=quantile(ll$f_miss,p=0.95)+0.02,y=max(density(ll$f_miss)$y)/2,round(quantile(ll$f_miss,p=0.95),3),offset=10,col=2)
       legend("topright",lty=3,col="blue",legend="95% quantile",bty="n",cex=0.8)
@@ -335,7 +336,7 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
     #missing snps
     if(any(type=="snps")){
       plot(density(L$f_miss),type="n",main="Missing % per SNP", xlim = c(0,1))
-      polygon(density(L$f_miss),border="red",col="lightblue")
+      polygon(density(L$f_miss),border=2,col=cl[1])
       abline(v=quantile(L$f_miss,p=0.95),lty=3,col="blue")
       text(x=quantile(L$f_miss,p=0.95)+0.02,y=max(density(L$f_miss)$y)/2,round(quantile(L$f_miss,p=0.95),3),offset=10,col=2)
       legend("topright",lty=3,col="blue",legend="95% quantile",bty="n",cex=0.8)
