@@ -294,7 +294,7 @@ TBA
 
 ## 4. References
 
-* Karunarathne, P., Zhou, Q., & Milesi, P. (2022). rCNV: An R package for detecting copy number variants from SNPs data. BioRxiv. doi:10.1101/2022.10.14.512217  
+* Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection. BioRxiv, 2022.10.14.512217. doi: 10.1101/2022.10.14.512217  
 
 * Stockwell, B. L., Larson, W. A., Waples, R. K., Abesamis, R. A., Seeb, L. W., & Carpenter, K. E. (2016). The application of genomics to inform conservation of a functionally important reef fish (Scarus niger) in the Philippines. Conservation Genetics, 17(1), 239–249  
 

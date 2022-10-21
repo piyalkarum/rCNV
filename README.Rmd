@@ -48,6 +48,6 @@ Please don’t forget to cite us if you use the package.
 
 ## How to cite
 
-* Karunarathne, P., Zhou, Q., & Milesi, P. (2022). rCNV: An R package for detecting copy number variants from SNPs data. BioRxiv. doi:10.1101/2022.10.14.512217
+* Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection. BioRxiv, 2022.10.14.512217. doi: 10.1101/2022.10.14.512217
 
 
