@@ -27,7 +27,7 @@ cat("# rCNV <img src='man/figures/logo.png' align='right' height='139' />")
 
 **rCNV** was designed to identify duplicates (CNV) from SNPs data with ease.
 
-![](vignettes/dupPlot.png){width=400}
+![](vignettes/dup.plot.parrotfish.png){width=400}
 
 ***For a comprehensive tutorial on the package, go to <https://piyalkarum.github.io/rCNV/> and navigate to “Get started” where all the functions and usage are explained with ample examples.***
 
@@ -48,6 +48,6 @@ Please don’t forget to cite us if you use the package.
 
 ## How to cite
 
-* Publication to be added
+* Karunarathne, P., Zhou, Q., & Milesi, P. (2022). rCNV: An R package for detecting copy number variants from SNPs data. BioRxiv. doi:10.1101/2022.10.14.512217
 
 

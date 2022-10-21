@@ -48,4 +48,4 @@ Please don’t forget to cite us if you use the package.
 
 ## How to cite
 
--   Publication to be added
+-   Karunarathne, P., Zhou, Q., & Milesi, P. (2022). rCNV: An R package for detecting copy number variants from SNPs data. BioRxiv. doi:10.1101/2022.10.14.512217
