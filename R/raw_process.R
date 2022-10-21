@@ -324,7 +324,7 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
     on.exit(par(opars))
 
     if(length(type)==2){par(mfrow=c(1,2))}
-    cl<-rCNV:::makeTransparent(c(1,2),alpha = 0.6)
+    cl<-makeTransparent(c(1,2),alpha = 0.6)
     #missing samples
     if(any(type=="samples")){
       plot(density(ll$f_miss),type="n",main="Missing % per sample", xlim = c(0,1))
