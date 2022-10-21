@@ -15,7 +15,7 @@ Downloads](https://cranlogs.r-pkg.org/badges/rCNV)](https://cran.r-project.org/p
 
 # rCNV: An R package for detecting copy number variants from SNPs data
 
-<span style="color: dodgerblue;">Piyal Karunarathne, Qiujie Zhou, and
+<span style="color: dodgerblue;">Piyal Karunarathne, Qiujie Zhou, Klaus Schliep, and
 Pascal Milesi</span>
 
 **rCNV** was designed to identify duplicates (CNV) from SNPs data with
@@ -48,4 +48,4 @@ Please don’t forget to cite us if you use the package.
 
 ## How to cite
 
--   Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection. BioRxiv, 2022.10.14.512217. doi: 10.1101/2022.10.14.512217
+-   Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection. BioRxiv, 2022.10.14.512217. doi:10.1101/2022.10.14.512217

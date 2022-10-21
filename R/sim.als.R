@@ -50,7 +50,7 @@ plot.svd <- function(MR,cols=c("#1C86EE", "#00BFFF", "#DAA520", "#FF0000")){
   opars<-par(no.readonly = TRUE)
   on.exit(par(opars))
   MR<-MR[-1,-1]
-  colfunc <- colorRampPalette(cols,bias=.2)
+  colfunc <- colorRampPalette(cols,bias=ifelse(any(dim(MR))>30,.2,1))
   qt<-quantile(MR,na.rm = T,p=seq(.1,1,ifelse(length(MR)<10000,1/length(MR),0.0001)))
   qt<-c(-Inf,qt,Inf)
   cl<-colfunc(length(qt))

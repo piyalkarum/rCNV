@@ -23,7 +23,7 @@ cat("# rCNV <img src='man/figures/logo.png' align='right' height='139' />")
 
 
 # rCNV: An R package for detecting copy number variants from SNPs data
-`r rCNV:::colorize("Piyal Karunarathne, Qiujie Zhou, and Pascal Milesi","dodgerblue")`
+`r rCNV:::colorize("Piyal Karunarathne, Qiujie Zhou, Klaus Schliep, and Pascal Milesi","dodgerblue")`
 
 **rCNV** was designed to identify duplicates (CNV) from SNPs data with ease.
 
