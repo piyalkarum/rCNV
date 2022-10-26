@@ -113,7 +113,7 @@ From the relatedness plots, we can see that the relatedness in Parrot fish sampl
 
 Figure 1.3. a. Relatedness among samples, b. Heterozygosity in Parrotfish populations
 
-Heterozygosity within populations can be calclated using `h.zygosity()` function.  
+Heterozygosity within populations can be calculated using `h.zygosity()` function.  
 
 |   * NOTE: A list of populations corresponding to the samples must be provided in order to plot the heterozygosity among populations.
 
@@ -235,7 +235,7 @@ deviants<-dupGet(alleleINF,plot=FALSE,verbose = FALSE)
 head(deviants)
 ```
 
-The function also plots the deviants with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of `dupGet()` using `dup.plot()` fucntion.
+The function also plots the deviants with Allele median ratio Vs Proportion of Heterozygotes to visualize and validate the detection by the user. Users can also plot the detection separately with the output of `dupGet()` using `dup.plot()` function.
 
 ![Fig 2.1 Median allele ratio Vs Prop. of Heterozygotes with deviant alleles](dev.plot2.png){width=400}
 

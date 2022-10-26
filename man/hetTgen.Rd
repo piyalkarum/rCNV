@@ -21,7 +21,7 @@ Default \code{AD},  See details.}
 \item{verbose}{logical. whether to show the progress of the analysis}
 }
 \value{
-Returns a data frame of Allele Depth, Genotyp of SNPs for all the
+Returns a data frame of allele depth, genotype of SNPs for all the
 individuals extracted from a VCF file
 }
 \description{
@@ -43,5 +43,5 @@ het.table<-hetTgen(vcf)
 
 }
 \author{
-Piyal Karunarathne
+Piyal Karunarathne, Klaus Schliep
 }

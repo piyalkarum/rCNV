@@ -64,7 +64,7 @@ return(V)}
 #' @return Returns a data frame of expected \dQuote{E(Hom)} and observed
 #' \dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
 #'
-#' @author Piyal Karunarathne, Pascal Milesi
+#' @author Piyal Karunarathne, Pascal Milesi, Klaus Schliep
 #'
 #' @examples
 #' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
@@ -218,7 +218,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 #'  \item{QUAL: The Phred-scaled probability that a REF/ALT polymorphism exists
 #'   at this site given sequencing data}
 #'  \item{AC: Allele count}
-#'  \item{AF: Allele frequencey}
+#'  \item{AF: Allele frequency}
 #'  \item{DP: unfiltered depth}
 #'  \item{QD: QualByDepth - This is the variant confidence (from the QUAL
 #'  field) divided by the unfiltered depth of non-hom-ref samples}

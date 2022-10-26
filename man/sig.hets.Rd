@@ -42,5 +42,5 @@ duplicates<-sig.hets(AI,plot=TRUE)}
 
 }
 \author{
-Piyal Karunarathne, Pascal Milesi
+Piyal Karunarathne, Pascal Milesi, Klaus Schliep
 }

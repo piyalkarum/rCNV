@@ -78,5 +78,5 @@ Molecular Ecology Resources, 17(4)}
 }
 }
 \author{
-Piyal Karunarathne, Pascal Milesi, Qiujie Zhou
+Piyal Karunarathne, Pascal Milesi, Klaus Schliep
 }

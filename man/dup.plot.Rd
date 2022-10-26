@@ -2,23 +2,24 @@
 % Please edit documentation in R/detect.R
 \name{dup.plot}
 \alias{dup.plot}
-\title{Plot duplicates}
+\title{Plot classified SNPs into deviants/CNVs and non-deviants/non-CNVs}
 \usage{
 dup.plot(ds, ...)
 }
 \arguments{
-\item{ds}{a data frame of detected duplicates}
+\item{ds}{a data frame of detected deviants/cnvs (outputs of functions above)}
 
 \item{\dots}{other graphical parameters to be passed to the function
 \code{plot}}
 }
 \value{
 Returns no value, only plots proportion of heterozygotes vs allele
-median ratio seperated by duplication status
+median ratio separated by duplication status
 }
 \description{
-The function plots detected duplicates from functions \code{sig.snps}, and
-\code{dupGet}
+The function plots detected deviants/CNVs from functions \code{sig.snps},
+\code{cnv} and \code{dupGet} on a median ratio (MedRatio) Vs. proportion of
+heterozygote (PropHet) plot.
 }
 \examples{
 \dontrun{data(alleleINF)

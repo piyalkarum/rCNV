@@ -88,7 +88,7 @@ get.pvals<-function(x,df,p.cal){
 #' heterozygotes, number of heterozygotes, and allele probability at different
 #'  assumptions with their chi-square significance
 #'
-#' @author Piyal Karunarathne, Pascal Milesi, Qiujie Zhou
+#' @author Piyal Karunarathne, Pascal Milesi, Klaus Schliep
 #'
 #' @references
 #' \itemize{

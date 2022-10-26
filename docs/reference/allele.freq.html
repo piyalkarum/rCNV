@@ -12,7 +12,7 @@ genotype or allele depth tables"><meta property="og:image" content="/logo.png"><
     
     <a class="navbar-brand me-2" href="../index.html">rCNV</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ of allele frequencies</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>If the allele frequencies to be calculated for populations from both getnotype table and the allele depth table, they must be provided in a list with element names <code>AD</code> for allele depth table and <code>GT</code> for the genotype table. See the examples.</p>
+    <p>If the allele frequencies to be calculated for populations from both genotype table and the allele depth table, they must be provided in a list with element names <code>AD</code> for allele depth table and <code>GT</code> for the genotype table. See the examples.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -89,13 +89,13 @@ of allele frequencies</p>
 <span class="r-in"><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readVCF.html">readVCF</a></span><span class="op">(</span>vcf.file.path<span class="op">=</span><span class="va">vcf.file.path</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fread(vcf.file.path, sep = "\t", skip = "#CHROM", verbose = verbose):</span> File '/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/example.raw.vcf.gz' does not exist or is non-readable. getwd()=='/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/docs/reference'</span>
 <span class="r-in"><span class="va">het.table</span><span class="op">&lt;-</span><span class="fu"><a href="hetTgen.html">hetTgen</a></span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"GT"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in hetTgen(vcf, "GT"):</span> object 'vcf' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(vcf, "list"):</span> object 'vcf' not found</span>
 <span class="r-in"><span class="va">ad.table</span><span class="op">&lt;-</span><span class="fu"><a href="hetTgen.html">hetTgen</a></span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"AD"</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in hetTgen(vcf, "AD"):</span> object 'vcf' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># for individual based AF</span></span>
 <span class="r-in"><span class="va">frQ</span><span class="op">&lt;-</span><span class="fu">allele.freq</span><span class="op">(</span><span class="va">het.table</span>,f.typ<span class="op">=</span><span class="st">"ind"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in allele.freq(het.table, f.typ = "ind"):</span> object 'het.table' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in inherits(gtt, "list"):</span> object 'het.table' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">#for population-wise and both allele depth and genotype tables</span></span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="va">frQ</span><span class="op">&lt;-</span><span class="fu">allele.freq</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>AD<span class="op">=</span><span class="va">ad.table</span>,GT<span class="op">=</span><span class="va">het.table</span><span class="op">)</span>,f.typ<span class="op">=</span><span class="st">"pop"</span><span class="op">)</span></span>

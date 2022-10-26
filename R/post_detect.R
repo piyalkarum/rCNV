@@ -45,12 +45,12 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
           dpp<-NULL
           for(i in 1:(length(vv)-mw)){
             tmp<-unlist(vv)[i:(i+mw)]
-            ss<-sum(tmp=="singlet" | tmp=="non-deviant")
-            dd<-sum(tmp=="duplicated" | tmp=="deviant")
+            ss<-sum(tmp=="non-cnv" | tmp=="non-deviant")
+            dd<-sum(tmp=="cnv" | tmp=="deviant")
             dpp[i]<-dd/(dd+ss)
           }
           dpp[dpp==0]<-NA
-          return(cbind(mean(dpp,na.rm = TRUE),length(yy),sum(vv=="duplicated" | vv=="deviant"),sum(vv=="singlet" | vv=="non-deviant")))
+          return(cbind(mean(dpp,na.rm = TRUE),length(yy),sum(vv=="cnv" | vv=="deviant"),sum(vv=="non-cnv" | vv=="non-deviant")))
         }
       },mw=mw)
       dp<-do.call(rbind,yl)
@@ -59,17 +59,17 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
       dp<-NULL
       for(i in 1:(length(yy)-mw)){
         tmp<-unname(unlist(yy)[i:(i+mw)])
-        ss<-sum(tmp=="singlet" | tmp=="non-deviant")
-        dd<-sum(tmp=="duplicated" | tmp=="deviant")
+        ss<-sum(tmp=="non-cnv" | tmp=="non-deviant")
+        dd<-sum(tmp=="cnv" | tmp=="deviant")
         dp[i]<-dd/(dd+ss)
       }
       dp[dp==0]<-NA
       dp<-mean(dp,na.rm = TRUE)
-      dp<-cbind(x,dp,length(yy),sum(yy=="duplicated" | yy=="deviant"),sum(yy=="singlet" | yy=="non-deviant"))
+      dp<-cbind(x,dp,length(yy),sum(yy=="cnv" | yy=="deviant"),sum(yy=="non-cnv" | yy=="non-deviant"))
     }
   } else {
-    dp<-sum(yy=="duplicated" | yy=="deviant")/(sum(yy=="duplicated" | yy=="deviant")+sum(yy=="singlet" | yy=="non-deviant"))
-    dp<-cbind(x,dp,length(yy),sum(yy=="duplicated" | yy=="deviant"),sum(yy=="singlet" | yy=="non-deviant"))
+    dp<-sum(yy=="cnv" | yy=="deviant")/(sum(yy=="cnv" | yy=="deviant")+sum(yy=="non-cnv" | yy=="non-deviant"))
+    dp<-cbind(x,dp,length(yy),sum(yy=="cnv" | yy=="deviant"),sum(yy=="non-cnv" | yy=="non-deviant"))
   }
   return(dp)
   },mw=window.size,gg=gg)

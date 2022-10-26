@@ -23,7 +23,7 @@ the vcf
 \item{QUAL: The Phred-scaled probability that a REF/ALT polymorphism exists
 at this site given sequencing data}
 \item{AC: Allele count}
-\item{AF: Allele frequencey}
+\item{AF: Allele frequency}
 \item{DP: unfiltered depth}
 \item{QD: QualByDepth - This is the variant confidence (from the QUAL
 field) divided by the unfiltered depth of non-hom-ref samples}

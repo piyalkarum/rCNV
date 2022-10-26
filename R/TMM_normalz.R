@@ -130,7 +130,8 @@ TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutof
   2^TMM
 }
 
-
+## quantile normalization according to Robinson MD, and Oshlack A (2010)
+# qn1
 quantile_normalisation <- function(df,het.table=NULL,verbose=verbose){
   df_rank <- apply(df,2,rank,ties.method="min")
   df_sorted <- data.frame(apply(df, 2, sort,na.last=TRUE))
@@ -147,7 +148,7 @@ quantile_normalisation <- function(df,het.table=NULL,verbose=verbose){
   return(df_final)
 }
 
-
+# qn2
 index_to_mean <- function(x,indx, my_mean, al=NULL){
   my_index<-indx[,x]
   nr<-my_mean[my_index]
@@ -197,7 +198,7 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #'
 #' @references
 #' \itemize{
-#'  \item{Robinson MD, Oshlack A (2010). A scaling normalization method for
+#'  \item{Robinson MD, and Oshlack A (2010). A scaling normalization method for
 #'  differential expression analysis of RNA-seq data. Genome Biology 11, R25}
 #'  \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
 #'  package for differential expression analysis of digital gene expression

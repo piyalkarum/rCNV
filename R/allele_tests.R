@@ -8,7 +8,7 @@
 #' @param f.typ character. type of allele frequency to be calculated (individual \code{"ind"} or population \code{"pop"})
 #' @param verbose logical. whether to show the progress of the analysis
 #'
-#' @details If the allele frequencies to be calculated for populations from both getnotype table and the allele depth table, they must be provided in a list with element names \code{AD} for allele depth table and \code{GT} for the genotype table. See the examples.
+#' @details If the allele frequencies to be calculated for populations from both genotype table and the allele depth table, they must be provided in a list with element names \code{AD} for allele depth table and \code{GT} for the genotype table. See the examples.
 #'
 #' @return Returns a data frame or a list (if both genotype and allele depth used)
 #' of allele frequencies

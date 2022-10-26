@@ -1,12 +1,12 @@
 ## R CMD check results
 
-This is the re-submission of the package after the recommended changes  
-The changes made are as follows:
+This is the first update of the package. Several changes have been made to all major functions. They're as follows
 
-1. value tags were added to allele.freq.Rd and hetTgen.Rd, and explained what they return
-2. graphical parameter changes in bias.det.R, raw_process.R, sim.als.R, and statistics.R
-were set to original user parameters when the function exits, e.g. with on.exit()
-
+1. allele.info, sig.hets, h.zygosity functions have been sped up by at least 5x
+2. minor issues related to statistical approaches have been fixed
+3. a new function was added 'power.bias' to plot simulations showing detection biases
+4. the manuscript of the package has been submitted to a journal and also hosted in a pre-print archive
+5. a new co-author added
 
 On check:  
 There were no ERRORs, WARNINGs, or NOTES

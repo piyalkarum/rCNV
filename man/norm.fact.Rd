@@ -58,7 +58,7 @@ norm.fact(df)
 }
 \references{
 \itemize{
-\item{Robinson MD, Oshlack A (2010). A scaling normalization method for
+\item{Robinson MD, and Oshlack A (2010). A scaling normalization method for
 differential expression analysis of RNA-seq data. Genome Biology 11, R25}
 \item{Robinson MD, McCarthy DJ and Smyth GK (2010). edgeR: a Bioconductor
 package for differential expression analysis of digital gene expression

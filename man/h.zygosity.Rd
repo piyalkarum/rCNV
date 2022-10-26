@@ -36,5 +36,5 @@ hzygots<-h.zygosity(vcf,plot=TRUE,pops=pp)}
 
 }
 \author{
-Piyal Karunarathne, Pascal Milesi
+Piyal Karunarathne, Pascal Milesi, Klaus Schliep
 }

@@ -18,7 +18,7 @@ ex.prop<-function(rs,method=c("chi.sq","fisher")){
 }
 
 #1 pvals for sig.hets when AD table is provided
-get.eHpvals<-function(df,method=c("fisher","chi.sq")){
+get.eHpvals<-function(df,method=c("chi.sq","fisher")){
   snp1<-df[-c(1:4)]
   y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
   y[,1]<-as.integer(y[,1]);y[,2]<-as.integer(y[,2])
@@ -65,7 +65,7 @@ get.eHpvals<-function(df,method=c("fisher","chi.sq")){
 #' @return A matrix of expected heterozygote proportions from the observed
 #' data with p-value indicating significance of deviation.
 #'
-#' @author Piyal Karunarathne, Pascal Milesi
+#' @author Piyal Karunarathne, Pascal Milesi, Klaus Schliep
 #'
 #' @examples
 #' \dontrun{data(alleleINF)
@@ -127,19 +127,20 @@ sig.hets<-function(a.info,method=c("chi.sq","fisher"),plot=TRUE,verbose=TRUE,...
 }
 
 
-#' Plot duplicates
+#' Plot classified SNPs into deviants/CNVs and non-deviants/non-CNVs
 #'
-#' The function plots detected duplicates from functions \code{sig.snps}, and
-#' \code{dupGet}
+#' The function plots detected deviants/CNVs from functions \code{sig.snps},
+#' \code{cnv} and \code{dupGet} on a median ratio (MedRatio) Vs. proportion of
+#' heterozygote (PropHet) plot.
 #'
-#' @param ds a data frame of detected duplicates
+#' @param ds a data frame of detected deviants/cnvs (outputs of functions above)
 #' @param \dots other graphical parameters to be passed to the function
 #' \code{plot}
 #'
 #' @importFrom colorspace rainbow_hcl
 #'
 #' @return Returns no value, only plots proportion of heterozygotes vs allele
-#' median ratio seperated by duplication status
+#' median ratio separated by duplication status
 #'
 #' @author Piyal Karunarathne
 #'
@@ -156,7 +157,7 @@ dup.plot<-function(ds,...){
   if(is.null(l$xlim)) l$xlim=c(0,1)
   if(is.null(l$ylim)) l$ylim=c(0,1)
   if(is.null(l$alpha)) l$alpha=0.3
-  if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]method
+  if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))
   ds$Color <- l$col[2]
   st<-sort(unique(ds$dup.stat))
   ds$Color [ds$dup.stat==st[1]]<- l$col[1]
@@ -168,11 +169,12 @@ dup.plot<-function(ds,...){
 }
 
 
-#' Detect duplicates from SNPs
+#' Detect deviants from SNPs; classify SNPs
 #'
-#' Detect duplicated snps using excess of heterozygotes
-#' (alleles that do not follow HWE) and snp deviates
-#' (alleles that do not follow a normal or chi-square distribution).
+#' Detect deviant SNPs using excess of heterozygotes
+#' (alleles that do not follow HWE) and allelic-ratio deviations
+#' (alleles with ratios that do not follow a normal Z-score or chi-square
+#' distribution).
 #'  See details.
 #'
 #' @param data data frame of the output of \code{allele.info}
@@ -194,8 +196,13 @@ dup.plot<-function(ds,...){
 #' according to HWE and deviant SNPs where depth values fall outside of the
 #' normal distribution are detected using the
 #'  following methods:
-#' 1. Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}
-#' 2. chi-square test (see references for more details on the method)
+#'  \itemize{
+#'  \item{Z-score test \eqn{Z_{x} = \sum_{i=1}^{n} Z_{i}};
+#'    \eqn{Z_{i} = \frac{\left ( (N_{i}\times p)- N_{Ai} \right )}{\sqrt{N_{i}\times p(1-p)}}}}
+#'  \item{chi-square test \eqn{X_{x}^{2} = \sum_{i-1}^{n} X_{i}^{2}};
+#'    \eqn{X_{i}^{2} = (\frac{(N_{i}\times p - N_{Ai})^2}{N_{i}\times p} + \frac{(N_{i}\times (1 - p)- (N_{i} - N_{Ai}))^2}{N_{i}\times (1-p)})}}
+#' }
+#' See references for more details on the methods
 #'
 #' Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
 #' all allele combinations (\code{z.all, chi.all}) and the assumption of no
@@ -290,8 +297,13 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' according to HWE and deviant SNPs where depth values fall outside of the
 #' normal distribution are detected using the
 #'  following methods:
-#' 1. Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}
-#' 2. chi-square test (see references for more details on the method)
+#'  \itemize{
+#'  \item{Z-score test \eqn{Z_{x} = \sum_{i=1}^{n} Z_{i}};
+#'    \eqn{Z_{i} = \frac{\left ( (N_{i}\times p)- N_{Ai} \right )}{\sqrt{N_{i}\times p(1-p)}}}}
+#'  \item{chi-square test \eqn{X_{x}^{2} = \sum_{i-1}^{n} X_{i}^{2}};
+#'    \eqn{X_{i}^{2} = (\frac{(N_{i}\times p - N_{Ai})^2}{N_{i}\times p} + \frac{(N_{i}\times (1 - p)- (N_{i} - N_{Ai}))^2}{N_{i}\times (1-p)})}}
+#' }
+#' See references for more details on the methods
 #'
 #' Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
 #' all allele combinations (\code{z.all, chi.all}) and the assumption of no

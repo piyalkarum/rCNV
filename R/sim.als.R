@@ -4,10 +4,11 @@ sim<-function(x,nrun,n){y<-replicate(nrun,{tt<-sample(x,n,replace=F);c(sum(tt==0
 c(rowMeans(y),apply(y,1,sd),apply(y,1,function(x)quantile(x,p=0.95,na.rm=T)),
   apply(y,1,function(x)quantile(x,p=0.05,na.rm=T)),apply(y,1,function(x)quantile(x,p=0.975,na.rm=T)),
   apply(y,1,function(x)quantile(x,p=0.025,na.rm=T)))}
+
 #2. generate median allele ratios for a given number of samples for one depth value
 dp.cov<-function(depth,sam,sims){
   dout<-lapply(sam,function(x,depth,sims){y<-replicate(n=sims,{
-    Allele1<-rbinom(n = x,size = depth,prob=0.5) # Binomial sampling of number of reads supporting Allele1
+    Allele1<-rbinom(n = x,size = depth,prob=0.5) # Binomial sampling of number of reads supporting Allele 1
     Dev<- ((depth/2) - Allele1) / depth # deviation from expectation of 0.5
     Devsum<-abs(mean((Dev)))
   });return(mean(abs(y)))},depth=depth,sims=sims)
@@ -31,7 +32,6 @@ dp.covZ<-function(nsamp,bias,depth,sims,p){
   dout<-dout[which(dout[,3]>=0.95),]
   return(dout)
 }
-
 
 #3 make a given vector of colors transparent to a desired opacity
 makeTransparent = function(..., alpha=0.5) {
@@ -72,7 +72,6 @@ plot.svd <- function(MR,cols=c("#1C86EE", "#00BFFF", "#DAA520", "#FF0000")){
   text(x=0.5, y = c(0.1,1), labels = c("Low","High"),cex=0.7)
   rasterImage(legend_image, 0, 0.1, 0.2,1)
 }
-
 
 
 #' Simulate Allele Frequencies
@@ -131,7 +130,7 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 }
 
 
-#' Simulate median allele ratios for varying no. of samples and depth coverage
+#' Simulate median allele ratios for varying number of samples and depth values
 #'
 #' This function will simulate the expected median allele ratios under HWE
 #' for given ranges of no. of samples and depth coverage values.
@@ -152,7 +151,7 @@ sim.als<-function(n=500,nrun=10000,res=0.001,plot=TRUE){
 #' @author Pascal Milesi, Piyal Karunarathne
 #'
 #' @examples
-#' \dontrun{depthVsSample(cov.len=50,sam.len=100)}
+#' \dontrun{depthVsSample(cov.len=100,sam.len=100)}
 #'
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' @importFrom grDevices as.raster colorRampPalette

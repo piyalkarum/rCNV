@@ -1,4 +1,6 @@
 # 1. wrapper for progressbar
+# adopted from https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
+
 apply_pb <- function(X, MARGIN, FUN, ...)
 {
   env <- environment()
@@ -39,7 +41,6 @@ lapply_pb <- function(X, FUN, ...)
   res
 }
 
-#https://ryouready.wordpress.com/2010/01/11/progress-bars-in-r-part-ii-a-wrapper-for-apply-functions/
 
 combn_pb <- function(X, size, FUN, ...)
 {
@@ -64,15 +65,13 @@ combn_pb <- function(X, size, FUN, ...)
   res
 }
 
-#for loop progress bar
-
+# for-loop progress bar
 # for(i in seq_along(xx)) {
 #   pb <- txtProgressBar(min = 0, max = length(xx), style = 3, width = 50, char = "=")
 #   setTxtProgressBar(pb, i)
 #   ### code
 # }
 # close(pb)
-
 
 
 #(extra) generate colors for Rmarkdown docs [extracted from Rmarkdown guide book]
@@ -192,10 +191,10 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' the table. Or keep only the CHROM, POS, ID, ALT, and individual AD columns.
 #' For info.type \code{GT} option is provided to extract the genotypes of
 #' individuals by snp.
-#' @return Returns a data frame of Allele Depth, Genotyp of SNPs for all the
+#' @return Returns a data frame of allele depth, genotype of SNPs for all the
 #' individuals extracted from a VCF file
 #'
-#' @author Piyal Karunarathne
+#' @author Piyal Karunarathne, Klaus Schliep
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")

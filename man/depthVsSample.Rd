@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim.als.R
 \name{depthVsSample}
 \alias{depthVsSample}
-\title{Simulate median allele ratios for varying no. of samples and depth coverage}
+\title{Simulate median allele ratios for varying number of samples and depth values}
 \usage{
 depthVsSample(
   cov.len = 100,
@@ -36,7 +36,7 @@ This is useful if you need to find the cutoff values of allele ratios for
 different no. of samples and depth of coverage values in your data set.
 }
 \examples{
-\dontrun{depthVsSample(cov.len=50,sam.len=100)}
+\dontrun{depthVsSample(cov.len=100,sam.len=100)}
 
 }
 \author{

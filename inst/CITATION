@@ -1,0 +1,17 @@
+citHeader("To cite rCNV in publications use: \n
+Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection. BioRxiv, 2022.10.14.512217. https://doi.org/10.1101/2022.10.14.512217")
+
+citEntry(
+  entry    = "Article",
+  title    = "A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection",
+  author   = "Karunarathne, Piyal and Zhou, Qiujie and Schliep, Klaus and Milesi, Pascal",
+  journal  = "BioRxiv",
+  year     = "2022",
+  volume   = "",
+  number   = "",
+  pages    = "",
+  url      = "https://doi.org/10.1101/2022.10.14.512217",
+  textVersion = paste(
+
+  )
+)

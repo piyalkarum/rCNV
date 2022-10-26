@@ -44,10 +44,13 @@ SNP deviants are detected with both excess of heterozygosity
 according to HWE and deviant SNPs where depth values fall outside of the
 normal distribution are detected using the
 following methods:
-\enumerate{
-\item Z-score test \eqn{Z = \frac{\frac{N}{2} -  N_{A}}{\sigma _{x}}}
-\item chi-square test (see references for more details on the method)
+\itemize{
+\item{Z-score test \eqn{Z_{x} = \sum_{i=1}^{n} Z_{i}};
+\eqn{Z_{i} = \frac{\left ( (N_{i}\times p)- N_{Ai} \right )}{\sqrt{N_{i}\times p(1-p)}}}}
+\item{chi-square test \eqn{X_{x}^{2} = \sum_{i-1}^{n} X_{i}^{2}};
+\eqn{X_{i}^{2} = (\frac{(N_{i}\times p - N_{Ai})^2}{N_{i}\times p} + \frac{(N_{i}\times (1 - p)- (N_{i} - N_{Ai}))^2}{N_{i}\times (1-p)})}}
 }
+See references for more details on the methods
 
 Users can pick among Z-score for heterozygotes (\code{z.het, chi.het}),
 all allele combinations (\code{z.all, chi.all}) and the assumption of no

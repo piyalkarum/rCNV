@@ -22,7 +22,7 @@ Get alternative allele frequency across all individuals per SNP from the
 genotype or allele depth tables
 }
 \details{
-If the allele frequencies to be calculated for populations from both getnotype table and the allele depth table, they must be provided in a list with element names \code{AD} for allele depth table and \code{GT} for the genotype table. See the examples.
+If the allele frequencies to be calculated for populations from both genotype table and the allele depth table, they must be provided in a list with element names \code{AD} for allele depth table and \code{GT} for the genotype table. See the examples.
 }
 \examples{
 vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
