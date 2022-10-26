@@ -18,9 +18,8 @@ Suggests:
     knitr,
     testthat (>= 3.0.0),
     covr
-VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 URL: https://piyalkarum.github.io/rCNV/, https://cran.r-project.org/package=rCNV
 BugReports: https://github.com/piyalkarum/rCNV/issues
-Packaged: 2022-03-29 02:36:40 UTC; piyalkarunarathne
+Packaged: 2022-10-26 16:35:40 UTC; piyalkarunarathne
