@@ -27,25 +27,39 @@ het.sity <- function(ind){
 #3. calculate Ajk pairwise
 #     if j=k >> Ajk[ui][ui] += (x[ui]*x[ui] - (1 + 2.0*freq)*x[ui] + 2.0*freq*freq) * div
 #     if j!=k >> Ajk[ui][uj] += (x[ui] - 2.0*freq) * (x[uj] - 2.0*freq) * div
-gt2<-function(x,gg,freq){two<-gg[,x[1]];one<-gg[,x[2]]
-vp<-NULL
-if(x[1]==x[2]){
-  for(i in seq_along(one)){
-    vp[i]<-((one[i]*one[i])-((1+(2*freq[i]))*one[i])+(2*freq[i]*freq[i]))/(2*freq[i]*(1-freq[i]))
+##gt2<-function(x,gg,freq){two<-gg[,x[1]];one<-gg[,x[2]]
+##vp<-NULL
+##if(x[1]==x[2]){
+##  for(i in seq_along(one)){
+##    vp[i]<-((one[i]*one[i])-((1+(2*freq[i]))*one[i])+(2*freq[i]*freq[i]))/(2*freq[i]*(1-freq[i]))
+##  }
+##  vp<-na.omit(vp)
+##  Ajk<-((sum(vp))/length(vp))+1
+##} else {
+##  for(i in seq_along(one)){
+##    vp[i]<-((one[i]-(2*freq[i]))*(two[i]-(2*freq[i])))/(2*freq[i]*(1-freq[i]))
+##  }
+##  vp<-na.omit(vp)
+##  Ajk<-sum(vp)/length(vp)
+##}
+##V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
+##return(V)}
+
+gt2 <- function(x,gg,freq){
+  two<-gg[,x[1]]
+  one<-gg[,x[2]]
+  if(x[1]==x[2]){
+    vp<-((one*one)-((1+(2*freq))*one)+(2*freq*freq))/(2*freq*(1-freq))
+    vp<-na.omit(vp)
+    Ajk<-((sum(vp))/length(vp))+1
+  } else {
+    vp<-((one-(2*freq))*(two-(2*freq)))/(2*freq*(1-freq))
+    vp<-na.omit(vp)
+    Ajk<-sum(vp)/length(vp)
   }
-  vp<-na.omit(vp)
-  Ajk<-((sum(vp))/length(vp))+1
-} else {
-  for(i in seq_along(one)){
-    vp[i]<-((one[i]-(2*freq[i]))*(two[i]-(2*freq[i])))/(2*freq[i]*(1-freq[i]))
-  }
-  vp<-na.omit(vp)
-  Ajk<-sum(vp)/length(vp)
+  V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
+  return(V)
 }
-V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
-return(V)}
-
-
 
 #' Determine per sample heterozygosity and inbreeding coefficient
 #'
@@ -161,9 +175,9 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
   comb<-expand.grid(1:ncol(gg),1:ncol(gg))
   if(verbose){
     message("assessing pairwise relatedness")
-    T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
+    T2<-apply_pb(comb, 1, gt2, gg=gg, freq=freq)
   } else {
-    T2<-apply(comb,1,gt2,gg=gg,freq=freq)
+    T2<-apply(comb, 1, gt2, gg=gg, freq=freq)
   }
   T2<-data.frame(t(T2))
   T2[,3]<-as.numeric(T2[,3])
