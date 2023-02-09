@@ -1,4 +1,62 @@
 ## VCF statistics ###
+
+relatedness_old<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
+  if(!inherits(vcf,"list")) {
+    if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
+    else {gtt <-vcf}
+  } else {
+    vcf<-vcf$vcf
+    gtt<-hetTgen(vcf,"GT",verbose=verbose)
+  }
+  gt<-gtt[,-c(1:4)]
+  freq<-apply(gt,1,function(xx){aal<-unlist(strsplit(as.character(xx),"/"))
+  return(length(which(aal=="1"))/(length(which(aal=="0"))+length(which(aal=="1"))))})
+
+  gg<-apply(gt,2,function(x){XX<-rep(NA,length(x))
+  XX[which(x=="0/0")]<-0
+  XX[which(x=="1/1")]<-2
+  XX[which(x=="1/0" | x=="0/1")]<-1
+  XX})
+
+  comb<-expand.grid(1:ncol(gg),1:ncol(gg))
+  if(verbose){
+    message("assessing pairwise relatedness")
+    T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
+  } else {
+    T2<-apply(comb,1,gt2,gg=gg,freq=freq)
+  }
+  T2<-data.frame(t(T2))
+  T2[,3]<-as.numeric(T2[,3])
+  colnames(T2)<-c("indv1","indv2","relatedness_Ajk")
+  if(plot){
+    same = T2[T2[,1] == T2[,2], ]
+    diff = T2[T2[,1] != T2[,2], ]
+    outliers = diff[diff[,3] > threshold, ]
+
+    opars<-par(no.readonly = TRUE)
+    on.exit(par(opars))
+
+    par(mfrow=c(3, 1))
+    hist(same[,3],
+         main="Samples against themselves",
+         col="grey",
+         breaks=seq(-1000, 1000, by=0.05),
+         xlim=c(-1, 2))
+    hist(diff[,3],
+         main="Samples among themselves",
+         col="grey",
+         breaks=seq(-100, 100, by=0.05),
+         xlim=c(-1, 2))
+    hist(outliers[,3],
+         main="Outlier samples",
+         col="grey",
+         breaks=seq(-100, 100, by=0.05),
+         xlim=c(-1, 2))
+  }
+  return(T2)
+}
+
+
 #1. get heterozygosity per individual
 ## P(Homo) = F + (1-F)P(Homo by chance)
 ## P(Homo by chance) = p^2+q^2 for a biallelic locus.
@@ -293,7 +351,6 @@ vcf.stat<-function(vcf,plot=TRUE,...){
   }
   return(tbb)
 }
-
 
 
 

@@ -1,3 +1,6 @@
+# rCNV 1.2.0 (second update)
+* relatedness function optimized
+
 # rCNV 1.1.0 (first update)
 
 ## Changes
