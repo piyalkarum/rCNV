@@ -43,5 +43,5 @@ large proportion of the heritability for human height. Nat Genet 42, 565569
 (2010).
 }
 \author{
-Piyal Karunarathne
+Piyal Karunarathne, Klaus Schliep
 }

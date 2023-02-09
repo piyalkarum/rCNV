@@ -142,7 +142,7 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #' relatedness value of zero while the individual with itself will have a
 #' relatedness value of one. Relatedness value of ~0.5 indicates siblings.
 #'
-#' @author Piyal Karunarathne
+#' @author Piyal Karunarathne, Klaus Schliep
 #'
 #' @references Yang, J., Benyamin, B., McEvoy, B. et al. Common SNPs explain a
 #' large proportion of the heritability for human height. Nat Genet 42, 565569
