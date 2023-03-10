@@ -1,5 +1,24 @@
 ## VCF statistics ###
+# old gt2 function
+gt2_old<-function(x,gg,freq){two<-gg[,x[1]];one<-gg[,x[2]]
+vp<-NULL
+if(x[1]==x[2]){
+  for(i in seq_along(one)){
+    vp[i]<-((one[i]*one[i])-((1+(2*freq[i]))*one[i])+(2*freq[i]*freq[i]))/(2*freq[i]*(1-freq[i]))
+  }
+  vp<-na.omit(vp)
+  Ajk<-((sum(vp))/length(vp))+1
+} else {
+  for(i in seq_along(one)){
+    vp[i]<-((one[i]-(2*freq[i]))*(two[i]-(2*freq[i])))/(2*freq[i]*(1-freq[i]))
+  }
+  vp<-na.omit(vp)
+  Ajk<-sum(vp)/length(vp)
+}
+V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
+return(V)}
 
+# old relatedness function
 relatedness_old<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
   if(!inherits(vcf,"list")) {
     if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
@@ -21,9 +40,9 @@ relatedness_old<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
   comb<-expand.grid(1:ncol(gg),1:ncol(gg))
   if(verbose){
     message("assessing pairwise relatedness")
-    T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
+    T2<-apply_pb(comb,1,gt2_old,gg=gg,freq=freq)
   } else {
-    T2<-apply(comb,1,gt2,gg=gg,freq=freq)
+    T2<-apply(comb,1,gt2_old,gg=gg,freq=freq)
   }
   T2<-data.frame(t(T2))
   T2[,3]<-as.numeric(T2[,3])
@@ -55,7 +74,6 @@ relatedness_old<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
   }
   return(T2)
 }
-
 
 #1. get heterozygosity per individual
 ## P(Homo) = F + (1-F)P(Homo by chance)
@@ -213,33 +231,37 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #'
 #' @export
 relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
-  if(!inherits(vcf,"list")) {
-    if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
-    else {gtt <-vcf}
+  if(inherits(vcf,"data.frame") & any(colnames(vcf)=="INDV1")){
+    T2<-vcf
   } else {
-    vcf<-vcf$vcf
-    gtt<-hetTgen(vcf,"GT",verbose=verbose)
-  }
-  gt<-gtt[,-c(1:4)]
-  freq<-apply(gt,1,function(xx){aal<-unlist(strsplit(as.character(xx),"/"))
-  return(length(which(aal=="1"))/(length(which(aal=="0"))+length(which(aal=="1"))))})
+    if(!inherits(vcf,"list")) {
+      if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
+      else {gtt <-vcf}
+    } else {
+      vcf<-vcf$vcf
+      gtt<-hetTgen(vcf,"GT",verbose=verbose)
+    }
+    gt<-gtt[,-c(1:4)]
+    freq<-apply(gt,1,function(xx){aal<-stringr::str_split(xx,"/",simplify = T)
+    return(sum(aal=="1")/(sum(aal=="0")+sum(aal=="1")))})
 
-  gg<-apply(gt,2,function(x){XX<-rep(NA,length(x))
-  XX[which(x=="0/0")]<-0
-  XX[which(x=="1/1")]<-2
-  XX[which(x=="1/0" | x=="0/1")]<-1
-  XX})
+    gg<-apply(gt,2,function(x){XX<-rep(NA,length(x))
+    XX[which(x=="0/0")]<-0
+    XX[which(x=="1/1")]<-2
+    XX[which(x=="1/0" | x=="0/1")]<-1
+    XX})
 
-  comb<-expand.grid(1:ncol(gg),1:ncol(gg))
-  if(verbose){
-    message("assessing pairwise relatedness")
-    T2<-apply_pb(comb, 1, gt2, gg=gg, freq=freq)
-  } else {
-    T2<-apply(comb, 1, gt2, gg=gg, freq=freq)
+    comb<-expand.grid(1:ncol(gg),1:ncol(gg))
+    if(verbose){
+      message("assessing pairwise relatedness")
+      T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
+    } else {
+      T2<-apply(comb,1,gt2,gg=gg,freq=freq)
+    }
+    T2<-data.frame(t(T2))
+    T2[,3]<-as.numeric(T2[,3])
+    colnames(T2)<-c("indv1","indv2","relatedness_Ajk")
   }
-  T2<-data.frame(t(T2))
-  T2[,3]<-as.numeric(T2[,3])
-  colnames(T2)<-c("indv1","indv2","relatedness_Ajk")
   if(plot){
     same = T2[T2[,1] == T2[,2], ]
     diff = T2[T2[,1] != T2[,2], ]

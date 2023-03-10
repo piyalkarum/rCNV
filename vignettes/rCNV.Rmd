@@ -57,6 +57,7 @@ vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path,verbose = FALSE)
 
 # This imports an example VCF file included in the package
+# The data is a partial dataset of Norway spruce data from Chen et al. 2019.
 ```
 ```{r,eval=FALSE}
 #print the first 10 rows and columns of the imported VCF
@@ -68,7 +69,7 @@ vcf$vcf[1:6,c(1:7,9,10)]
 
 ### 1.2 Filtering VCF for missing data
 |       The raw VCF files often contain missing data for both samples and SNPs. If retained, these samples and SNPs can introduce false positives and negatives to the analysis. Therefore, they must be removed based on a missing percentage. The function `get.miss()` determines the missing percentages in samples and SNPs and graphically visualize the missing ranges with 5% quantile values. We recommend removing samples and SNPs with missing percentages higher than 50%.
-The following example demonstrates such filtering on Parrot Fish data from *McKinney et al. (2017)*.
+The following example demonstrates such filtering on Parrot Fish data from *Stockwell et al. (2016)*.
 
 ```{r,echo=TRUE,eval=TRUE,fig.dim=c(6,4)}
 #download the parrotfish data (Stockwell et al. 2016) file from the following link to your working directory if you do not have the github folder
@@ -133,7 +134,7 @@ ad.tab<-hetTgen(parrot,info.type="AD")
 ad.tab[1:10,1:6]
 ```
 
-Table 1.4.0 Allele depth table (generated from a different data set than Parrot fish data)
+Table 1.4.0 Allele depth table (generated from a larger data set of Stockwell et al. 2016 Parrot fish data)
 ```{r,echo=FALSE}
 knitr::kable(ADtable[1:6,1:6],format="html")
 ```
@@ -271,6 +272,7 @@ We test the validity of detected duplicates in two ways: 1. direct detection thr
 The function `vst` can be used to calculate the $V_{ST}$ values per population and plot genetic distance in a network qgraph.
 
 ```{r,eval=FALSE}
+# the dataset used here is from Dorrant et al. 2020 of American lobster populations in Gulf of St. Lawrence, Canada
 vdata<-readRDS("../testDATA/lobster_data4Vst.rds")
 # get the total depth values of the duplicated snps
 # You can either use the following line to get the total depth of the samples or use the "tot" option of the hetTgen function to generate the total depth table
@@ -286,21 +288,24 @@ pops<-substr(colnames(dd),1,4)
 dd<-data.frame(vdata[,1:4],dd)
 Vs<-vst(dd,pops=pops,verbose=F)
 ```
-
-See `qgraph` help for the interpretation of the network analysis.
+Fig. 3.1. Vst network qgraph generated from the Vst values for each lobster population. Circles represent populations and the green arrows show similarity and the direction.See `qgraph` help for the interpretation of the network analysis.
 
 ### 3.2 Relative copy number
 TBA
 
 ## 4. References
 
+* Chen, J., Li, L., Milesi, P., Jansson, G., Berlin, M., Karlsson, B., … Lascoux, M. (2019). Genomic data provide new insights on the demographic history and the extent of recent material transfers in Norway spruce. Evolutionary Applications, 12(8), 1539–1551. doi: 10.1111/eva.12801
+
+* Dorant, Y., Cayuela, H., Wellband, K., Laporte, M., Rougemont, Q., Mérot, C., … Bernatchez, L. (2020). Copy number variants outperform SNPs to reveal genotype–temperature association in a marine species. Molecular Ecology, 29(24), 4765–4782. doi: 10.1111/mec.15565
+
 * Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection. BioRxiv, 2022.10.14.512217. doi: 10.1101/2022.10.14.512217  
+
+* Redon, R., Ishikawa, S., Fitch, K. R., Feuk, L., Perry, G. H., Andrews, T. D., … Chen, W. (2006). Global variation in copy number in the human genome. Nature, 444(7118), 444–454.
 
 * Stockwell, B. L., Larson, W. A., Waples, R. K., Abesamis, R. A., Seeb, L. W., & Carpenter, K. E. (2016). The application of genomics to inform conservation of a functionally important reef fish (Scarus niger) in the Philippines. Conservation Genetics, 17(1), 239–249  
 
 * Yang, J., Benyamin, B., McEvoy, B. P., Gordon, S., Henders, A. K., Nyholt, D. R., … Visscher, P. M. (2010). Common SNPs explain a large proportion of the heritability for human height. Nature Genetics, 42(7), 565–569. doi: 10.1038/ng.608  
-
-* Redon, R., Ishikawa, S., Fitch, K. R., Feuk, L., Perry, G. H., Andrews, T. D., … Chen, W. (2006). Global variation in copy number in the human genome. Nature, 444(7118), 444–454.
 
 
 

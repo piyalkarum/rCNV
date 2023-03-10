@@ -401,7 +401,7 @@ cpm.normal <- function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),
   #  browser()
   out<-data.frame(het.table[,c(1:4)], out)
   colnames(out)<-colnames(het.table)
-  return(list(AD=out,outliers=data.frame(column=(ot.ind+4),colnames(tdep)[ot.ind])))
+  return(list(AD=out,outliers=data.frame(column=(ot.ind+4),sample=colnames(tdep)[ot.ind])))
 }
 
 

@@ -275,3 +275,27 @@ plot(nbr~nb$POS,pch=19,cex=0.4,col=cl[factor(cv$dup.stat)],bty="n",ylim = c(0,ma
 points(mps~nb$POS,col="dodgerblue",type = "l")
 ################################################################################
 
+################ depth vs sample plot (Fig. S1) #############################
+#----------------------------------------------------------------------------
+out3<-read.table("/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/tst/simul.2.txt",h=F)
+#plotting
+colfunc <- colorRampPalette(c("dodgerblue2","dodgerblue2","lightgoldenrod","orange","red"))
+color<-colfunc(nrow(out3))
+tcl<-cut(log(out3[,3]),nrow(out3))
+
+#plot(out3[,1]~out3[,2],col=color[tcl],pch=19, ylab = "Depth of coverage",xlab = "Number heterozygotes",las =1,xlim=c(0,100),ylim=c(0,100))
+layout(matrix(1:2,ncol=2), widths = c(3,1),heights = c(1,1))
+par(mar=c(4,4,3,0))
+plot(out3[,1]~out3[,2],col=color[tcl],pch=19, ylab = "Depth of coverage",xlab = "Number heterozygotes",las =1,xlim=c(0,100),ylim=c(0,100),frame=F)
+# legend
+par(mar=c(3,0.5,7,1))
+
+color<-colfunc(nrow(out3))
+legend_image <- as.raster(matrix(rev(color), ncol=1))
+plot(c(0,2),c(0,1.5),type = 'n', axes = F,xlab = '', ylab = '')
+text(x=0.6,y=1.1,labels = 'Deviation from 0.5',cex=0.7,font=2)
+text(x=0.5, y = c(0.1,1), labels = c("Low","High"),cex=0.7)
+rasterImage(legend_image, 0, 0.1, 0.2,1)
+
+
+
