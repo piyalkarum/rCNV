@@ -4,7 +4,7 @@
 
 library(rCNV)
 
-### Excess of heterozygotes plot Fig i. Box 1
+### Excess of heterozygotes plot
 # simulate allele frequencies
 tt<-sim.als(n = 500, nrun = 10000, res = 0.001, plot = FALSE)
 cl<-hcl.colors(5,palette = "plasma")
