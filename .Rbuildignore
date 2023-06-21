@@ -21,3 +21,4 @@
 ^man\.DS_Store$
 ^R\deprecated.R
 ^CRAN-RELEASE$
+^internal$

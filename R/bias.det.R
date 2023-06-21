@@ -5,7 +5,8 @@ get.pvals<-function(x,df,p.cal){
   y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
   y[,1]<-as.integer(y[,1]);y[,2]<-as.integer(y[,2])
   rr1<-y[,2]/rowSums(y,na.rm = TRUE)
-  snp1het<-y[-which(rr1 == 0L | rr1 == 1L | is.na(rr1)==TRUE),]
+  nonhet<-which(rr1 == 0L | rr1 == 1L | is.na(rr1)==TRUE)
+  if(length(nonhet)>0){snp1het<-y[-which(rr1 == 0L | rr1 == 1L | is.na(rr1)==TRUE),]} else {snp1het<-y}
   homalt<-sum(rr1==1L,na.rm=TRUE)
   homref<-sum(rr1==0L,na.rm=TRUE)
   NHet<-nrow(na.omit(snp1het))
