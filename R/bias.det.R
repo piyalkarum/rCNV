@@ -105,7 +105,7 @@ get.pvals<-function(x,df,p.cal){
 #' AI<-allele.info(ADtable,x.norm=ADnorm)}
 #'
 #' @export
-allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN","pca"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
+allele.info<-function(X,x.norm=NULL,method=c("MedR","QN","pca","TMM","TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
   method=match.arg(method)
   if(is.null(x.norm)){
     x.norm<-cpm.normal(X,method=method,logratioTrim=logratioTrim,sumTrim = sumTrim,Weighting = Weighting,Acutoff = Acutoff,verbose = verbose)
@@ -122,7 +122,7 @@ allele.info<-function(X,x.norm=NULL,method=c("TMM","TMMex","MedR","QN","pca"),lo
         y[,2]<-as.integer(y[,2])} else {y<-snp1}
       rs<-rowSums(y)
       rs[rs==0L]<-NA
-      cv<-sd(unlist(y),na.rm = TRUE)/mean(unlist(y),na.rm = TRUE)
+      cv<-sd(unlist(y),na.rm = TRUE)/mean(unlist(y),na.rm = TRUE) # change y to rs
       rr1<-y[,2]/rs
       snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
       homalt<-sum(rr1==1,na.rm=TRUE)

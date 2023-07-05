@@ -298,11 +298,11 @@ norm.fact<-function(df,method=c("TMM","TMMex","MedR","QN"),logratioTrim=.3, sumT
 #'
 #'
 #' @export
-cpm.normal <- function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),
+cpm.normal <- function(het.table, method=c("MedR","QN","pca","TMM","TMMex"),
                        logratioTrim=.3, sumTrim=0.05, Weighting=TRUE,
                        Acutoff=-1e10, verbose=TRUE, plot=TRUE){
   method<-match.arg(method)
-  if(length(method)>1){method="TMM"}
+  if(length(method)>1){method="MedR"}
   dm <- dim(het.table)
   pb_Total <- dm[2] - 4L
   if(verbose){
@@ -339,7 +339,7 @@ cpm.normal <- function(het.table, method=c("TMM","TMMex","MedR","QN","pca"),
     if(verbose)   message("\ncalculating normalized depth")
     nf<-norm.fact(tdep, method=method, logratioTrim=logratioTrim,
                   sumTrim=sumTrim, Weighting=Weighting, Acutoff=Acutoff)
-    sc <- 1e6 / (nf[,1]*nf[,2])
+    sc <- 1e9 / (nf[,1]*nf[,2])
     y1 <- round(y1 * rep(sc, each=dm[1]), 2)
     y2 <- round(y2 * rep(sc, each=dm[1]), 2)
     out <- paste0(y1, ",", y2)
