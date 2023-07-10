@@ -112,6 +112,119 @@ allele.info<-function(X,x.norm=NULL,method=c("MedR","QN","pca","TMM","TMMex"),lo
   }
   if(!inherits(x.norm,"list")){x.norm<-list(AD=x.norm)}
   if(inherits(x.norm,"list")){x.norm<-x.norm$AD}
+  if(verbose){
+    message("calculating probability values of alleles")
+    p.cal<-apply_pb(x.norm[,-c(1:4)],1,function(snp1){
+      if(is.character(unname(unlist(snp1[1])))){
+        y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
+        y[,1]<-as.integer(y[,1])
+        y[,2]<-as.integer(y[,2])} else {y<-snp1}
+      rs<-rowSums(y)
+      rs[rs==0L]<-NA
+      cv<-sd(unlist(rs),na.rm = TRUE)/mean(unlist(rs),na.rm = TRUE)
+      rr1<-y[,2]/rs
+      snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
+      homalt<-sum(rr1==1,na.rm=TRUE)
+      homref<-sum(rr1==0,na.rm=TRUE)
+      covrefhomo<-sum(y[c(rr1 == 0,na.rm = TRUE),],na.rm = TRUE)
+      covalthomo<-sum(y[c(rr1 == 1,na.rm = TRUE),],na.rm = TRUE)
+      covalt<-sum(y[,2],na.rm = TRUE)
+      covref<-sum(y[,1],na.rm = TRUE)
+      NHet<-nrow(snp1het)
+      if(NHet>3){
+        p.all<-(covalt/(NHet+(2*homalt)))/((covalt/(NHet+(2*homalt)))+(covref/(NHet+(2*homref))))
+        p.sum<-sum(snp1het[,2])/sum(snp1het)
+        ll <-data.frame(p.all,p.sum,mean.a.homo=covalthomo/(2*homalt),mean.r.homo=covrefhomo/(2*homref),mean.a.het=sum(snp1het[,2])/NHet,mean.r.het=sum(snp1het[,1])/NHet,cv=cv)
+      } else {
+        ll<-NA
+      }
+      return(ll)
+    })
+  } else {
+    p.cal<-apply(x.norm[,-c(1:4)],1,function(snp1){
+      if(is.character(unname(unlist(snp1[1])))){
+        y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
+        y[,1]<-as.integer(y[,1])
+        y[,2]<-as.integer(y[,2])} else {y<-snp1}
+      rs<-rowSums(y)
+      rs[rs==0]<-NA
+      cv<-sd(unlist(rs),na.rm = TRUE)/mean(unlist(rs),na.rm = TRUE)
+      rr1<-y[,2]/rs
+      snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
+      homalt<-sum(rr1==1,na.rm=TRUE)
+      homref<-sum(rr1==0,na.rm=TRUE)
+      covrefhomo<-sum(y[c(rr1 == 0,na.rm = TRUE),],na.rm = TRUE)
+      covalthomo<-sum(y[c(rr1 == 1,na.rm = TRUE),],na.rm = TRUE)
+      covalt<-sum(y[,2],na.rm = TRUE)
+      covref<-sum(y[,1],na.rm = TRUE)
+      NHet<-nrow(snp1het)
+      if(NHet>3){
+        p.all<-(covalt/(NHet+(2*homalt)))/((covalt/(NHet+(2*homalt)))+(covref/(NHet+(2*homref))))
+        p.sum<-sum(snp1het[,2])/sum(snp1het)
+        ll <-data.frame(p.all,p.sum,mean.a.homo=covalthomo/(2*homalt),mean.r.homo=covrefhomo/(2*homref),mean.a.het=sum(snp1het[,2])/NHet,mean.r.het=sum(snp1het[,1])/NHet,cv=cv)
+      } else {
+        ll<-NA
+      }
+      return(ll)
+    })
+  }
+  if(is.list(p.cal)){
+    p.cal<-do.call(rbind,p.cal)
+  } else {
+    p.cal<-t(p.cal)
+  }
+  p.cal[p.cal=="NaN"]<-0
+  if(plot.allele.cov){
+    p.list<-list(...)
+    if(is.null(p.list$pch)) p.list$pch=19
+    if(is.null(p.list$cex)) p.list$cex=0.6
+    if(is.null(p.list$col)) p.list$col<-makeTransparent(colorspace::heat_hcl(12,h=c(0,-100),c=c(40,80),l=c(75,40),power=1)[11])
+    if(is.null(p.list$lcol)) p.list$lcol="tomato"
+    par(mfrow=c(2,2))
+    par(mar=c(4,5,2,2))
+    plot(p.cal$mean.a.homo,p.cal$mean.r.homo,pch=p.list$pch,cex=p.list$cex,
+         col=p.list$col,xlab="Mean coverage of \nalt. allele in homozygotes",
+         ylab="Mean coverage of \n ref. allele in homozygotes",cex.lab=0.8)
+    abline(0,1,col=p.list$lcol)
+    plot(p.cal$mean.a.het,p.cal$mean.r.het,pch=p.list$pch,cex=p.list$cex,
+         col=p.list$col,xlab="Mean coverage of \nalt. allele in heterozygotes",
+         ylab="Mean coverage of \n ref. allele in heterozygotes",cex.lab=0.8)
+    abline(0,1,col=p.list$lcol)
+    plot(p.cal$mean.a.het,p.cal$mean.a.homo,pch=p.list$pch,cex=p.list$cex,
+         col=p.list$col,xlab="Mean coverage of \nalt. allele in heterozygotes",
+         ylab="Mean coverage of \n alt. allele in homozygotes",cex.lab=0.8)
+    abline(0,1,col=p.list$lcol)
+    plot(p.cal$mean.r.het,p.cal$mean.r.homo,pch=p.list$pch,cex=p.list$cex,
+         col=p.list$col,xlab="Mean coverage of \nref. allele in heterozygotes",
+         ylab="Mean coverage of \n ref. allele in homozygotes",cex.lab=0.8)
+    abline(0,1,col=p.list$lcol)
+    par(mfrow=c(1,1))
+  }
+
+  if(verbose){
+    message("calculating chi-square significance")
+    pvals<-lapply_pb(1:nrow(X),get.pvals,df=X,p.cal=p.cal)
+  } else {
+    pvals<-lapply(1:nrow(X),get.pvals,df=X,p.cal=p.cal)
+  }
+  pvals<-do.call(rbind,pvals)
+  pvals<-cbind(X[,1:3],pvals)
+  pvals<-na.omit(pvals)
+  ht<-sig.hets(pvals,plot = FALSE, verbose = verbose)
+  pvals<-data.frame(pvals,eH.pval=ht[,"eH.pval"],eH.delta=ht[,"eH.delta"],cv=na.omit(p.cal[,"cv"]))
+
+  return(pvals)
+}
+
+
+
+allele.info_old<-function(X,x.norm=NULL,method=c("MedR","QN","pca","TMM","TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,...){
+  method=match.arg(method)
+  if(is.null(x.norm)){
+    x.norm<-cpm.normal(X,method=method,logratioTrim=logratioTrim,sumTrim = sumTrim,Weighting = Weighting,Acutoff = Acutoff,verbose = verbose)
+  }
+  if(!inherits(x.norm,"list")){x.norm<-list(AD=x.norm)}
+  if(inherits(x.norm,"list")){x.norm<-x.norm$AD}
 
   if(verbose){
     message("calculating probability values of alleles")
@@ -122,7 +235,7 @@ allele.info<-function(X,x.norm=NULL,method=c("MedR","QN","pca","TMM","TMMex"),lo
         y[,2]<-as.integer(y[,2])} else {y<-snp1}
       rs<-rowSums(y)
       rs[rs==0L]<-NA
-      cv<-sd(unlist(y),na.rm = TRUE)/mean(unlist(y),na.rm = TRUE) # change y to rs
+      cv<-sd(unlist(y),na.rm = TRUE)/mean(unlist(y),na.rm = TRUE)
       rr1<-y[,2]/rs
       snp1het<-y[-which(rr1 == 0 | rr1 == 1 | is.na(rr1)==TRUE),]
       homalt<-sum(rr1==1,na.rm=TRUE)

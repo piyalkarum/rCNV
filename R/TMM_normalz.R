@@ -339,7 +339,7 @@ cpm.normal <- function(het.table, method=c("MedR","QN","pca","TMM","TMMex"),
     if(verbose)   message("\ncalculating normalized depth")
     nf<-norm.fact(tdep, method=method, logratioTrim=logratioTrim,
                   sumTrim=sumTrim, Weighting=Weighting, Acutoff=Acutoff)
-    sc <- 1e9 / (nf[,1]*nf[,2])
+    sc <- median(colSums(tdep)) / (nf[,1]*nf[,2])
     y1 <- round(y1 * rep(sc, each=dm[1]), 2)
     y2 <- round(y2 * rep(sc, each=dm[1]), 2)
     out <- paste0(y1, ",", y2)
@@ -403,5 +403,4 @@ cpm.normal <- function(het.table, method=c("MedR","QN","pca","TMM","TMMex"),
   colnames(out)<-colnames(het.table)
   return(list(AD=out,outliers=data.frame(column=(ot.ind+4),sample=colnames(tdep)[ot.ind])))
 }
-
 
