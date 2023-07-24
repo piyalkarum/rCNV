@@ -479,6 +479,8 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
         Y<-data.frame(do.call(cbind,data.table::tstrsplit(X,",")))
         y<-which(x=="0/0" & Y$X2>0)
         Y[y,]<-0
+        z<-which(x=="./.")
+        Y[z,]<-0
         out<-paste0(Y$X1,",",Y$X2)
         return(out)
       })
@@ -505,42 +507,41 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
     rm(Nw.ad)
   }
   X<-data.frame(het.table[,-c(1:4)])
- if(odd.correct){
-   if(verbose){
-     message("correcting odd number anomalies")
-     vv<-apply_pb(X,2,function(sam){
-       sam<-unname(unlist(sam))
-       tmp <- stringr::str_split_fixed(sam, ",", 2L)
-       tmp<-cbind(as.integer(tmp[,1]),as.integer(tmp[,2]))
-       tch<-which((rowSums(tmp,na.rm=TRUE)%%2)!=0)
-       for(i in tch){
-         tm<-tmp[i,]
-         if(any(tm==0)){tm[which.max(tm)]<-tm[which.max(tm)]+1L}else{tm[which.min(tm)]<-tm[which.min(tm)]+1L}
-         tmp[i,]<-tm
-       }
-       return(paste0(tmp[,1],",",tmp[,2]))
-     })
-     if(inherits(vv,"list")){
-       vv<-do.call(cbind,vv)
-     }
-   } else {
-     vv<-apply(X,2,function(sam){
-       dl<-lapply(sam,function(y){
-         l<-as.numeric(unlist(strsplit(y,",")))
-         if((sum(l,na.rm=TRUE)%%2)!=0){
-           if(any(l==0)){l}else{
-             l[which.min(l)]<-l[which.min(l)]+1}
-         }
-         return(paste0(l,collapse = ","))
-       })
-     })
-     if(inherits(vv,"list")){
-       vv<-do.call(cbind,vv)
-     }
-   }
-   return(cbind(het.table[,1:4],vv))
- } else { return(het.table)}
+  if(odd.correct){
+    if(verbose){
+      message("correcting odd number anomalies")
+      vv<-apply_pb(X,2,function(sam){
+        sam<-unname(unlist(sam))
+        tmp <- stringr::str_split_fixed(sam, ",", 2L)
+        tmp<-cbind(as.integer(tmp[,1]),as.integer(tmp[,2]))
+        tch<-which((rowSums(tmp,na.rm=TRUE)%%2)!=0)
+        for(i in tch){
+          tm<-tmp[i,]
+          if(any(tm==0)){tm[which.max(tm)]<-tm[which.max(tm)]+1L}else{tm[which.min(tm)]<-tm[which.min(tm)]+1L}
+          tmp[i,]<-tm
+        }
+        return(paste0(tmp[,1],",",tmp[,2]))
+      })
+      if(inherits(vv,"list")){
+        vv<-do.call(cbind,vv)
+      }
+    } else {
+      vv<-apply(X,2,function(sam){
+        dl<-lapply(sam,function(y){
+          l<-as.numeric(unlist(strsplit(y,",")))
+          if((sum(l,na.rm=TRUE)%%2)!=0){
+            if(any(l==0)){l}else{
+              l[which.min(l)]<-l[which.min(l)]+1}
+          }
+          return(paste0(l,collapse = ","))
+        })
+      })
+      if(inherits(vv,"list")){
+        vv<-do.call(cbind,vv)
+      }
+    }
+    return(cbind(het.table[,1:4],vv))
+  } else { return(het.table)}
 }
-
 
 
