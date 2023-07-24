@@ -472,7 +472,7 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
 ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
   if(!is.null(gt.table)){
     if(verbose){
-      message("correcting genotype miss-classification")
+      message("correcting genotype mis-classification")
       Nw.ad<-lapply_pb(5:ncol(het.table),function(n){
         X<-het.table[,n]
         x<-gt.table[,n]
