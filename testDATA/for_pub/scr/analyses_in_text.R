@@ -86,8 +86,20 @@ dv.all<-dupGet(AI,test=c("z.all","chi.all")) #to compare with the z. & chi.all f
 
 # filtering putative CNVs with p=0.5 for expected allele frequency
 # with unsupervised clustering
+<<<<<<< HEAD
 cv<-cnv(AI,test = c("z.05","chi.05"), filter = "kmeans")
 cv.all<-cnv(AI,test=c("z.all","chi.all"),filter = "intersection") #to compare with the z. & chi.all for ddRDAseq+RAPTURE
+=======
+cv<-cnv(AI,test = c("z.05","chi.05"), filter = "intersection") #kmeans in the paper
+cv.all<-cnv(AI,test = c("z.all","chi.all"), filter = "intersection")
+
+#overlap of cnvs with 0.5 and all
+setdiff(cv$ID[cv$dup.stat=="cnv"],cv.all$ID[cv.all$dup.stat=="cnv"])
+dlist<-list(for0.5=cv$ID[cv$dup.stat=="cnv"],forall=cv.all$ID[cv.all$dup.stat=="cnv"])
+ggVennDiagram(dlist, category.names = c("for0.5", "forall"), lty="solid", color="black", size=0.2) +
+  scale_fill_gradient2(low = "white", high = 'gray40') + guides(fill = "none") + theme(text = element_text(size=16, family = "Times"))
+
+>>>>>>> 2e165c6ff647817cc158332f9df11b0ebec461c8
 
 # Alternative allele frequence across all samples for all SNPs
 pp<-(AI$NHet+((AI$NHomAlt)*2))/(2*AI$Nsamp)
@@ -122,6 +134,7 @@ plot(0,typ="n",xlim=c(0,yd),ylim=c(0,rr),bty="n")
 polygon(density(ss,adjust = 2),col=cl[2],lwd=1.5)
 polygon(density(dd,adjust = 2),col=cl[1],lwd=1.5)
 
+<<<<<<< HEAD
 ### plot Dorant detection
 #comparison
 orig.lobster<-readRDS("/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/tst/lobster/Lob.Dorant.original.rds")
@@ -140,6 +153,36 @@ plot(dorant.table$medRatio~dorant.table$propHet,type="n",xlab="Proportion of het
 points(duplicates$medRatio~duplicates$propHet,pch=19,cex=.5,col=2)
 points(singletons$medRatio~singletons$propHet,pch=19,cex=.5)
 
+=======
+##### validation (vst PCA) ..... added on june 29 2023
+dnw<-readRDS("/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/tst/lobster_detection_w_oddCorr_&_medR_nor.rds")
+rc.d<-dnw[dnw$dup.stat=="duplicated",]
+#vst
+dvst<-readRDS("/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/tst/lobster_data4Vst.rds")
+dd<-rCNV:::apply_pb(dvst[,-c(1:4)],2,function(x){do.call(cbind,lapply(x,function(y){sum(as.numeric(unlist(strsplit(as.character(y),","))))}))})
+rownames(dd)<-dvst$ID
+pops<-substr(colnames(dd),1,4)
+dd<-data.frame(dvst[,1:4],dd)
+Vs<-vst(dd,pops=pops)
+write.table(Vs, "/Users/piyalkarunarathne/Desktop/UPPSALA/manuscripts/rCNV/submits/MER/revision1/vst.txt",quote = F)
+#fst
+gt<-readRDS("/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/tst/lobster_GT.rds")
+gt<-gt[match(dd$ID,gt$ID),]
+af<-allele.freq(gt,f.typ = "ind")
+af.sm<-t(af[,-c(1:4)])
+af.sm<-data.frame(Sample=rownames(af.sm),Pop=pops,pop.num=factor(pops),ploidy=2,format="BiA",af.sm)
+FS1<-stamppFst(af.sm)
+write.table(FS1$Fsts, "/Users/piyalkarunarathne/Desktop/UPPSALA/manuscripts/rCNV/submits/MER/revision1/fst.txt")
+
+par(mfrow=c(1,3))
+qgraph::qgraph(1/Vs,layout="spring",title="With Vst")
+qgraph::qgraph(1/FS1$Fsts,layout="spring",title="With Fst")
+#par(mfrow=c(1,1))
+vst.s<-as.dist(Matrix::forceSymmetric(Vs,uplo = "L"))
+fst.s<-as.dist(Matrix::forceSymmetric(FS1$Fsts,uplo = "L"))
+plot(vst.s~fst.s,pch=19,cex=0.5,xlab="Fst",ylab="Vst")
+abline(lm(vst.s~fst.s),col="red")
+>>>>>>> 2e165c6ff647817cc158332f9df11b0ebec461c8
 
 ################################################################################
 

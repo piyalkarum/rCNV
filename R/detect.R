@@ -1,7 +1,7 @@
 # chisq-test
 chisq_test<-function(ob, ex){
   statistic <- sum((ob-ex)^2/ex)
-  pval <- pchisq(statistic, 1, lower.tail = FALSE)
+  pval <- pchisq(statistic, 2, lower.tail = FALSE)
   pval
 }
 
