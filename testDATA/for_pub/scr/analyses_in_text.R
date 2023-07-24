@@ -82,10 +82,12 @@ AI<-allele.info(htc,x.norm = htn0,plot.allele.cov=T)
 
 # Flagging deviants with p=0.5 for expected allele frequency
 dv<-dupGet(AI,test = c("z.05","chi.05"))
+dv.all<-dupGet(AI,test=c("z.all","chi.all")) #to compare with the z. & chi.all for ddRDAseq+RAPTURE
 
 # filtering putative CNVs with p=0.5 for expected allele frequency
 # with unsupervised clustering
 cv<-cnv(AI,test = c("z.05","chi.05"), filter = "kmeans")
+cv.all<-cnv(AI,test=c("z.all","chi.all"),filter = "intersection") #to compare with the z. & chi.all for ddRDAseq+RAPTURE
 
 # Alternative allele frequence across all samples for all SNPs
 pp<-(AI$NHet+((AI$NHomAlt)*2))/(2*AI$Nsamp)
@@ -119,6 +121,26 @@ yd<-max(dd)+10
 plot(0,typ="n",xlim=c(0,yd),ylim=c(0,rr),bty="n")
 polygon(density(ss,adjust = 2),col=cl[2],lwd=1.5)
 polygon(density(dd,adjust = 2),col=cl[1],lwd=1.5)
+
+### plot Dorant detection
+#comparison
+orig.lobster<-readRDS("/Users/piyalkarunarathne/Desktop/UPPSALA/R/rCNV/tst/lobster/Lob.Dorant.original.rds")
+
+dorant.table<-data.frame(cbind(AI[match(orig.lobster$ID,AI$ID),],orig.lobster$dup.stat))
+dorant.table<-na.omit(dorant.table)
+
+duplicates<-dorant.table[dorant.table$orig.lobster.dup.stat=="duplicated",]
+singletons<-dorant.table[dorant.table$orig.lobster.dup.stat=="singlet",]
+
+plot(dorant.table$medRatio~dorant.table$propHet,type="n",xlab="Proportion of heterozygotes",ylab="Median ratio")
+points(singletons$medRatio~singletons$propHet,pch=19,cex=.5)
+points(duplicates$medRatio~duplicates$propHet,pch=19,cex=.5,col=2)
+
+plot(dorant.table$medRatio~dorant.table$propHet,type="n",xlab="Proportion of heterozygotes",ylab="Median ratio")
+points(duplicates$medRatio~duplicates$propHet,pch=19,cex=.5,col=2)
+points(singletons$medRatio~singletons$propHet,pch=19,cex=.5)
+
+
 ################################################################################
 
 #3. Norway Spruce (subset of data from Chen et al. 2019)
