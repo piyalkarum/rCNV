@@ -12,7 +12,7 @@ The intersection of all the stats provided will be used in the categorization. I
     
     <a class="navbar-brand me-2" href="../index.html">rCNV</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,6 +61,7 @@ The intersection of all the stats provided will be used in the categorization. I
 <span>  <span class="va">data</span>,</span>
 <span>  test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.het"</span>, <span class="st">"z.05"</span>, <span class="st">"z.all"</span>, <span class="st">"chi.het"</span>, <span class="st">"chi.05"</span>, <span class="st">"chi.all"</span><span class="op">)</span>,</span>
 <span>  filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"intersection"</span>, <span class="st">"kmeans"</span><span class="op">)</span>,</span>
+<span>  WGS <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  ft.threshold <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -83,6 +84,10 @@ See details</p></dd>
 <dt>filter</dt>
 <dd><p>character. Type of filter to be used for filtering CNVs.
 default <code>kmeans</code>. See details.</p></dd>
+
+
+<dt>WGS</dt>
+<dd><p>logical. test parameter. See details</p></dd>
 
 
 <dt>ft.threshold</dt>
@@ -124,7 +129,11 @@ probe bias p=0.5 (<code>z.05, chi.05</code>)</p>
 clustering of the provided <code>test</code>s should be used in filtering CNVs.
 The intersection uses threshold values for filtering and kmeans use
 unsupervised clustering. Kmeans clustering is recommended if one is uncertain
-about the threshold values.</p>
+about the threshold values.
+<code>WGS</code> is a test parameter to include or exclude coefficient of variance
+(cv) in kmeans. For data sets with more homogeneous depth distribution,
+excluding cv improves CNV detection. If you're not certain about this, use
+<code>TRUE</code> which is the default.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
