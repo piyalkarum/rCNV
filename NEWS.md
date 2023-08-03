@@ -1,5 +1,9 @@
 # rCNV 1.2.0 (second update)
 * relatedness function optimized
+* bugs fixed in cpm.normal function
+* bugs fixed in the sig.het function
+* new publication added
+* web page updated
 
 # rCNV 1.1.0 (first update)
 

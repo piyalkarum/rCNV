@@ -286,6 +286,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' @param ft.threshold confidence interval for filtering \code{default = 0.05}
 #' @param plot logical. Plot the detection of duplicates. default \code{TRUE}
 #' @param verbose logical. show progress
+#' @param WGS logical. test parameter. See details
 #' @param ... other arguments to be passed to \code{plot}
 #'
 #' @return Returns a data frame of SNPs with their detected duplication status
@@ -314,6 +315,10 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' The intersection uses threshold values for filtering and kmeans use
 #' unsupervised clustering. Kmeans clustering is recommended if one is uncertain
 #' about the threshold values.
+#' \code{WGS} is a test parameter to include or exclude coefficient of variance
+#' (cv) in kmeans. For data sets with more homogeneous depth distribution,
+#' excluding cv improves CNV detection. If you're not certain about this, use
+#' \code{TRUE} which is the default.
 #'
 #' @author Piyal Karunarathne
 #'
@@ -322,7 +327,78 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' DD<-cnv(alleleINF)}
 #'
 #' @export
-cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),ft.threshold=0.05,plot=TRUE,verbose=TRUE,...){
+cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),WGS=TRUE,ft.threshold=0.05,plot=TRUE,verbose=TRUE,...){
+  #data check
+  data<-as.data.frame(data)
+  data$z.het.sum<-abs(data$z.het.sum)
+  data$z.05.sum<-abs(data$z.05.sum)
+  data$z.all.sum<-abs(data$z.all.sum)
+  if(!any(colnames(data)=="propHet")){
+    stop("please provide the output of allele.info()")
+  } else {
+    ht<-data[,c("eH.pval","eH.delta")]
+    filter<-match.arg(filter,several.ok = TRUE)
+    if(length(filter)>1){filter="kmeans"}
+
+    test<-match.arg(test,several.ok = TRUE)
+    if(length(test)==6){
+      if(verbose){cat(paste0("categorizing putative duplicates with \n excess of heterozygotes ","z.all & chi.all"))}
+      pp<-data[,c("z.all","chi.all")]
+    } else {
+      pp<-data.frame(data[,test])
+      if(verbose){cat(paste0("categorizing putative duplicates with \n", "excess of heterozygotes \n",paste0(unlist(test),collapse = "\n")))}
+    }
+    if(filter=="intersection"){
+
+      df<-as.data.frame(apply(pp,2,function(x){ifelse(x<ft.threshold/length(x),1,0)}))
+      df$eH<-0
+      df$eH[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-1
+      pp$dup.stat<-"non-cnv"
+      pp$dup.stat[which(rowSums(df)>=2)]<-"cnv"
+      pp$dup.stat[which(df$eH==1)]<-"cnv"
+      pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
+    }
+
+    if(filter=="kmeans"){
+      test<-paste0(test,".sum")
+      AF<-c(data[,"NHet"]+(2*data[,"NHomAlt"]))/(2*data[,"Nsamp"])
+      Exp<-2*AF*(1-AF)*data[,"Nsamp"]
+      candidate<-data.frame(abs(data[,test])/sqrt(data[,"NHet"]),eH.delta=data[,"eH.delta"]/sqrt(Exp),cv=data[,"cv"])
+      candidate<-scale(candidate)
+      if(WGS){
+        cls<-kmeans(candidate, centers=2, nstart = 50)
+      } else {
+        cls<-kmeans(candidate[,-ncol(candidate)], centers=2, nstart = 50)
+      }
+      pp$dup.stat<-rep("non-cnv",nrow(data))
+      mn<-which.min(table(cls$cluster))
+      pp$dup.stat[which(cls$cluster==mn)]<-"cnv"
+      pp$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"cnv"
+      pp<-data.frame(data[,1:10],dup.stat=pp$dup.stat)
+    }
+
+    if(plot){
+      l<-list(...)
+      if(is.null(l$cex)) l$cex=0.2
+      if(is.null(l$pch)) l$pch=19
+      if(is.null(l$xlim)) l$xlim=c(0,1)
+      if(is.null(l$ylim)) l$ylim=c(0,1)
+      if(is.null(l$alpha)) l$alpha=0.3
+      if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))
+      Color <- rep(l$col[2],nrow(pp))
+      Color[pp$dup.stat=="cnv"]<- l$col[1]
+      plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
+           ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+      legend("bottomright", c("CNVs","non-CNVs"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+             cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
+    }
+  }
+  return(pp)
+}
+
+
+
+cnv_old<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),ft.threshold=0.05,plot=TRUE,verbose=TRUE,...){
   #data check
   data<-as.data.frame(data)
   data$z.het.sum<-abs(data$z.het.sum)

@@ -39,7 +39,7 @@ We provide here a complete workflow of detecting CNVs from SNPs, starting with r
 ```{r, eval=FALSE}
 # Start by installing the package if you haven't already done so.  
 # To install the CRAN version
-install.packages(rCNV)
+install.packages("rCNV")
 
 # Or if you would like to install the development version of the package
 if (!requireNamespace("devtools", quietly = TRUE)) 
@@ -298,6 +298,8 @@ TBA
 * Chen, J., Li, L., Milesi, P., Jansson, G., Berlin, M., Karlsson, B., … Lascoux, M. (2019). Genomic data provide new insights on the demographic history and the extent of recent material transfers in Norway spruce. Evolutionary Applications, 12(8), 1539–1551. doi: 10.1111/eva.12801
 
 * Dorant, Y., Cayuela, H., Wellband, K., Laporte, M., Rougemont, Q., Mérot, C., … Bernatchez, L. (2020). Copy number variants outperform SNPs to reveal genotype–temperature association in a marine species. Molecular Ecology, 29(24), 4765–4782. doi: 10.1111/mec.15565
+
+* Karunarathne P, Zhou Q, Schliep K, Milesi P. A comprehensive framework for detecting copy number variants from single nucleotide polymorphism data: 'rCNV', a versatile r package for paralogue and CNV detection. Mol Ecol Resour. 2023 Jul 29. doi: 10.1111/1755-0998.13843
 
 * Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs detection. BioRxiv, 2022.10.14.512217. doi: 10.1101/2022.10.14.512217  
 
