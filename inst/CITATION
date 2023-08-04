@@ -1,17 +1,12 @@
-citHeader("To cite rCNV in publications use: \n
-Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2023). A Comprehensive framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralog and CNV detection. Molecular Ecology Resources, . https://doi.org/10.1111/1755-0998.13843")
-
-citEntry(
-  entry    = "Article",
-  title    = "A Comprehensive framework for detecting copy number variants from single nucleotide polymorphism data: ‘rCNV’, a versatile R package for paralog and CNV detection",
-  author   = "Karunarathne, Piyal and Zhou, Qiujie and Schliep, Klaus and Milesi, Pascal",
+bibentry(
+  bibtype    = "Article",
+  title    = "A Comprehensive framework for detecting copy number variants from single nucleotide polymorphism data: 'rCNV', a versatile R package for paralog and CNV detection",
+  author   = c(person("Piyal","Karunarathne"),person("Qiujie","Zhou"), person("Klaus","Schliep"), person("Pascal","Milesi")),
   journal  = "Molecular Ecology Resources",
   year     = "2023",
   volume   = "",
   number   = "",
-  pages    = "",
-  url      = "https://doi.org/10.1111/1755-0998.13843",
-  textVersion = paste(
-
-  )
+  pages    = "1-8",
+  doi      = "10.1111/1755-0998.13843",
+  header   = "To cite rCNV in a publication please use:"
 )

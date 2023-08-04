@@ -285,8 +285,8 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' default \code{kmeans}. See details.
 #' @param ft.threshold confidence interval for filtering \code{default = 0.05}
 #' @param plot logical. Plot the detection of duplicates. default \code{TRUE}
-#' @param verbose logical. show progress
 #' @param WGS logical. test parameter. See details
+#' @param verbose logical. show progress
 #' @param ... other arguments to be passed to \code{plot}
 #'
 #' @return Returns a data frame of SNPs with their detected duplication status
@@ -315,11 +315,13 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' The intersection uses threshold values for filtering and kmeans use
 #' unsupervised clustering. Kmeans clustering is recommended if one is uncertain
 #' about the threshold values.
+#'
+#' @param WGS logical. test parameter. See details
 #' \code{WGS} is a test parameter to include or exclude coefficient of variance
 #' (cv) in kmeans. For data sets with more homogeneous depth distribution,
 #' excluding cv improves CNV detection. If you're not certain about this, use
 #' \code{TRUE} which is the default.
-#'
+
 #' @author Piyal Karunarathne
 #'
 #' @examples
@@ -363,7 +365,8 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
       test<-paste0(test,".sum")
       AF<-c(data[,"NHet"]+(2*data[,"NHomAlt"]))/(2*data[,"Nsamp"])
       Exp<-2*AF*(1-AF)*data[,"Nsamp"]
-      candidate<-data.frame(abs(data[,test])/sqrt(data[,"NHet"]),eH.delta=data[,"eH.delta"]/sqrt(Exp),cv=data[,"cv"])
+      #candidate<-data.frame(data[,test]/sqrt(data[,"NHet"]),eH.delta=data[,"eH.delta"]/sqrt(Exp),cv=data[,"cv"]) # to be tested
+      candidate<-data.frame(data[,test]/data[,"NHet"],eH.delta=data[,"eH.delta"]/sqrt(Exp),cv=data[,"cv"])
       candidate<-scale(candidate)
       if(WGS){
         cls<-kmeans(candidate, centers=2, nstart = 50)
@@ -396,8 +399,7 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
   return(pp)
 }
 
-
-
+#' @noRd
 cnv_old<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),ft.threshold=0.05,plot=TRUE,verbose=TRUE,...){
   #data check
   data<-as.data.frame(data)
@@ -460,8 +462,6 @@ cnv_old<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all
   }
   return(pp)
 }
-
-
 
 
 

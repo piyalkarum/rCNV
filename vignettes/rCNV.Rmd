@@ -189,7 +189,7 @@ The Chi-squared values per SNP per sample were calculated using the following eq
   
 ![](chi2.2.svg)
 
-Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub>Ai</sub>* is the alternative allele read-depth for heterozugote *i* at SNP *x*, *p* is the probability of sampling allele *A* at SNP *x* in heterozygotes - in unbiased sequencing, this is *0.5*, *n* is the number of heterozygotes at SNP *x*.  
+Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub>Ai</sub>* is the alternative allele read-depth for heterozygote *i* at SNP *x*, *p* is the probability of sampling allele *A* at SNP *x* in heterozygotes - in unbiased sequencing, this is *0.5*, *n* is the number of heterozygotes at SNP *x*.  
 
 In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the `allele.info()` output.  
 
