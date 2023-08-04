@@ -22,3 +22,4 @@
 ^R\deprecated.R
 ^CRAN-RELEASE$
 ^internal$
+^CRAN-SUBMISSION$
