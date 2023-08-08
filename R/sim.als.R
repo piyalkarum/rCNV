@@ -45,8 +45,11 @@ makeTransparent = function(..., alpha=0.5) {
   return(newColor)
 }
 
+
+#' @importFrom stats quantile
+#' @importFrom grDevices colorRampPalette as.raster
 #5 plot depth vs samples
-plot.svd <- function(MR,cols=c("#1C86EE", "#00BFFF", "#DAA520", "#FF0000")){
+plot_svd <- function(MR,cols=c("#1C86EE", "#00BFFF", "#DAA520", "#FF0000")){
   opars<-par(no.readonly = TRUE)
   on.exit(par(opars))
   MR<-MR[-1,-1]
@@ -174,7 +177,7 @@ depthVsSample<-function(cov.len=100,sam.len=100,nsims=1000,plot=TRUE,col=c("#1C8
   rownames(alsim)<-1:cov.len
 
   if(plot){
-    plot.svd(MR=alsim,cols = col)
+    plot_svd(MR=alsim,cols = col)
   }
   return(alsim)
 }
