@@ -120,7 +120,7 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
 #' \dontrun{data(alleleINF)
 #' data(ADtable)
 #' DD<-dupGet(alleleINF)
-#' ds<-DD[DD$dup.stat=="duplicated",]
+#' ds<-DD[DD$dup.stat=="deviant",]
 #' ad<-ADtable[match(paste0(ds$CHROM,".",ds$POS),paste0(ADtable$CHROM,".",ADtable$POS)),]
 #' vst(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 #'
