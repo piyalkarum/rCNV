@@ -183,5 +183,67 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,verbose=TRUE,...){
 }
 
 
+#' Run permutation on Vst
+#'
+#' This function runs a permutation test on Vst calculation
+#'
+#' @param AD data frame of total allele depth values of SNPs
+#' @param pops character. A vector of population names for each individual.
+#' Must be the same length as the number of samples in AD
+#' @param nperm numeric. Number of permutations to perform
+#' @param qGraph logical. Plot the network plot based on observed Vst values
+#' (see \code{vst()} help page for more details)
+#' @param histogram logical. plots the distribution histogram of permuted vst values vs. observed values
+#'
+#' @importFrom qgraph qgraph
+#' @importFrom graphics hist
+#'
+#' @return Returns a list with observed vst values, an array of permuted vst values and the p-values for the permutation test
+#'
+#'
+#' @author Piyal Karunarathne, Jorge Cortés-Miranda (email:)
+#'
+#' @examples
+#' \dontrun{data(alleleINF)
+#' data(ADtable)
+#' DD<-dupGet(alleleINF)
+#' ds<-DD[DD$dup.stat=="deviant",]
+#' ad<-ADtable[match(paste0(ds$CHROM,".",ds$POS),paste0(ADtable$CHROM,".",ADtable$POS)),]
+#' vstPermutation(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
+#'
+#' @export
+vstPermutation<-function(AD,pops,nperm=100,histogram=TRUE,qGraph=TRUE){
+  npop<-length(unique(pops))
+  message("Permuting Vst")
+  perm_vst<-sapply_pb(1:nperm,function(x){
+    ind_cnv <- AD[-1:-4]
+    ind_test <- sample(ind_cnv, size = length(ind_cnv), replace = F)
+    dd_test <- cbind(AD[1:4], ind_test)
+    Vs_sim <-  vst(dd_test, pops= pops, qGraph = FALSE,verbose = FALSE)
+  },simplify="array")
 
+  message("Calculating ovserved Vst")
+  obs_vst<-vst(AD, pops, qGraph = qGraph,verbose = TRUE)
+
+  out_mat<-matrix(0, nrow = npop, ncol = npop)
+  for(i in 1:nperm){
+    matrix1=perm_vst[,,i]
+    comparison_matrix <- matrix(0, nrow = nrow(matrix1), ncol = ncol(matrix1))
+    comparison_matrix[!is.na(matrix1) & !is.na(obs_vst)] <- as.numeric(matrix1[!is.na(matrix1)] > obs_vst[!is.na(obs_vst)])
+    out_mat<-out_mat+comparison_matrix
+  }
+  p_mat<-out_mat/nperm
+  p_mat[upper.tri(p_mat)] <- NA
+
+  if(histogram){
+    h_dat<-perm_vst[2,1,1:nperm]
+    hist(h_dat, main = "Vst Permutation Test Histogram",
+         xlab = "VST", ylab = "Frequency",
+         col = "dodgerblue", border = F)
+    abline(v = obs_vst[2,1], col = 2, lwd = 2)
+    legend("topright", legend = c("Observed Vst", "Permutation Vst"),
+           col = c(2, "dodgerblue"), lwd = 2)
+  }
+  return(list(observed_vst=obs_vst,permuted_vst=perm_vst,pvalue=p_mat))
+}
 
