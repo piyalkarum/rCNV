@@ -35,5 +35,5 @@ vstPermutation(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 
 }
 \author{
-Piyal Karunarathne, Jorge Cortés-Miranda (email:)
+Jorge Cortés-Miranda (email:), Piyal Karunarathne
 }

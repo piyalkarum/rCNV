@@ -201,7 +201,7 @@ vst<-function(AD,pops,id.list=NULL,qGraph=TRUE,verbose=TRUE,...){
 #' @return Returns a list with observed vst values, an array of permuted vst values and the p-values for the permutation test
 #'
 #'
-#' @author Piyal Karunarathne, Jorge Cortés-Miranda (email:)
+#' @author Jorge Cortés-Miranda (email:), Piyal Karunarathne
 #'
 #' @examples
 #' \dontrun{data(alleleINF)
