@@ -1,3 +1,6 @@
+# rCNV 1.3.0 (third update)
+* vstPermutation function added
+
 # rCNV 1.2.0 (second update)
 * relatedness function optimized
 * bugs fixed in cpm.normal function

@@ -4,7 +4,14 @@
 \alias{vstPermutation}
 \title{Run permutation on Vst}
 \usage{
-vstPermutation(AD, pops, nperm = 100, histogram = TRUE, qGraph = TRUE)
+vstPermutation(
+  AD,
+  pops,
+  nperm = 100,
+  histogram = TRUE,
+  stat = 2,
+  qGraph = TRUE
+)
 }
 \arguments{
 \item{AD}{data frame of total allele depth values of SNPs}
@@ -15,6 +22,8 @@ Must be the same length as the number of samples in AD}
 \item{nperm}{numeric. Number of permutations to perform}
 
 \item{histogram}{logical. plots the distribution histogram of permuted vst values vs. observed values}
+
+\item{stat}{numeric. The stat to be plotted in histogram. 1 for Mean Absolute Distance or 2 (\code{default}) for Root Mean Square Distance}
 
 \item{qGraph}{logical. Plot the network plot based on observed Vst values
 (see \code{vst()} help page for more details)}
@@ -35,5 +44,5 @@ vstPermutation(ad,pops=substr(colnames(ad)[-c(1:4)],1,11))}
 
 }
 \author{
-Jorge Cortés-Miranda (email:), Piyal Karunarathne
+Jorge Cortés-Miranda (email:\href{mailto:jorge.cortes.m@ug.uchile.cl}{jorge.cortes.m@ug.uchile.cl}), Piyal Karunarathne
 }
