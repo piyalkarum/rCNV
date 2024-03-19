@@ -288,7 +288,9 @@ pops<-substr(colnames(dd),1,4)
 dd<-data.frame(vdata[,1:4],dd)
 Vs<-vst(dd,pops=pops,verbose=F)
 ```
-Fig. 3.1. Vst network qgraph generated from the Vst values for each lobster population. Circles represent populations and the green arrows show similarity and the direction.See `qgraph` help for the interpretation of the network analysis.
+Fig. 3.1. Vst network qgraph generated from the Vst values for each lobster population. Circles represent populations and the green arrows show similarity and the direction.See `qgraph` help for the interpretation of the network analysis.  
+
+NOTE: You can also run a permutation test (using `vstPermutation`) on the vst calculation to test the randomness of the vst.
 
 ### 3.2 Relative copy number
 TBA
