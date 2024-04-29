@@ -133,12 +133,24 @@ gg<-function(x){
 #' a bi-allelic matrix when loci are multi-allelic
 #'
 #' @param h.table allele depth table generated from the function \code{hetTgen}
-#' @param AD logical. If TRUE a allele depth table similar to \code{hetTgen}
-#' output will be returns; If \code{FALSE}, individual AD values per SNP will be
+#' @param drop.multi logical. If TRUE, all the sites with more than two allele will be
+#' dropped. If FALSE \code{default}, the the two alleles with the highest allele
+#' frequencies will be retained. See details for more information.
+#' @param AD logical. If TRUE, an allele depth table similar to \code{hetTgen}
+#' output will be returned; If \code{FALSE}, individual AD values per SNP will be
 #' returned in a list.
 #' @param verbose logical. Show progress
 #'
 #' @return A data frame or a list of minimum allele frequency removed allele depth
+#'
+#' @details
+#' This function either drops all sites with more than two alleles or keep alleles \code{drop.multi=TRUE}
+#' with the highest allele frequencies in the case of multi-allelic sites \code{drop.multi=FALSE}.
+#' Note that, in the latter case, all sites will be retained, essentially assuming that multi-allelic sites
+#' are also bi-allelic by dropping the alleles with minimum frequencies.
+#' This function can only be used on the output of the \code{hetTgen()}. If you need to remove the multi-allelic sites
+#' from the vcf, use \code{rCNV:::non_bi_rm()} function. We recommend using other programs (e.g., vcftools, GATK, etc.) for removing multiallelic sites faster.
+#'
 #'
 #' @author Piyal Karunarathne
 #'
@@ -146,24 +158,34 @@ gg<-function(x){
 #' \dontrun{mf<-maf(ADtable)}
 #'
 #' @export
-maf<-function(h.table,AD=TRUE,verbose=TRUE){
-  htab<-h.table[,-c(1:3)]
-  if(verbose){
-    glt<-apply_pb(htab,1,function(X){
-      gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
-      while(ncol(gg)>2){gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]}
-      if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
-    })
-  }else{
-    glt<-apply(htab,1,function(X){
-      gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
-      if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]
-      if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
-    })
+maf<-function(h.table,drop.multi=FALSE,AD=TRUE,verbose=TRUE){
+  h.table<-data.frame(h.table)
+  warning(paste0("There are ",sum(nchar(h.table$ALT)>1),"multi-allelic sites"))
+  if(drop.multi){
+    h.table<-h.table[-which(nchar(h.table$ALT)>1),] # drop multi-allelic sites
+    message(paste0("\n",sum(nchar(h.table$ALT)>1),"multi-allelic sites were removed"))
+    return(h.table)
+  } else { # drop alleles with maf when multi-allelic
+    htab<-h.table[,-c(1:4)]
+    if(verbose){
+      glt<-apply_pb(htab,1,function(X){suppressWarnings({
+        gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
+        while(ncol(gg)>2){gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]}
+        if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
+      })
+      })
+    }else{
+      glt<-apply(htab,1,function(X){
+        gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
+        if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]
+        if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
+      })
+    }
+    glt<-data.frame(h.table[,1:4],t(glt))
+    colnames(glt)<-colnames(h.table)
+    message("Minimum frequency alleles were removed in multi-allelic sites")
+    return(glt)
   }
-  glt<-data.frame(h.table[,1:3],t(glt))
-  colnames(glt)<-colnames(h.table)
-  return(glt)
 }
 
 
@@ -225,7 +247,7 @@ hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),ve
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
   if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
   if(any(nchar(vcf$ALT)>1)){
-    warning("vcf file contains multi-allelic variants: only bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps")
+    warning("vcf file contains multi-allelic variants: \nonly bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps or drop minumum frequency alleles")
   }
   if(inherits(vcf,"list")){vcf<-vcf$vcf}
 
@@ -512,9 +534,9 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
         x<-gt.table[,n]
         Y<-data.frame(do.call(cbind,data.table::tstrsplit(X,",")))
         y<-which(x=="0/0" & Y$X2>0)
-        rr<-range(Y$X2[y])#range of depth in miss classified snps
+        rr<-range(Y$X2[y])#range of depth in mis classified snps
         Y[y,]<-0
-        ll<-length(y)#number of miss classifications
+        ll<-length(y)#number of mis classifications
         out<-paste0(Y$X1,",",Y$X2)
         return(out)
       })

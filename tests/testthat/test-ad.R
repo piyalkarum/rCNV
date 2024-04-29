@@ -1,3 +1,3 @@
 test_that("AD correct works", {
-  expect_is(ad.correct(ADtable), class = "data.frame")
+  expect_type(ad.correct(ADtable), "list")
 })

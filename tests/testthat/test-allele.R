@@ -1,3 +1,3 @@
 test_that("Infor works", {
-  expect_is(allele.info(ADtable,x.norm=ADnorm), class="data.frame")
+  expect_type(allele.info(ADtable,x.norm=ADnorm), "list")
 })

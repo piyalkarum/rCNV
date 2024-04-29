@@ -1,5 +1,7 @@
 # rCNV 1.3.0 (third update)
 * vstPermutation function added
+* maf modified to remove multi-allelic sites
+* FIT correction added
 
 # rCNV 1.2.0 (second update)
 * relatedness function optimized

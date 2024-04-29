@@ -219,7 +219,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
   #data check
   data<-as.data.frame(data)
   if(!any(colnames(data)=="propHet")){
-    stop("please provide the data with the output of allele.info()")
+    stop("please provide the output of allele.info()")
   } else {
     if(!(any(colnames(data)=="eH.pval"))) {
       ht<-sig.hets(data,plot=F,verbose=verbose)
