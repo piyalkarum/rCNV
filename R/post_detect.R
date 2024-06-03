@@ -28,6 +28,39 @@ wind<-function(xx,dd){
 #'
 #' @author Piyal Karunarathne
 #'
+#' @examples
+#' \dontrun{
+#' # suggestion to visualize dup.validate output
+#'
+#' library(ggplot2)
+#' library(dplyr)
+#'
+#' dvs<-dupGet(alleleINF,test=c("z.05","chi.05"))
+#' dvd<-dup.validate(dvs,window.size = 1000)
+#'
+#' # Example data frame
+#' df <- data.frame(dvd[,3:5])
+#' df$cnv.ratio<-as.numeric(df$cnv.ratio)
+#'
+#' # Calculate midpoints
+#' df <- df %>%
+#'   mutate(midpoint = (start + end) / 2)
+#'
+#' ggplot() +
+#'   # Horizontal segments for each start-end range
+#'   geom_segment(data = df, aes(x = start, xend = end,
+#'   y = cnv.ratio, yend = cnv.ratio), color = "blue") +
+#'   # Midpoints line connecting midpoints of each range
+#'   geom_path(data = df, aes(x = midpoint, y = cnv.ratio), color = "red") +
+#'   geom_point(data = df, aes(x = midpoint, y = cnv.ratio), color = "red") +
+#'   # Aesthetic adjustments
+#'   theme_minimal() +
+#'   labs(title = "CNV Ratio along a Continuous Axis with Midpoint Fluctuation",
+#'       x = "Genomic Position",
+#'        y = "CNV Ratio")
+#' }
+#'
+#'
 #' @export
 dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
   nm<-unique(d.detect[,1])
@@ -83,9 +116,9 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
   if(is.list(means)){dup.ratio<-do.call(rbind,means)}else{dup.ratio<-data.frame(means)}
   #dup.ratio[,1]<-nm
   dup.ratio[dup.ratio=="NaN"]<-0
-  # colnames(dup.ratio)<-c("CHROM","cnv.ratio","CHROM.length","cnvs","non.cnvs","start","end")
   dup.ratio<-data.frame(dup.ratio[,1],dup.ratio[,3],dup.ratio[,6:7],dup.ratio[,c(2,4:5)])
   colnames(dup.ratio)<-c("CHROM","Chr.length","start","end","cnv.ratio","cnvs","non.cnvs")
+  dup.ratio$cnv.ratio<-as.numeric(dup.ratio$cnv.ratio)
   return(data.frame(dup.ratio))
 }
 

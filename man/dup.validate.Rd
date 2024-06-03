@@ -27,6 +27,40 @@ Loci/SNP positions correctly ordered according to a reference
 sequence is necessary for this function to work properly. The list of deviants/cnvs provided in the \code{d.detect} will be split into pices of \code{scaf.size} and the number of deviants/cnvs will be counted along each split with a moving window of \code{window.size}. The resulting percentages of deviants/cnvs will be averaged for each scaf.size split; this is the \code{cnv.ratio} column in the output. Thus, ideally, the \code{cnv.ratio} is a measure of how confident the detected deviants/cnvs are in an actual putative duplicated region withing the given \code{scaf.size}. This ratio is sensitive to the picked window size and the scaf.size; as a rule of thumb, it is always good to use a known gene length as the scaf.size, if you need to check a specific gene for the validity of the detected duplicates.
 Please also note that this function is still in its \code{beta-testing} phase and also under development for non-mapped reference sequences. Therefore, your feedback and suggestions will be highly appreciated.
 }
+\examples{
+\dontrun{
+# suggestion to visualize dup.validate output
+
+library(ggplot2)
+library(dplyr)
+
+dvs<-dupGet(alleleINF,test=c("z.05","chi.05"))
+dvd<-dup.validate(dvs,window.size = 1000)
+
+# Example data frame
+df <- data.frame(dvd[,3:5])
+df$cnv.ratio<-as.numeric(df$cnv.ratio)
+
+# Calculate midpoints
+df <- df \%>\%
+  mutate(midpoint = (start + end) / 2)
+
+ggplot() +
+  # Horizontal segments for each start-end range
+  geom_segment(data = df, aes(x = start, xend = end,
+  y = cnv.ratio, yend = cnv.ratio), color = "blue") +
+  # Midpoints line connecting midpoints of each range
+  geom_path(data = df, aes(x = midpoint, y = cnv.ratio), color = "red") +
+  geom_point(data = df, aes(x = midpoint, y = cnv.ratio), color = "red") +
+  # Aesthetic adjustments
+  theme_minimal() +
+  labs(title = "CNV Ratio along a Continuous Axis with Midpoint Fluctuation",
+      x = "Genomic Position",
+       y = "CNV Ratio")
+}
+
+
+}
 \author{
 Piyal Karunarathne
 }
