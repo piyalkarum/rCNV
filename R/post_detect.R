@@ -34,6 +34,7 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
   gg<-lapply(nm,wind,dd=d.detect)
   names(gg)<-nm
   means<-lapply_pb(nm,function(x,mw,gg){yy<-unlist(gg[names(gg)==x])
+
   ll<-mw+(mw/2)
   if(length(yy)>ll){
     if(length(yy)>2*scaf.size){
@@ -71,6 +72,7 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
     dp<-cbind(x,dp,length(yy),sum(yy=="cnv" | yy=="deviant"),sum(yy=="non-cnv" | yy=="non-deviant"))
   }
 
+  dp<-data.frame(dp)
   start_positions <- seq(1, length(yy), by = scaf.size) # validate ranges start
   end_positions <- pmin(start_positions + scaf.size - 1, length(yy)) # validate ranges end
   dp$start<-start_positions
@@ -78,13 +80,15 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
 
   return(dp)
   },mw=window.size,gg=gg)
-  dup.ratio<-do.call(rbind,means)
-  dup.ratio[,1]<-nm
+  if(is.list(means)){dup.ratio<-do.call(rbind,means)}else{dup.ratio<-data.frame(means)}
+  #dup.ratio[,1]<-nm
   dup.ratio[dup.ratio=="NaN"]<-0
-  colnames(dup.ratio)<-c("CHROM","cnv.ratio","CHROM.length","cnvs","non.cnvs","start","end")
+  # colnames(dup.ratio)<-c("CHROM","cnv.ratio","CHROM.length","cnvs","non.cnvs","start","end")
   dup.ratio<-data.frame(dup.ratio[,1],dup.ratio[,3],dup.ratio[,6:7],dup.ratio[,c(2,4:5)])
+  colnames(dup.ratio)<-c("CHROM","Chr.length","start","end","cnv.ratio","cnvs","non.cnvs")
   return(data.frame(dup.ratio))
 }
+
 
 #' Calculate population-wise Vst
 #'
