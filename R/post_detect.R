@@ -8,24 +8,23 @@ wind<-function(xx,dd){
   tmp[,2]
 }
 
-#' Validate detected duplicates
+#' Validate detected deviants/cnvs
 #'
-#' This function will validate the detected duplicated-SNPs using a moving
+#' This function will validate the detected duplicated-SNPs (deviants/cnvs) using a moving
 #' window approach (see details)
 #'
 #' @param d.detect a data frame of detected duplicates or deviants from the outputs of \code{dupGet} or \code{cnv}
-#'  (output of \code{dupGet})
+#'
 #' @param window.size numerical. a single value of the desired moving window
 #'  size (default \code{100} bp)
-#' @param scaf.size numerical. scaffold size to be checked. i.e. the split size of the fragment to be checked with the specified window size.
+#' @param scaf.size numerical. scaffold size to be checked. i.e. the chromosome/scaffolds will be split into equal pieces of this size
 #' default=10000
 #'
-#' @details Chromosome positions correctly ordered according to a reference
-#' sequence is necessary for this function to work properly. Therefore, this
-#' function is still in development for non-mapped reference sequences.
+#' @details Loci/SNP positions correctly ordered according to a reference
+#' sequence is necessary for this function to work properly. The list of deviants/cnvs provided in the \code{d.detect} will be split into pices of \code{scaf.size} and the number of deviants/cnvs will be counted along each split with a moving window of \code{window.size}. The resulting percentages of deviants/cnvs will be averaged for each scaf.size split; this is the \code{cnv.ratio} column in the output. Thus, ideally, the \code{cnv.ratio} is a measure of how confident the detected deviants/cnvs are in an actual putative duplicated region withing the given \code{scaf.size}. This ratio is sensitive to the picked window size and the scaf.size; as a rule of thumb, it is always good to use a known gene length as the scaf.size, if you need to check a specific gene for the validity of the detected duplicates.
+#' Please also note that this function is still in its \code{beta-testing} phase and also under development for non-mapped reference sequences. Therefore, your feedback and suggestions will be highly appreciated.
 #'
-#' @return A data frame of scaffold names and their average presence in the
-#' scaffold.
+#' @return A data frame of deviant/cnv ratios (column \code{cnv.ratio}) for a split of the chromosome/scaffold given by the \code{scaf.size}; this ratio is an average value of the percentage of deviants/cnvs present within the given \code{window.size} for each split (\code{chromosome/scaffold length/sacf.size}); the start and the end positions of each split is given in the \code{start} and \code{end} columns
 #'
 #' @author Piyal Karunarathne
 #'
@@ -71,11 +70,19 @@ dup.validate<-function(d.detect,window.size=100, scaf.size=10000){
     dp<-sum(yy=="cnv" | yy=="deviant")/(sum(yy=="cnv" | yy=="deviant")+sum(yy=="non-cnv" | yy=="non-deviant"))
     dp<-cbind(x,dp,length(yy),sum(yy=="cnv" | yy=="deviant"),sum(yy=="non-cnv" | yy=="non-deviant"))
   }
+
+  start_positions <- seq(1, length(yy), by = scaf.size) # validate ranges start
+  end_positions <- pmin(start_positions + scaf.size - 1, length(yy)) # validate ranges end
+  dp$start<-start_positions
+  dp$end<-end_positions
+
   return(dp)
   },mw=window.size,gg=gg)
   dup.ratio<-do.call(rbind,means)
+  dup.ratio[,1]<-nm
   dup.ratio[dup.ratio=="NaN"]<-0
-  colnames(dup.ratio)<-c("CHROM","dp.ratio","CHROM.length","no.duplicates","no.singlets")
+  colnames(dup.ratio)<-c("CHROM","cnv.ratio","CHROM.length","cnvs","non.cnvs","start","end")
+  dup.ratio<-data.frame(dup.ratio[,1],dup.ratio[,3],dup.ratio[,6:7],dup.ratio[,c(2,4:5)])
   return(data.frame(dup.ratio))
 }
 
