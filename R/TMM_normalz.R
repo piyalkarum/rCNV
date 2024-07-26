@@ -54,7 +54,7 @@ TMM <- function(obs, ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff
 }
 
 
-TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10)
+TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutoff=-1e10,cl)
   #	Gordon Smyth
   #	adopted from edgeR package (Robinson et al. 2010)
 {
@@ -132,18 +132,18 @@ TMMex <- function(obs,ref, logratioTrim=.3, sumTrim=0.05, Weighting=TRUE, Acutof
 
 ## quantile normalization according to Robinson MD, and Oshlack A (2010)
 # qn1
-quantile_normalisation <- function(df,het.table=NULL,verbose=verbose){
-  df_rank <- apply(df,2,rank,ties.method="min")
+quantile_normalisation <- function(df,het.table=NULL,verbose=verbose,cl){
+  df_rank <- parApply(cl=cl,df,2,rank,ties.method="min")
   df_sorted <- data.frame(apply(df, 2, sort,na.last=TRUE))
-  df_mean <- apply(df_sorted, 1, mean,na.rm=TRUE)
+  df_mean <- parApply(cl=cl,df_sorted, 1, mean,na.rm=TRUE)
   if(!is.null(het.table)){
     het.table<-het.table[,-c(1:4)]
   }
   if(verbose){
     message("\ncalculating normalized depth")
-    df_final <- lapply_pb(1:ncol(df_rank), index_to_mean, my_mean=df_mean,indx=df_rank,al=het.table)
+    df_final <- parLapply(cl=cl,1:ncol(df_rank), index_to_mean, my_mean=df_mean,indx=df_rank,al=het.table)
   } else {
-    df_final <- lapply(1:ncol(df_rank), index_to_mean, my_mean=df_mean,indx=df_rank,al=het.table)
+    df_final <- parLapply(cl=cl,1:ncol(df_rank), index_to_mean, my_mean=df_mean,indx=df_rank,al=het.table)
   }
   return(df_final)
 }
@@ -309,7 +309,7 @@ cpm.normal <- function(het.table, method=c("MedR","QN","pca","TMM","TMMex"),
     message("calculating normalization factor")
     pb <- txtProgressBar(min = 0, max = pb_Total, width = 50, style = 3)
   }
-  #  tdep<-rCNV:::apply_pb(het.table[,-c(1:4)],2,function(tmp){
+  #  tdep<-parApply(cl=cl,(het.table[,-c(1:4)],2,function(tmp){
   y1 <- y2 <- matrix(NA_integer_, dm[1], pb_Total)
   for(i in seq_len(pb_Total)){
     if (verbose) setTxtProgressBar(pb, i)
@@ -353,7 +353,7 @@ cpm.normal <- function(het.table, method=c("MedR","QN","pca","TMM","TMMex"),
     out <- paste0(y1, ",", y2)
     attributes(out) <- attributes(tdep)
   } else if(method=="QN"){
-    out <- do.call(cbind,quantile_normalisation(tdep,het.table,verbose=verbose))
+    out <- do.call(cbind,quantile_normalisation(tdep,het.table,verbose=verbose,cl=cl))
   } else if(method=="pca"){
     if(verbose){message("\ncalculating normalized depth")}
     new.mat <- t(tdep) ### check the direction to confirm if this step need to be done

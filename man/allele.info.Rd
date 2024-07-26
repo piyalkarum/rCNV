@@ -7,6 +7,7 @@
 allele.info(
   X,
   x.norm = NULL,
+  Fis,
   method = c("MedR", "QN", "pca", "TMM", "TMMex"),
   logratioTrim = 0.3,
   sumTrim = 0.05,
@@ -14,6 +15,7 @@ allele.info(
   Acutoff = -1e+10,
   plot.allele.cov = TRUE,
   verbose = TRUE,
+  parallel = FALSE,
   ...
 )
 }
@@ -23,6 +25,8 @@ allele.info(
 
 \item{x.norm}{a data frame of normalized allele coverage, output of
 \code{cpm.normal}. If not provided, calculated using \code{X}.}
+
+\item{Fis}{numeric. Inbreeding coefficient calculated using \code{h.zygosity()} function}
 
 \item{method}{character. method to be used for normalization
 (see \code{cpm.normal} details). Default \code{TMM}}
@@ -42,6 +46,8 @@ weights}
 coverage in homozygotes and heterozygotes}
 
 \item{verbose}{logical, whether to print progress}
+
+\item{parallel}{logical. whether to parallelize the process}
 
 \item{\dots}{further arguments to be passed to \code{plot}}
 }

@@ -1,4 +1,7 @@
 # rCNV 1.3.0 (third update)
+* parallelization enabled
+* dupValidate function revised
+* per site Fis added to deviant detection
 * vstPermutation function added
 * maf modified to remove multi-allelic sites
 * FIT correction added

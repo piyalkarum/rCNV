@@ -7,7 +7,8 @@
 hetTgen(
   vcf,
   info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", "DP"),
-  verbose = TRUE
+  verbose = TRUE,
+  parallel = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ allele depth, \code{DP}=unfiltered depth (sum), \code{GT}: genotype,
 Default \code{AD},  See details.}
 
 \item{verbose}{logical. whether to show the progress of the analysis}
+
+\item{parallel}{logical. whether to parallelize the process}
 }
 \value{
 Returns a data frame of allele depth, genotype of SNPs for all the

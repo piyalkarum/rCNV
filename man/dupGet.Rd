@@ -6,6 +6,7 @@
 \usage{
 dupGet(
   data,
+  Fis,
   test = c("z.het", "z.05", "z.all", "chi.het", "chi.05", "chi.all"),
   intersection = FALSE,
   method = c("fisher", "chi.sq"),
@@ -16,6 +17,8 @@ dupGet(
 }
 \arguments{
 \item{data}{data frame of the output of \code{allele.info}}
+
+\item{Fis}{numeric. Inbreeding coefficient calculated using \code{h.zygosity()} function}
 
 \item{test}{character. type of test to be used for significance. See details}
 
@@ -61,9 +64,9 @@ probe bias p=0.5 (\code{z.05, chi.05})
 }
 \examples{
 \dontrun{data(alleleINF)
-DD<-dupGet(alleleINF)}
+DD<-dupGet(alleleINF,Fis=0.1,test=c("z.05","chi.05"))}
 
 }
 \author{
-Piyal Karunarathne
+Piyal Karunarathne Qiujie Zhou
 }

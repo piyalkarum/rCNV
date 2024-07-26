@@ -4,7 +4,13 @@
 \alias{ad.correct}
 \title{Correct allele depth values}
 \usage{
-ad.correct(het.table, gt.table = NULL, odd.correct = TRUE, verbose = TRUE)
+ad.correct(
+  het.table,
+  gt.table = NULL,
+  odd.correct = TRUE,
+  verbose = TRUE,
+  parallel = FALSE
+)
 }
 \arguments{
 \item{het.table}{allele depth table generated from the function
@@ -16,6 +22,8 @@ ad.correct(het.table, gt.table = NULL, odd.correct = TRUE, verbose = TRUE)
 default \code{TRUE}}
 
 \item{verbose}{logical. show progress. Default \code{TRUE}}
+
+\item{parallel}{logical. whether to parallelize the process}
 }
 \value{
 Returns the coverage corrected allele depth table similar to the

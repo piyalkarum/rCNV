@@ -1,79 +1,4 @@
 ## VCF statistics ###
-# old gt2 function
-gt2_old<-function(x,gg,freq){two<-gg[,x[1]];one<-gg[,x[2]]
-vp<-NULL
-if(x[1]==x[2]){
-  for(i in seq_along(one)){
-    vp[i]<-((one[i]*one[i])-((1+(2*freq[i]))*one[i])+(2*freq[i]*freq[i]))/(2*freq[i]*(1-freq[i]))
-  }
-  vp<-na.omit(vp)
-  Ajk<-((sum(vp))/length(vp))+1
-} else {
-  for(i in seq_along(one)){
-    vp[i]<-((one[i]-(2*freq[i]))*(two[i]-(2*freq[i])))/(2*freq[i]*(1-freq[i]))
-  }
-  vp<-na.omit(vp)
-  Ajk<-sum(vp)/length(vp)
-}
-V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
-return(V)}
-
-# old relatedness function
-relatedness_old<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
-  if(!inherits(vcf,"list")) {
-    if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
-    else {gtt <-vcf}
-  } else {
-    vcf<-vcf$vcf
-    gtt<-hetTgen(vcf,"GT",verbose=verbose)
-  }
-  gt<-gtt[,-c(1:4)]
-  freq<-apply(gt,1,function(xx){aal<-unlist(strsplit(as.character(xx),"/"))
-  return(length(which(aal=="1"))/(length(which(aal=="0"))+length(which(aal=="1"))))})
-
-  gg<-apply(gt,2,function(x){XX<-rep(NA,length(x))
-  XX[which(x=="0/0")]<-0
-  XX[which(x=="1/1")]<-2
-  XX[which(x=="1/0" | x=="0/1")]<-1
-  XX})
-
-  comb<-expand.grid(1:ncol(gg),1:ncol(gg))
-  if(verbose){
-    message("assessing pairwise relatedness")
-    T2<-apply_pb(comb,1,gt2_old,gg=gg,freq=freq)
-  } else {
-    T2<-apply(comb,1,gt2_old,gg=gg,freq=freq)
-  }
-  T2<-data.frame(t(T2))
-  T2[,3]<-as.numeric(T2[,3])
-  colnames(T2)<-c("indv1","indv2","relatedness_Ajk")
-  if(plot){
-    same = T2[T2[,1] == T2[,2], ]
-    diff = T2[T2[,1] != T2[,2], ]
-    outliers = diff[diff[,3] > threshold, ]
-
-    opars<-par(no.readonly = TRUE)
-    on.exit(par(opars))
-
-    par(mfrow=c(3, 1))
-    hist(same[,3],
-         main="Samples against themselves",
-         col="grey",
-         breaks=seq(-1000, 1000, by=0.05),
-         xlim=c(-1, 2))
-    hist(diff[,3],
-         main="Samples among themselves",
-         col="grey",
-         breaks=seq(-100, 100, by=0.05),
-         xlim=c(-1, 2))
-    hist(outliers[,3],
-         main="Outlier samples",
-         col="grey",
-         breaks=seq(-100, 100, by=0.05),
-         xlim=c(-1, 2))
-  }
-  return(T2)
-}
 
 #1. get heterozygosity per individual
 ## P(Homo) = F + (1-F)P(Homo by chance)
@@ -85,17 +10,23 @@ relatedness_old<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
 ##    O = NF + (1-F)E
 ## Which rearranges to give
 ##    F = (O-E)/(N-E)
-het.sity <- function(ind){
+het.sity1 <- function(ind){  ### calculate expected number of hets
   tab <- table(factor(ind, levels=c("0/0", "1/1", "1/0", "0/1", "./.", ".")))
-  O <- tab["0/0"] + tab["1/1"]
   N <- tab["0/0"] + tab["1/1"] + tab["0/1"] + tab["1/0"]
   p <- (2 * tab["0/0"] + tab["0/1"] + tab["1/0"])/ (2*N)
   q <- 1 - p
-  E <-(p^2+q^2)*N
+  E <-(p^2+q^2)
+  return(E)
+}
+
+het.sity2 <- function(ind,eh){
+  tab <- table(factor(ind, levels=c("0/0", "1/1", "1/0", "0/1", "./.", ".")))
+  O <- tab["0/0"] + tab["1/1"]
+  N <- tab["0/0"] + tab["1/1"] + tab["0/1"] + tab["1/0"]
+  E <- sum(eh[which(ind == "0/0" | ind == "1/1" | ind == "1/0" | ind == "0/1" )])
   FF <-(O-E)/(N-E)
   return(c(O,E,N,FF))
 }
-
 #2 relatedness (according to Yang et al. 2010 equation no. 6 in the paper)
 #1. get alt allele freq for all snps
 #2. get genotype at each snp per individual  gt=genotype1+genotype2 [1/0]  >> aa=0,Aa=1, AA=2
@@ -150,7 +81,9 @@ gt2 <- function(x,gg,freq){
 #' @param pops character. A list of population names with the same length and
 #' order as the number of samples in the vcf
 #' @param verbose logical. Show progress
+#' @param parallel logical. Parallelize the process
 #' @importFrom graphics boxplot
+#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
 #' @return Returns a data frame of expected \dQuote{E(Hom)} and observed
 #' \dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
 #'
@@ -163,7 +96,7 @@ gt2 <- function(x,gg,freq){
 #' hzygots<-h.zygosity(vcf,plot=TRUE,pops=pp)}
 #'
 #' @export
-h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
+h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE,parallel=FALSE){
   if(inherits(vcf,"list")) {
     vcf<-vcf$vcf
     gtt<-hetTgen(vcf,"GT",verbose=verbose)
@@ -171,11 +104,22 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
     if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
     else {gtt <-vcf}
   }
-  if(verbose){
-    message("assessing per sample homozygosity")
-    hh<-t(apply_pb(gtt[,-c(1:4)],2,het.sity))
+  if(parallel){
+    numCores<-detectCores()-1
+    cl<-makeCluster(numCores)
+    clusterExport(cl, c("het.sity1","het.sity2"))
+    eh<-unlist(t(parApply(cl=cl,gtt[,-c(1:4)],1,het.sity1)))
+    hh<-t(parApply(cl=cl,gtt[,-c(1:4)],2,het.sity2,eh=eh))
+    stopCluster(cl)
   } else {
-    hh<-t(apply(gtt[,-c(1:4)],2,het.sity))
+    if(verbose){
+      message("assessing per sample homozygosity")
+      eh<-unlist(apply_pb(gtt[,-c(1:4)],1,het.sity1))
+      hh<-t(apply_pb(gtt[,-c(1:4)],2,het.sity2,eh=eh))
+    } else {
+      eh<-unlist(t(apply(gtt[,-c(1:4)],1,het.sity1)))
+      hh<-t(apply(gtt[,-c(1:4)],2,het.sity2,eh=eh))
+    }
   }
   hh<-data.frame(rownames(hh),hh)
   colnames(hh)<-c("ind","O(Hom)","E(Hom)","total","Fis")
@@ -208,7 +152,9 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #' @param threshold numerical. A value indicating to filter the individuals of
 #' relatedness among themselves. Default \code{0.5} (siblings)
 #' @param verbose logical. Show progress.
+#' @param parallel logical. Parallelize the process
 #' @importFrom graphics hist
+#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
 #'
 #' @return
 #' A data frame of individuals and relatedness score \eqn{A_{jk}}
@@ -230,7 +176,7 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE){
 #' relate<-relatedness(vcf)
 #'
 #' @export
-relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
+relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE,parallel=FALSE){
   if(inherits(vcf,"data.frame") & any(colnames(vcf)=="INDV1")){
     T2<-vcf
   } else {
@@ -239,7 +185,7 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
       else {gtt <-vcf}
     } else {
       vcf<-vcf$vcf
-      gtt<-hetTgen(vcf,"GT",verbose=verbose)
+      gtt<-hetTgen(vcf,"GT",verbose=verbose,parallel=parallel)
     }
     gt<-gtt[,-c(1:4)]
     freq<-apply(gt,1,function(xx){aal<-stringr::str_split(xx,"/",simplify = T)
@@ -252,12 +198,19 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE){
     XX})
 
     comb<-expand.grid(1:ncol(gg),1:ncol(gg))
-    if(verbose){
-      message("assessing pairwise relatedness")
-      T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
-    } else {
-      T2<-apply(comb,1,gt2,gg=gg,freq=freq)
-    }
+   if(parallel){
+     numCores<-detectCores()-1
+     cl<-makeCluster(numCores)
+     T2<-parApply(cl=cl,comb,1,gt2,gg=gg,freq=freq)
+     stopCluster(cl)
+   } else {
+     if(verbose){
+       message("assessing pairwise relatedness")
+       T2<-apply_pb(comb,1,gt2,gg=gg,freq=freq)
+     } else {
+       T2<-apply(comb,1,gt2,gg=gg,freq=freq)
+     }
+   }
     T2<-data.frame(t(T2))
     T2[,3]<-as.numeric(T2[,3])
     colnames(T2)<-c("indv1","indv2","relatedness_Ajk")

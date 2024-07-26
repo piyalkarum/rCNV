@@ -1,12 +1,14 @@
 ## R CMD check results
 
-This is the second update of the package. Several changes have been made to two major functions and new updates have been added. They're as follows:
+This is the third update of the package. Several changes have been made to two major functions and new updates have been added. They're as follows:
 
-1. relatedness function optimized
-2. bugs related to TMM normalization fixed in cpm.normal function
-3. paper on the rCNV package was published and the citation is added to the package
-4. web page updated
-5. small bugs fixed in the sig.het function
+1. parallelization enabled with parallel package
+2. dupValidate function revised
+3. per site Fis added to deviant detection
+4. vstPermutation function added
+5. maf modified to remove multi-allelic sites
+5. FIT correction added
+
 
 
 On check:  

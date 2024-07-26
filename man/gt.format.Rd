@@ -4,7 +4,13 @@
 \alias{gt.format}
 \title{Format genotype for BayEnv and BayPass}
 \usage{
-gt.format(gt, info, format = c("benv", "bpass"), snp.subset = NULL)
+gt.format(
+  gt,
+  info,
+  format = c("benv", "bpass"),
+  snp.subset = NULL,
+  parallel = FALSE
+)
 }
 \arguments{
 \item{gt}{multi-vector. an imported data.frame of genotypes or genotype
@@ -17,8 +23,9 @@ It must have \dQuote{sample} and \dQuote{population} columns}
 \item{format}{character. output format i.e., for BayPass or BayEnv}
 
 \item{snp.subset}{numerical. number of randomly selected subsets of SNPs.
-\code{default = NULL}
-subset}
+\code{default = NULL}}
+
+\item{parallel}{logical. whether to parallelize the process}
 }
 \value{
 Returns a list with formatted genotype data: \code{$bayenv} - snps

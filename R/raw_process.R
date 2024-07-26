@@ -41,6 +41,7 @@ lapply_pb <- function(X, FUN, ...)
   res
 }
 
+
 sapply_pb <- function(X, FUN, ...)
 {
   env <- environment()
@@ -133,24 +134,14 @@ gg<-function(x){
 #' a bi-allelic matrix when loci are multi-allelic
 #'
 #' @param h.table allele depth table generated from the function \code{hetTgen}
-#' @param drop.multi logical. If TRUE, all the sites with more than two allele will be
-#' dropped. If FALSE \code{default}, the the two alleles with the highest allele
-#' frequencies will be retained. See details for more information.
-#' @param AD logical. If TRUE, an allele depth table similar to \code{hetTgen}
-#' output will be returned; If \code{FALSE}, individual AD values per SNP will be
+#' @param AD logical. If TRUE a allele depth table similar to \code{hetTgen}
+#' output will be returns; If \code{FALSE}, individual AD values per SNP will be
 #' returned in a list.
 #' @param verbose logical. Show progress
+#' @param parallel logical. whether to parallelize the process
+#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
 #'
 #' @return A data frame or a list of minimum allele frequency removed allele depth
-#'
-#' @details
-#' This function either drops all sites with more than two alleles or keep alleles \code{drop.multi=TRUE}
-#' with the highest allele frequencies in the case of multi-allelic sites \code{drop.multi=FALSE}.
-#' Note that, in the latter case, all sites will be retained, essentially assuming that multi-allelic sites
-#' are also bi-allelic by dropping the alleles with minimum frequencies.
-#' This function can only be used on the output of the \code{hetTgen()}. If you need to remove the multi-allelic sites
-#' from the vcf, use \code{rCNV:::non_bi_rm()} function. We recommend using other programs (e.g., vcftools, GATK, etc.) for removing multiallelic sites faster.
-#'
 #'
 #' @author Piyal Karunarathne
 #'
@@ -158,37 +149,36 @@ gg<-function(x){
 #' \dontrun{mf<-maf(ADtable)}
 #'
 #' @export
-maf<-function(h.table,drop.multi=FALSE,AD=TRUE,verbose=TRUE){
-  h.table<-data.frame(h.table)
-  warning(paste0("There are ",sum(nchar(h.table$ALT)>1),"multi-allelic sites"))
-  if(drop.multi){
-    h.table<-h.table[-which(nchar(h.table$ALT)>1),] # drop multi-allelic sites
-    message(paste0("\n",sum(nchar(h.table$ALT)>1),"multi-allelic sites were removed"))
-    return(h.table)
-  } else { # drop alleles with maf when multi-allelic
-    htab<-h.table[,-c(1:4)]
+maf<-function(h.table,AD=TRUE,verbose=TRUE,parallel=FALSE){
+  htab<-h.table[,-c(1:4)]
+  if(parallel){
+    numCores<-detectCores()-1
+    cl<-makeCluster(numCores)
+    glt<-parApply(cl=cl,htab,1,function(X){
+      gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
+      while(ncol(gg)>2){gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]}
+      if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
+    })
+    stopCluster(cl)
+  } else {
     if(verbose){
-      glt<-apply_pb(htab,1,function(X){suppressWarnings({
+      glt<-apply_pb(htab,1,function(X){
         gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
         while(ncol(gg)>2){gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]}
         if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
       })
-      })
     }else{
-      glt<-apply(htab,1,function(X){
+      glt<-apply_pb(htab,1,function(X){
         gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
         if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]
         if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
       })
     }
-    glt<-data.frame(h.table[,1:4],t(glt))
-    colnames(glt)<-colnames(h.table)
-    message("Minimum frequency alleles were removed in multi-allelic sites")
-    return(glt)
   }
+  glt<-data.frame(h.table[,1:4],t(glt))
+  colnames(glt)<-colnames(h.table)
+  return(glt)
 }
-
-
 
 #' Import VCF file
 #'
@@ -226,6 +216,8 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' \code{GT-012}:genotype in 012 format, \code{GT-AB}:genotype in AB format.
 #' Default \code{AD},  See details.
 #' @param verbose logical. whether to show the progress of the analysis
+#' @param parallel logical. whether to parallelize the process
+#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
 #'
 #' @details If you generate the depth values for allele by sample using GatK
 #' VariantsToTable option, use only -F CHROM -F POS -GF AD flags to generate
@@ -237,77 +229,96 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #'
 #' @author Piyal Karunarathne, Klaus Schliep
 #' @importFrom utils setTxtProgressBar txtProgressBar
+#' @importFrom parallel parSapply makeCluster clusterExport parLapply
 #' @examples
 #' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
 #' het.table<-hetTgen(vcf)
 #'
 #' @export
-hetTgen <- function(vcf,info.type=c("AD","AD-tot","GT","GT-012","GT-AB","DP"),verbose=TRUE){
-  if(inherits(vcf,"list")){vcf<-vcf$vcf}
-  if(inherits(vcf,"data.frame")){vcf<-data.table::data.table(vcf)}
-  if(any(nchar(vcf$ALT)>1)){
-    warning("vcf file contains multi-allelic variants: \nonly bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps or drop minumum frequency alleles")
+hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", "DP"), verbose = TRUE, parallel = FALSE) {
+  if (inherits(vcf, "list")) { vcf <- vcf$vcf }
+  if (inherits(vcf, "data.frame")) { vcf <- data.table::data.table(vcf) }
+  if (any(nchar(vcf$ALT) > 1)) {
+    warning("vcf file contains multi-allelic variants: \nonly bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps or drop minimum frequency alleles")
   }
-  if(inherits(vcf,"list")){vcf<-vcf$vcf}
 
-  info.type<-match.arg(info.type)
-  itype<-substr(info.type,1,2)
+  info.type <- match.arg(info.type)
+  itype <- substr(info.type, 1, 2)
 
-  adn <- sapply(strsplit(unlist(vcf[,"FORMAT"], use.names = FALSE),":"), function(x)match(itype, x))
+  adn <- sapply(strsplit(unlist(vcf[,"FORMAT"], use.names = FALSE), ":"), function(x) match(itype, x))
   max_adn <- max(adn) + 1L
   ind <- cbind(seq_along(adn), adn)
-  xx<-data.frame(vcf[,-c(1:9)])
+  xx <- data.frame(vcf[,-c(1:9)])
 
-  if(info.type=="AD-tot"){
-    h.table <- matrix(NA_integer_, nrow(xx), ncol(xx))
-    if(verbose) message("generating total depth values")
-    for(i in seq_len(ncol(xx))){
-      if(verbose){
-        pb <- txtProgressBar(min = 0, max = ncol(xx), style = 3, width = 50, char = "=")
-        setTxtProgressBar(pb, i)
-      }
+  h.table <- matrix(NA, nrow(xx), ncol(xx))
+
+  process_column <- function(i) {
+    if (info.type == "AD-tot") {
       tmp <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
       tmp <- stringr::str_split_fixed(tmp, ",", 2L)
-      h.table[, i] <- as.numeric(tmp[,1]) + as.numeric(tmp[,2]) ## as.integer???
+      as.numeric(tmp[,1]) + as.numeric(tmp[,2])
+    } else {
+      tmp <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
+      if(info.type!="DP"){tmp[is.na(tmp) | tmp==".,."] <- "./."}
+      tmp
     }
   }
-  else {
-    h.table <- matrix(NA_character_, nrow(xx), ncol(xx))
-    if(verbose) message("generating table")
-    for(i in seq_len(ncol(xx))){
-      if(verbose){
-        pb <- txtProgressBar(min = 0, max = ncol(xx), style = 3, width = 50, char = "=")
+
+  if (verbose & parallel==FALSE) {
+    message("generating table")
+    pb <- txtProgressBar(min = 0, max = ncol(xx), style = 3, width = 50, char = "=")
+  }
+
+  if (parallel) {
+    numCores <- detectCores() - 1
+    cl <- makeCluster(numCores)
+    clusterExport(cl, varlist = c("xx", "max_adn", "ind", "info.type", "process_column"), envir = environment())
+
+    results <- parLapply(cl, seq_len(ncol(xx)), function(i) {
+      res <- process_column(i)
+      res
+    })
+    stopCluster(cl)
+
+    h.table <- do.call(cbind, results)
+  } else {
+    for (i in seq_len(ncol(xx))) {
+      h.table[, i] <- process_column(i)
+      if (verbose) {
         setTxtProgressBar(pb, i)
       }
-      h.table[, i] <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
     }
-    if(info.type!="DP"){h.table[is.na(h.table) | h.table==".,."]<-"./."}
   }
-if(verbose) {close(pb)}
-  if(info.type=="GT-012"){
-    h.table[h.table=="0/0"]<-0
-    h.table[h.table=="1/1"]<-1
-    h.table[h.table=="1/0" | h.table=="0/1"] <- 2
-    h.table[h.table=="./."| h.table=="."]<-NA
+
+  if (verbose) {
+    close(pb)
   }
-  if(info.type=="GT-AB"){
-    h.table[h.table=="0/0"]<-"AA"
-    h.table[h.table=="1/1"]<-"BB"
-    h.table[h.table=="1/0" | h.table=="0/1"] <- "AB"
-    h.table[h.table=="./."| h.table=="."]<- -9
+  if (info.type == "GT-012") {
+    h.table[h.table == "0/0"] <- 0
+    h.table[h.table == "1/1"] <- 1
+    h.table[h.table == "1/0" | h.table == "0/1"] <- 2
+    h.table[h.table == "./." | h.table == "."] <- NA
   }
-  if(info.type=="AD" ){
-    h.table[h.table=="./." | h.table=="." | is.na(h.table)]<-"0,0"
+  if (info.type == "GT-AB") {
+    h.table[h.table == "0/0"] <- "AA"
+    h.table[h.table == "1/1"] <- "BB"
+    h.table[h.table == "1/0" | h.table == "0/1"] <- "AB"
+    h.table[h.table == "./." | h.table == "."] <- -9
   }
-  if(info.type=="DP"){
-    h.table[is.character(h.table)]<-0
-    h.table[is.na(h.table)]<-0
+  if (info.type == "AD") {
+    h.table[h.table == "./." | h.table == "." | is.na(h.table)] <- "0,0"
   }
-  het.table<-as.data.frame(cbind(vcf[,c(1:3,5)],h.table))
-  colnames(het.table)<-c("CHROM",colnames(vcf)[c(2,3,5,10:ncol(vcf))])
+  if (info.type == "DP") {
+    h.table[is.character(h.table)] <- 0
+    h.table[is.na(h.table)] <- 0
+  }
+
+  het.table <- as.data.frame(cbind(vcf[, c(1:3, 5)], h.table))
+  colnames(het.table) <- c("CHROM", colnames(vcf)[c(2, 3, 5, 10:ncol(vcf))])
   return(het.table)
 }
+
 
 #' Get missingness of individuals in raw vcf
 #'
@@ -321,11 +332,13 @@ if(verbose) {close(pb)}
 #' @param plot logical. Whether to plot the missingness density with ninety
 #' five percent quantile
 #' @param verbose logical. Whether to show progress
+#' @param parallel logical. whether to parallelize the process
 #'
 #'
 #' @author Piyal Karunarathne
 #' @importFrom graphics abline polygon
 #' @importFrom stats density
+#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
 #'
 #' @returns
 #' Returns a data frame of allele depth or genotypes
@@ -336,23 +349,54 @@ if(verbose) {close(pb)}
 #' missing<-get.miss(vcf,plot=TRUE)
 #'
 #' @export
-get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
+get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE,parallel=FALSE){
+  if(parallel){numCores<-detectCores()-1
+  cl<-makeCluster(numCores)}
+
   if(inherits(data,"list")){
     vcf<-data$vcf
-    ndat<-hetTgen(vcf,"GT",verbose=verbose)
+    ndat<-hetTgen(vcf,"GT",verbose=verbose,parallel = parallel)
   } else {ndat<-data}
   type<-match.arg(type,several.ok = T)
   if(any(type=="samples")){
-    ll<-t(apply(ndat[,-c(1:4)],2,function(x){
-      cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
-    }))
+    if(parallel){
+      ll<-t(parApply(cl=cl,ndat[,-c(1:4)],2,function(x){
+        cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
+      }))
+    } else {
+     if(verbose){
+       message("assessing % missing samples")
+       ll<-t(apply_pb(ndat[,-c(1:4)],2,function(x){
+         cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
+       }))
+     } else {
+       ll<-t(apply(ndat[,-c(1:4)],2,function(x){
+         cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
+       }))
+     }
+    }
+
     ll<-data.frame(indiv=colnames(ndat)[-c(1:4)],n_miss=ll[,1],f_miss=ll[,2])
     rownames(ll)<-NULL
   }
   if(any(type=="snps")){
-    L<-apply(ndat[,-c(1:4)],1,function(x){
-      cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
-    })
+    if(parallel){
+      L<-parApply(cl=cl,ndat[,-c(1:4)],1,function(x){
+        cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
+      })
+    } else {
+      if(verbose){
+        message("assessing % missing sites")
+        L<-apply_pb(ndat[,-c(1:4)],1,function(x){
+          cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
+        })
+      } else {
+        L<-apply(ndat[,-c(1:4)],1,function(x){
+          cbind(sum(x=="./." | is.na(x) | x=="0,0" | x==".,."),sum(x=="./." | is.na(x) | x=="0,0" | x==".,.")/length(x))
+        })
+      }
+
+    }
     if(is.list(L)){
       L<-do.call(rbind,L)
     } else { L<-t(L)}
@@ -386,9 +430,8 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
   if(!exists("ll")){ll<-NULL}
   if(!exists("L")){L<-NULL}
   return(list(perSample=ll,perSNP=L))
+  if(parallel){stopCluster(cl)}
 }
-
-
 
 #' Format genotype for BayEnv and BayPass
 #'
@@ -403,7 +446,8 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' @param format character. output format i.e., for BayPass or BayEnv
 #' @param snp.subset numerical. number of randomly selected subsets of SNPs.
 #' \code{default = NULL}
-#' subset
+#' @param parallel logical. whether to parallelize the process
+#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
 #'
 #' @return Returns a list with formatted genotype data: \code{$bayenv} - snps
 #' in horizontal format - for BayEnv (two lines per snp); \code{$baypass} - vertical format - for BayPass
@@ -419,7 +463,10 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE){
 #' GT<-gt.format(het.table,info)}
 #'
 #' @export
-gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
+gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL,parallel=FALSE) {
+  if(parallel){numCores<-detectCores()-1
+  cl<-makeCluster(numCores)}
+
   if(is.character(gt)){
     gt <-as.data.frame(fread(gt))
     gts <-gt[,-c(1,2)]
@@ -446,30 +493,57 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
 
   if(any(format=="benv")){
     message("Formating BayEnv")
-    ppe<-lapply_pb(lgt,function(X){
-      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
-      one<-sum((unlist(stringr::str_split(x,"/||")))==1)
-      ot<-as.data.frame(c(zero,one),col.names=F)
-      return(ot)},simplify = F)
-      out<-do.call(rbind,out)
-      colnames(out)<-NULL
-      return(out)
-    })
+
+    if(parallel){
+      ppe<-parLapply(cl=cl,lgt,function(X){
+        out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
+        one<-sum((unlist(stringr::str_split(x,"/||")))==1)
+        ot<-as.data.frame(c(zero,one),col.names=F)
+        return(ot)},simplify = F)
+        out<-do.call(rbind,out)
+        colnames(out)<-NULL
+        return(out)
+      })
+    } else {
+      ppe<-lapply_pb(lgt,function(X){
+        out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
+        one<-sum((unlist(stringr::str_split(x,"/||")))==1)
+        ot<-as.data.frame(c(zero,one),col.names=F)
+        return(ot)},simplify = F)
+        out<-do.call(rbind,out)
+        colnames(out)<-NULL
+        return(out)
+      })
+    }
+
     ppe<-do.call(cbind,ppe)
-    rownames(ppe)<-paste0(paste0(gt[,1],".",gt[,2]),"~",rep(c(1,2),nrow(gt)))
+    #rownames(ppe)<-paste0(paste0(gt[,1],".",gt[,2]),"~",rep(c(1,2),nrow(gt)))
   } else {ppe<-NULL}
 
   if(any(format=="bpass")){
     message("Formating BayPass")
-    ppp<-lapply_pb(lgt,function(X){
-      out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
-      one<-sum((unlist(stringr::str_split(x,"/||")))==1)
-      ot<-c(zero,one)
-      return(ot)},simplify = F)
-      out<-do.call(rbind,out)
-      colnames(out)<-NULL
-      return(out)
-    })
+
+    if(parallel){
+      ppp<-parLapply(cl=cl,lgt,function(X){
+        out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
+        one<-sum((unlist(stringr::str_split(x,"/||")))==1)
+        ot<-c(zero,one)
+        return(ot)},simplify = F)
+        out<-do.call(rbind,out)
+        colnames(out)<-NULL
+        return(out)
+      })
+    } else {
+      ppp<-lapply_pb(lgt,function(X){
+        out<-apply(X,2,function(x){zero<-sum((unlist(stringr::str_split(x,"/||")))==0)
+        one<-sum((unlist(stringr::str_split(x,"/||")))==1)
+        ot<-c(zero,one)
+        return(ot)},simplify = F)
+        out<-do.call(rbind,out)
+        colnames(out)<-NULL
+        return(out)
+      })
+    }
     ppp<-do.call(cbind,ppp)
     colnames(ppp)<-paste0(rep(names(lgt),each=2),"~",rep(c(1,2),ncol(ppp)/2))
     rownames(ppp)<-paste0(gt[,1],".",gt[,2])
@@ -481,6 +555,7 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
     } else { chu.p <- NULL}
   } else {ppp<-NULL}
   return(list(baypass=ppp,bayenv=ppe,sub.bp=chu.p,pop=as.character(pp)))
+  if(parallel){stopCluster(cl)}
 }
 
 
@@ -500,6 +575,9 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
 #' @param odd.correct logical, to correct for odd number anomalies in AD values.
 #'  default \code{TRUE}
 #' @param verbose logical. show progress. Default \code{TRUE}
+#' @param parallel logical. whether to parallelize the process
+#'
+#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
 #'
 #' @return Returns the coverage corrected allele depth table similar to the
 #'  output of \code{hetTgen}
@@ -510,9 +588,12 @@ gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL) {
 #' \dontrun{adc<-ad.correct(ADtable)}
 #'
 #' @export
-ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
+ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE,parallel=FALSE){
+  if(parallel){numCores <- detectCores() - 1
+  cl <- makeCluster(numCores)}
+
   if(!is.null(gt.table)){
-    if(verbose){
+    if(verbose & parallel==FALSE){
       message("correcting genotype mis-classification")
       Nw.ad<-lapply_pb(5:ncol(het.table),function(n){
         X<-het.table[,n]
@@ -528,18 +609,18 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
       Nw.ad<-do.call(cbind,Nw.ad)
       Nw.ad<-data.frame(het.table[,1:4],Nw.ad)
       colnames(Nw.ad)<-colnames(het.table)
-    } else {
-      Nw.ad<-lapply(5:ncol(het.table),function(n){
+    } else if (parallel) {
+      Nw.ad<-parLapply(cl=cl,5:ncol(het.table),function(n,het.table,gt.table){
         X<-het.table[,n]
         x<-gt.table[,n]
         Y<-data.frame(do.call(cbind,data.table::tstrsplit(X,",")))
         y<-which(x=="0/0" & Y$X2>0)
-        rr<-range(Y$X2[y])#range of depth in mis classified snps
+        rr<-range(Y$X2[y])#range of depth in miss classified snps
         Y[y,]<-0
-        ll<-length(y)#number of mis classifications
+        ll<-length(y)#number of miss classifications
         out<-paste0(Y$X1,",",Y$X2)
         return(out)
-      })
+      },het.table=het.table,gt.table=gt.table)
       Nw.ad<-do.call(cbind,Nw.ad)
       Nw.ad<-data.frame(het.table[,1:4],Nw.ad)
       colnames(Nw.ad)<-colnames(het.table)
@@ -549,7 +630,7 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
   }
   X<-data.frame(het.table[,-c(1:4)])
   if(odd.correct){
-    if(verbose){
+    if(verbose & parallel==FALSE){
       message("correcting odd number anomalies")
       vv<-apply_pb(X,2,function(sam){
         sam<-unname(unlist(sam))
@@ -566,8 +647,8 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
       if(inherits(vv,"list")){
         vv<-do.call(cbind,vv)
       }
-    } else {
-      vv<-apply(X,2,function(sam){
+    } else if (parallel) {
+      vv<-parApply(cl,X,2,function(sam){
         dl<-lapply(sam,function(y){
           l<-as.numeric(unlist(strsplit(y,",")))
           if((sum(l,na.rm=TRUE)%%2)!=0){
@@ -583,6 +664,6 @@ ad.correct<-function(het.table,gt.table=NULL,odd.correct=TRUE,verbose=TRUE){
     }
     return(cbind(het.table[,1:4],vv))
   } else { return(het.table)}
+  if(parallel){stopCluster(cl)}
 }
-
 

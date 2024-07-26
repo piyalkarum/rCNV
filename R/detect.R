@@ -6,19 +6,19 @@ chisq_test<-function(ob, ex){
 }
 
 #1 calculate expected proportions of heterozygotes from real data
-ex.prop<-function(rs,method=c("chi.sq","fisher")){
+ex.prop<-function(rs,Fis,method=c("chi.sq","fisher")){
   n<-unlist(c(rs[4]))
   p<-(rs[1]+rs[2]/2)/n
   ob<-unlist(c(rs[1:3]))
-  eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
-  delta <- rs[2]-(2*p*(1-p) * n)
+  eX<-unlist(c((p^2*(1-Fis)+p*Fis) * n,2*p*(1-p)*(1-Fis) * n,((1-p)^2*(1-Fis)+(1-p)*Fis) * n))
+  delta <- rs[2]-(2*p*(1-p) * n *(1-Fis))
   stat<-match.arg(method)
   pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq_test(ob,eX)))
   return(c(eX/n,pval,delta))
 }
 
 #1 pvals for sig.hets when AD table is provided
-get.eHpvals<-function(df,method=c("chi.sq","fisher")){
+get.eHpvals<-function(df,Fis,method=c("chi.sq","fisher")){
   snp1<-df[-c(1:4)]
   y<-data.frame(stringr::str_split_fixed(snp1,",",n=2L))
   y[,1]<-as.integer(y[,1]);y[,2]<-as.integer(y[,2])
@@ -36,8 +36,8 @@ get.eHpvals<-function(df,method=c("chi.sq","fisher")){
     n<-Nsamp
     p<-(rs[1]+rs[2]/2)/n
     ob<-c(homref,NHet,homalt)
-    eX<-unlist(c((p^2) * n,2*p*(1-p) * n,((1-p)^2) * n))
-    delta <- rs[2]-(2*p*(1-p) * n)
+	eX<-unlist(c((p^2*(1-Fis)+p*Fis) * n,2*p*(1-p)*(1-Fis) * n,((1-p)^2*(1-Fis)+(1-p)*Fis) * n))
+	delta <- rs[2]-(2*p*(1-p) * n *(1-Fis))
     stat<-match.arg(method)
     pval<-switch(stat,fisher=suppressWarnings(fisher.test(cbind(ob,eX),workspace = 2e8))$p.value,chi.sq=suppressWarnings(chisq_test(ob,eX)))
     ll<-c(medRatio,propHomAlt,propHet,eX/n,pval,delta)
@@ -55,6 +55,7 @@ get.eHpvals<-function(df,method=c("chi.sq","fisher")){
 #'
 #' @param a.info allele info table generated from filtered vcfs using the
 #' function \code{allele.info} or allele depth table generated from \code{hetTgen}
+#' @param Fis numeric. Inbreeding coefficient calculated using \code{h.zygosity()} function
 #' @param method character. Method for testing significance. Fisher exact test
 #'  (\code{fisher}) or Chi-square test (\code{chi.sq})
 #' @param plot logical. Whether to plot the identified duplicated snps with
@@ -65,24 +66,24 @@ get.eHpvals<-function(df,method=c("chi.sq","fisher")){
 #' @return A matrix of expected heterozygote proportions from the observed
 #' data with p-value indicating significance of deviation.
 #'
-#' @author Piyal Karunarathne, Pascal Milesi, Klaus Schliep
+#' @author Piyal Karunarathne, Pascal Milesi, Klaus Schliep, Qiujie Zhou
 #'
 #' @examples
 #' \dontrun{data(alleleINF)
 #' AI <- alleleINF
-#' duplicates<-sig.hets(AI,plot=TRUE)}
+#' duplicates<-sig.hets(AI,plot=TRUE,Fis=0.1)}
 #'
 #' @importFrom grDevices col2rgb rgb
 #' @importFrom stats fisher.test median quantile rbinom sd smooth.spline
 #' chisq.test
 #' @importFrom utils setTxtProgressBar txtProgressBar
-#' @importFrom colorspace rainbow_hcl
+#'
 #' @export
-sig.hets<-function(a.info,method=c("chi.sq","fisher"),plot=TRUE,verbose=TRUE,...){
+sig.hets<-function(a.info,Fis,method=c("chi.sq","fisher"),plot=TRUE,verbose=TRUE,...){
   if(!any(colnames(a.info)=="NHomRef")){
     if(verbose){message("assessing excess of heterozygotes")
-      df<-apply_pb(a.info,1,get.eHpvals,method=method)
-    } else {df<-apply(a.info,1,get.eHpvals,method=method)}
+      df<-apply(a.info,1,get.eHpvals,method=method,Fis=Fis)
+    } else {df<-apply(a.info,1,get.eHpvals,method=method,Fis=Fis)}
     df<-data.frame(do.call(rbind,df))
     colnames(df)<-c("medRatio","propHomAlt","propHet","p2","het","q2","eH.pval","eH.delta")
     #df<-na.omit(df)
@@ -92,9 +93,9 @@ sig.hets<-function(a.info,method=c("chi.sq","fisher"),plot=TRUE,verbose=TRUE,...
     method<-match.arg(method)
     if(verbose){
       message("assessing excess of heterozygotes")
-      df<-data.frame(t(apply_pb(d,1,ex.prop,method=method)))
+      df<-data.frame(t(apply(d,1,ex.prop,method=method,Fis=Fis)))
     } else {
-      df<-data.frame(t(apply(d,1,ex.prop,method=method)))
+      df<-data.frame(t(apply(d,1,ex.prop,method=method,Fis=Fis)))
     }
     colnames(df)<-c("p2","het","q2","eH.pval","eH.delta")
     df$propHomAlt <- a.info$propHomAlt
@@ -112,7 +113,7 @@ sig.hets<-function(a.info,method=c("chi.sq","fisher"),plot=TRUE,verbose=TRUE,...
     if(is.null(l$pch)) l$pch=19
     if(is.null(l$xlim)) l$xlim=c(0,1)
     if(is.null(l$ylim)) l$ylim=c(0,1)
-    if(is.null(l$col)) cols<-makeTransparent(rainbow_hcl(2),alpha=0.3) else cols<-makeTransparent(l$col,alpha=0.3)
+    if(is.null(l$col)) cols<-makeTransparent(colorspace::rainbow_hcl(2),alpha=0.3) else cols<-makeTransparent(l$col,alpha=0.3)
 
     d$Color <- cols[1]
     d$Color [which(df$dup.stat=="deviant")]<- cols[2]#& df$delta > 0
@@ -137,7 +138,6 @@ sig.hets<-function(a.info,method=c("chi.sq","fisher"),plot=TRUE,verbose=TRUE,...
 #' @param \dots other graphical parameters to be passed to the function
 #' \code{plot}
 #'
-#' @importFrom colorspace rainbow_hcl
 #'
 #' @return Returns no value, only plots proportion of heterozygotes vs allele
 #' median ratio separated by duplication status
@@ -178,6 +178,7 @@ dup.plot<-function(ds,...){
 #'  See details.
 #'
 #' @param data data frame of the output of \code{allele.info}
+#' @param Fis numeric. Inbreeding coefficient calculated using \code{h.zygosity()} function
 #' @param test character. type of test to be used for significance. See details
 #' @param intersection logical, whether to use the intersection of the methods
 #'  specified in \code{test} (if more than one)
@@ -208,14 +209,73 @@ dup.plot<-function(ds,...){
 #' all allele combinations (\code{z.all, chi.all}) and the assumption of no
 #' probe bias p=0.5 (\code{z.05, chi.05})
 #'
-#' @author Piyal Karunarathne
+#' @author Piyal Karunarathne Qiujie Zhou
 #'
 #' @examples
 #' \dontrun{data(alleleINF)
-#' DD<-dupGet(alleleINF)}
+#' DD<-dupGet(alleleINF,Fis=0.1,test=c("z.05","chi.05"))}
 #'
 #' @export
-dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),intersection=FALSE,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
+dupGet<-function(data,Fis,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),intersection=FALSE,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
+  #data check
+  data<-as.data.frame(data)
+  if(!any(colnames(data)=="propHet")){
+    stop("please provide the data with the output of allele.info()")
+  } else {
+    if(!(any(colnames(data)=="eH.pval"))) {
+      ht<-sig.hets(data,Fis=Fis,plot=F,verbose=verbose)
+    } else {
+      ht <-data[,c("eH.pval","eH.delta")]
+      ht$dup.stat<-"non-deviant"
+      ht$dup.stat[which(ht$eH.pval < 0.05/nrow(ht) & ht$eH.delta > 0 )]<-"deviant"
+    }
+
+    test<-match.arg(test,several.ok = TRUE)
+    if(length(test)==6){
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n excess of heterozygotes ","z.all & chi.all"))}
+      pp<-data[,c("z.all","chi.all")]
+    } else {
+      pp<-data.frame(data[,test])
+      if(verbose){cat(paste0("categorizing deviant SNPs with \n", " excess of heterozygotes \n ",paste0(unlist(test),collapse = "\n ")))}
+    }
+    if(intersection){
+      df<-matrix(NA,nrow = nrow(pp),ncol = ncol(pp))
+      for(i in 1:ncol(pp)){
+        df[which(pp[,i]<0.05/nrow(pp)),i]<-1
+      }
+      pp$dup.stat<-"non-deviant"
+      pp$dup.stat[which(rowSums(df)==(ncol(pp)-1))]<-"deviant"
+    } else {
+      pp$dup.stat<-"non-deviant"
+      for(i in 1:ncol(pp)){
+        pp$dup.stat[pp[,i]<0.05/nrow(pp)]<-"deviant"
+      }
+    }
+    pp$dup.stat[which(ht$dup.stat=="deviant")]<-"deviant"
+    pp<-data.frame(data[,1:10],eH.pval=ht[,"eH.pval"],eH.delta=ht[,"eH.delta"],dup.stat=pp$dup.stat)
+
+    if(plot){
+      l<-list(...)
+      if(is.null(l$cex)) l$cex=0.2
+      if(is.null(l$pch)) l$pch=19
+      if(is.null(l$xlim)) l$xlim=c(0,1)
+      if(is.null(l$ylim)) l$ylim=c(0,1)
+      if(is.null(l$alpha)) l$alpha=0.3
+      if(is.null(l$col)) l$col<-makeTransparent(c("tomato","#2297E6FF"))#colorspace::terrain_hcl(12,c=c(65,0),l=c(45,90),power=c(1/2,1.5))[2]
+      Color <- rep(l$col[2],nrow(pp))
+      Color[pp$dup.stat=="deviant"]<- l$col[1]
+      plot(pp$medRatio~pp$propHet, pch=l$pch, cex=l$cex,col=Color,xlim=l$xlim,ylim=l$ylim,frame=F,
+           ylab="Allele Median Ratio",xlab="Proportion of Heterozygotes")
+      legend("bottomright", c("deviants","non-deviants"), col = makeTransparent(l$col,alpha=1), pch=l$pch,
+             cex = 0.8,inset=c(0,1), xpd=TRUE, horiz=TRUE, bty="n")
+    }
+  }
+  return(pp)
+}
+
+
+#' @noRd
+dupGet_0<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),intersection=FALSE,method=c("fisher","chi.sq"),plot=TRUE,verbose=TRUE,...){
   #data check
   data<-as.data.frame(data)
   if(!any(colnames(data)=="propHet")){
@@ -272,6 +332,7 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
   return(pp)
 }
 
+
 #' Find CNVs from deviants
 #'
 #' Categorize deviant and non-deviant into "singlets" and "duplicates" based on the statistical approaches specified by the user.
@@ -317,12 +378,14 @@ dupGet<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"
 #' about the threshold values.
 #'
 #' @param WGS logical. test parameter. See details
+#'
+#' @details
 #' \code{WGS} is a test parameter to include or exclude coefficient of variance
 #' (cv) in kmeans. For data sets with more homogeneous depth distribution,
 #' excluding cv improves CNV detection. If you're not certain about this, use
 #' \code{TRUE} which is the default.
 
-#' @author Piyal Karunarathne
+#' @author Piyal Karunarathne Qiujie Zhou
 #'
 #' @examples
 #' \dontrun{data(alleleINF)
@@ -400,7 +463,7 @@ cnv<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),f
 }
 
 #' @noRd
-cnv_old<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),ft.threshold=0.05,plot=TRUE,verbose=TRUE,...){
+cnv_0<-function(data,test=c("z.het","z.05","z.all","chi.het","chi.05","chi.all"),filter=c("intersection","kmeans"),ft.threshold=0.05,plot=TRUE,verbose=TRUE,...){
   #data check
   data<-as.data.frame(data)
   data$z.het.sum<-abs(data$z.het.sum)

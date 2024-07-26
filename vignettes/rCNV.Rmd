@@ -34,7 +34,8 @@ This tutorial provides a complete guide to detecting CNVs from SNPs data using r
 
 All the data used in this tutorial is available either withing the package or from the GitHub repository at <https://github.com/piyalkarum/rCNV/tree/master/testDATA>.
 
-We provide here a complete workflow of detecting CNVs from SNPs, starting with raw (unfiltered) VCF as in the number 1 of the workflow chart. However, if one believes that they have filtered VCFs for the parameters we highlight (see Fig.1 and sub-sections 1.2 and 1.3), they can start from the number 2 in the workflow shown above.
+We provide here a complete workflow of detecting CNVs from SNPs, starting with raw (unfiltered) VCF as in the number 1 of the workflow chart. However, if one believes that they have filtered VCFs for the parameters we highlight (see Fig.1 and sub-sections 1.2 and 1.3), they can start from the number 2 in the workflow shown above.  
+*NOTE*: In the latest iteration of the rCNV package, the functions `sig.hets()` and `dupGet()` use use a sample based inbreeding coefficient *(Fis)* to improve the accuracy of the deviant detection. This *Fis* is calculated using the `h.zygosity()` function; see below for more information. 
 
 ```{r, eval=FALSE}
 # Start by installing the package if you haven't already done so.  
@@ -211,7 +212,7 @@ The rCNV function `dupGet()` delivers easy to pick model selection to detect dev
 
 ```{r, eval=FALSE}
 # Run this code for a demonstration of the detection
-dvs<-dupGet(alleleINF,test = c("z.05","chi.05"))
+dvs<-dupGet(alleleINF,test = c("z.05","chi.05"),Fis=0.11)
 # z score and chi-square values given p=0.05 is used here because the data is RADseq generated and probe-biase is neglegible
 
 head(dvs)
@@ -228,11 +229,15 @@ As such, `dupGet()` function implements three methods to flag the deviant allele
 |   **NOTE: users can select the expected allele frequency (p: \code{test}) of the alternative allele based on the sequencing method and the probe bias therein. See our publication <https://doi.org/10.1101/2022.10.14.512217> for more details on probe bias.
 
 ```{r,eval=FALSE}
-deviants<-dupGet(alleleINF,test = c("z.all","chi.all"),plot=TRUE,verbose = TRUE)
+# in the new version of the package dupGet function requires Fis value for a more accurate detection of the deviants
+# this is obtained by using the h.zygosity() function as below
+hz<-h.zygosity(parrot,verbose = FALSE) #parrot is the filtered vcf file
+Fis<-mean(hz$Fis,na.rm = TRUE)
+deviants<-dupGet(alleleINF,Fis=Fis,test = c("z.all","chi.all"),plot=TRUE,verbose = TRUE)
 head(deviants)
 ```
 ```{r,echo=FALSE}
-deviants<-dupGet(alleleINF,plot=FALSE,verbose = FALSE)
+deviants<-dupGet(alleleINF,Fis=Fis,plot=FALSE,verbose = FALSE)
 head(deviants)
 ```
 

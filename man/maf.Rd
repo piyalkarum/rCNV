@@ -4,20 +4,18 @@
 \alias{maf}
 \title{Remove MAF allele}
 \usage{
-maf(h.table, drop.multi = FALSE, AD = TRUE, verbose = TRUE)
+maf(h.table, AD = TRUE, verbose = TRUE, parallel = FALSE)
 }
 \arguments{
 \item{h.table}{allele depth table generated from the function \code{hetTgen}}
 
-\item{drop.multi}{logical. If TRUE, all the sites with more than two allele will be
-dropped. If FALSE \code{default}, the the two alleles with the highest allele
-frequencies will be retained. See details for more information.}
-
-\item{AD}{logical. If TRUE, an allele depth table similar to \code{hetTgen}
-output will be returned; If \code{FALSE}, individual AD values per SNP will be
+\item{AD}{logical. If TRUE a allele depth table similar to \code{hetTgen}
+output will be returns; If \code{FALSE}, individual AD values per SNP will be
 returned in a list.}
 
 \item{verbose}{logical. Show progress}
+
+\item{parallel}{logical. whether to parallelize the process}
 }
 \value{
 A data frame or a list of minimum allele frequency removed allele depth
@@ -25,14 +23,6 @@ A data frame or a list of minimum allele frequency removed allele depth
 \description{
 A function to remove the alleles with minimum allele frequency and keep only
 a bi-allelic matrix when loci are multi-allelic
-}
-\details{
-This function either drops all sites with more than two alleles or keep alleles \code{drop.multi=TRUE}
-with the highest allele frequencies in the case of multi-allelic sites \code{drop.multi=FALSE}.
-Note that, in the latter case, all sites will be retained, essentially assuming that multi-allelic sites
-are also bi-allelic by dropping the alleles with minimum frequencies.
-This function can only be used on the output of the \code{hetTgen()}. If you need to remove the multi-allelic sites
-from the vcf, use \code{rCNV:::non_bi_rm()} function. We recommend using other programs (e.g., vcftools, GATK, etc.) for removing multiallelic sites faster.
 }
 \examples{
 \dontrun{mf<-maf(ADtable)}
