@@ -79,7 +79,7 @@
                         <h4 data-toc-skip class="author">Piyal
 Karunarathne</h4>
             
-            <h4 data-toc-skip class="date">Last updated: 29 April,
+            <h4 data-toc-skip class="date">Last updated: 26 July,
 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/piyalkarum/rCNV/blob/HEAD/vignettes/rCNV.Rmd" class="external-link"><code>vignettes/rCNV.Rmd</code></a></small>
@@ -111,7 +111,12 @@ package or from the GitHub repository at <a href="https://github.com/piyalkarum/
 starting with raw (unfiltered) VCF as in the number 1 of the workflow
 chart. However, if one believes that they have filtered VCFs for the
 parameters we highlight (see Fig.1 and sub-sections 1.2 and 1.3), they
-can start from the number 2 in the workflow shown above.</p>
+can start from the number 2 in the workflow shown above.<br><em>NOTE</em>: In the latest iteration of the rCNV package, the
+functions <code><a href="../reference/sig.hets.html">sig.hets()</a></code> and <code><a href="../reference/dupGet.html">dupGet()</a></code> use use a
+sample based inbreeding coefficient <em>(Fis)</em> to improve the
+accuracy of the deviant detection. This <em>Fis</em> is calculated using
+the <code><a href="../reference/h.zygosity.html">h.zygosity()</a></code> function; see below for more
+information.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Start by installing the package if you haven't already done so.  </span></span>
 <span><span class="co"># To install the CRAN version</span></span>
@@ -703,7 +708,7 @@ test statistic to filter putative CNVs. The rCNV function
 deviant SNPs with a plotting option to visualize the detection.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run this code for a demonstration of the detection</span></span>
-<span><span class="va">dvs</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.05"</span>,<span class="st">"chi.05"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dvs</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.05"</span>,<span class="st">"chi.05"</span><span class="op">)</span>,Fis<span class="op">=</span><span class="fl">0.11</span><span class="op">)</span></span>
 <span><span class="co"># z score and chi-square values given p=0.05 is used here because the data is RADseq generated and probe-biase is neglegible</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dvs</span><span class="op">)</span></span></code></pre></div>
@@ -730,7 +735,11 @@ frequency (p: ) of the alternative allele based on the sequencing method
 and the probe bias therein. See our publication <a href="https://doi.org/10.1101/2022.10.14.512217" class="external-link uri">https://doi.org/10.1101/2022.10.14.512217</a> for more
 details on probe bias.</div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">deviants</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.all"</span>,<span class="st">"chi.all"</span><span class="op">)</span>,plot<span class="op">=</span><span class="cn">TRUE</span>,verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># in the new version of the package dupGet function requires Fis value for a more accurate detection of the deviants</span></span>
+<span><span class="co"># this is obtained by using the h.zygosity() function as below</span></span>
+<span><span class="va">hz</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/h.zygosity.html">h.zygosity</a></span><span class="op">(</span><span class="va">parrot</span>,verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co">#parrot is the filtered vcf file</span></span>
+<span><span class="va">Fis</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">hz</span><span class="op">$</span><span class="va">Fis</span>,na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">deviants</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,Fis<span class="op">=</span><span class="va">Fis</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.all"</span>,<span class="st">"chi.all"</span><span class="op">)</span>,plot<span class="op">=</span><span class="cn">TRUE</span>,verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">deviants</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;       CHROM    POS     ID NHet    propHet  medRatio NHomRef NHomAlt propHomAlt</span></span>
 <span><span class="co">#&gt; 7452     un 705339  67808    9 0.08653846 0.5000000      95       0 0.00000000</span></span>

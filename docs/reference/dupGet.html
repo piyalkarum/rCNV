@@ -68,6 +68,7 @@ See details.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dupGet</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
+<span>  <span class="va">Fis</span>,</span>
 <span>  test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.het"</span>, <span class="st">"z.05"</span>, <span class="st">"z.all"</span>, <span class="st">"chi.het"</span>, <span class="st">"chi.05"</span>, <span class="st">"chi.all"</span><span class="op">)</span>,</span>
 <span>  intersection <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fisher"</span>, <span class="st">"chi.sq"</span><span class="op">)</span>,</span>
@@ -81,6 +82,10 @@ See details.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>data</dt>
 <dd><p>data frame of the output of <code>allele.info</code></p></dd>
+
+
+<dt>Fis</dt>
+<dd><p>numeric. Inbreeding coefficient calculated using <code><a href="h.zygosity.html">h.zygosity()</a></code> function</p></dd>
 
 
 <dt>test</dt>
@@ -132,15 +137,17 @@ probe bias p=0.5 (<code>z.05, chi.05</code>)</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Piyal Karunarathne</p>
+    <p>Piyal Karunarathne Qiujie Zhou</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">alleleINF</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">DD</span><span class="op">&lt;-</span><span class="fu">dupGet</span><span class="op">(</span><span class="va">alleleINF</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DD</span><span class="op">&lt;-</span><span class="fu">dupGet</span><span class="op">(</span><span class="va">alleleINF</span>,Fis<span class="op">=</span><span class="fl">0.1</span>,test<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.05"</span>,<span class="st">"chi.05"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> categorizing deviant SNPs with </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  excess of heterozygotes z.all &amp; chi.all</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  excess of heterozygotes </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  z.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  chi.05</span>
 <span class="r-plt img"><img src="dupGet-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

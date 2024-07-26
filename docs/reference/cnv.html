@@ -87,11 +87,7 @@ default <code>kmeans</code>. See details.</p></dd>
 
 
 <dt>WGS</dt>
-<dd><p>logical. test parameter. See details
-<code>WGS</code> is a test parameter to include or exclude coefficient of variance
-(cv) in kmeans. For data sets with more homogeneous depth distribution,
-excluding cv improves CNV detection. If you're not certain about this, use
-<code>TRUE</code> which is the default.</p></dd>
+<dd><p>logical. test parameter. See details</p></dd>
 
 
 <dt>ft.threshold</dt>
@@ -134,10 +130,14 @@ clustering of the provided <code>test</code>s should be used in filtering CNVs.
 The intersection uses threshold values for filtering and kmeans use
 unsupervised clustering. Kmeans clustering is recommended if one is uncertain
 about the threshold values.</p>
+<p><code>WGS</code> is a test parameter to include or exclude coefficient of variance
+(cv) in kmeans. For data sets with more homogeneous depth distribution,
+excluding cv improves CNV detection. If you're not certain about this, use
+<code>TRUE</code> which is the default.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Piyal Karunarathne</p>
+    <p>Piyal Karunarathne Qiujie Zhou</p>
     </div>
 
     <div class="section level2">

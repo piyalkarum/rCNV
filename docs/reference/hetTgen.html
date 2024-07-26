@@ -63,7 +63,8 @@ VariantsToTable: see details)</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hetTgen</span><span class="op">(</span></span>
 <span>  <span class="va">vcf</span>,</span>
 <span>  info.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AD"</span>, <span class="st">"AD-tot"</span>, <span class="st">"GT"</span>, <span class="st">"GT-012"</span>, <span class="st">"GT-AB"</span>, <span class="st">"DP"</span><span class="op">)</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -82,6 +83,10 @@ Default <code>AD</code>,  See details.</p></dd>
 
 <dt>verbose</dt>
 <dd><p>logical. whether to show the progress of the analysis</p></dd>
+
+
+<dt>parallel</dt>
+<dd><p>logical. whether to parallelize the process</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -110,7 +115,7 @@ individuals by snp.</p>
 <span class="r-in"><span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readVCF.html">readVCF</a></span><span class="op">(</span>vcf.file.path<span class="op">=</span><span class="va">vcf.file.path</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">het.table</span><span class="op">&lt;-</span><span class="fu">hetTgen</span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> generating table</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                          |                                                  |   0%  |                                                          |=====                                             |  10%  |                                                          |                                                  |   0%  |                                                          |==========                                        |  20%  |                                                          |                                                  |   0%  |                                                          |===============                                   |  30%  |                                                          |                                                  |   0%  |                                                          |====================                              |  40%  |                                                          |                                                  |   0%  |                                                          |=========================                         |  50%  |                                                          |                                                  |   0%  |                                                          |==============================                    |  60%  |                                                          |                                                  |   0%  |                                                          |===================================               |  70%  |                                                          |                                                  |   0%  |                                                          |========================================          |  80%  |                                                          |                                                  |   0%  |                                                          |=============================================     |  90%  |                                                          |                                                  |   0%  |                                                          |==================================================| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                          |                                                  |   0%  |                                                          |=====                                             |  10%  |                                                          |==========                                        |  20%  |                                                          |===============                                   |  30%  |                                                          |====================                              |  40%  |                                                          |=========================                         |  50%  |                                                          |==============================                    |  60%  |                                                          |===================================               |  70%  |                                                          |========================================          |  80%  |                                                          |=============================================     |  90%  |                                                          |==================================================| 100%</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
