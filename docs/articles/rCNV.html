@@ -214,7 +214,7 @@ al. (2010)</em> for more information on the calculation of
 <p>From the relatedness plots, we can see that the relatedness in Parrot
 fish samples is low. We recommend removing one sample of the pairs with
 outlier values above 0.9.</p>
-<p><img src="relatedness.png" style="width:40.0%"><img src="h.zygosity.png" style="width:40.0%"></p>
+<p><img src="relatedness.png" style="width:40.0%" alt="sample relatedness"><img src="h.zygosity.png" style="width:40.0%" alt="sample heterozygosity"></p>
 <p>Figure 1.3. a. Relatedness among samples, b. Heterozygosity in
 Parrotfish populations</p>
 <p>Heterozygosity within populations can be calculated using
@@ -623,8 +623,12 @@ per SNP by dividing the alternative allele depth value by the total
 depth value of both alleles. This is calculated for both heterozygotes
 and homozygotes; the Z-score per SNP is calculated according to the
 following equation:</p>
-<p><img src="Z2.1.svg"></p>
-<p><img src="Z2.2.svg"></p>
+<div class="float">
+<img src="Z2.1.svg" alt="z-sqr"><div class="figcaption">z-sqr</div>
+</div>
+<div class="float">
+<img src="Z2.2.svg" alt="z-squre2"><div class="figcaption">z-squre2</div>
+</div>
 <p>Where <em>N<sub>i</sub></em> is the total depth for heterozygote
 <em>i</em> at SNP <em>x</em>, <em>N<sub>Ai</sub></em> is the alternative
 allele read depth for heterozygote <em>i</em> at SNP <em>x</em>,
@@ -635,8 +639,12 @@ allele read depth for heterozygote <em>i</em> at SNP <em>x</em>,
 and alternative alleles.</p>
 <p>The Chi-squared values per SNP per sample were calculated using the
 following equation:</p>
-<p><img src="chi2.1.svg"></p>
-<p><img src="chi2.2.svg"></p>
+<div class="float">
+<img src="chi2.1.svg" alt="chi-sqr"><div class="figcaption">chi-sqr</div>
+</div>
+<div class="float">
+<img src="chi2.2.svg" alt="chi-sqr2"><div class="figcaption">chi-sqr2</div>
+</div>
 <p>Where <em>N<sub>i</sub></em> is the total depth for heterozygote
 <em>i</em> at SNP <em>x</em>, <em>N<sub>Ai</sub></em> is the alternative
 allele read-depth for heterozygote <em>i</em> at SNP <em>x</em>,
@@ -800,9 +808,8 @@ assumption will be flagged as low-confident and can be removed if
 desired. The function <code>dup.validate</code> in the rCNV package is
 dedicated to detecting regions enriched for deviant SNPs within a
 sliding window along a chromosome, scaffold, or a sequence of any given
-length.<br>
-** Check the function example in the package for how to use it. Note
-that this method is still being tested **</p></li>
+length.<br><strong>Check the function example in the package for how to use it.
+Note that this method is still being tested</strong></p></li>
 <li><p>Variant fixation index
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mrow><mi>S</mi><mi>T</mi></mrow></msub><annotation encoding="application/x-tex">V_{ST}</annotation></semantics></math>
 : Redon et al. 2006) is analogous to population fixation index
