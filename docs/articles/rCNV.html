@@ -5,7 +5,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="rCNV">
 <title>Detecting CNV from SNPs: a quick guide to rCNV • rCNV</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -14,59 +13,41 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Detecting CNV from SNPs: a quick guide to rCNV">
-<meta property="og:description" content="rCNV">
-<meta property="og:image" content="/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Detecting CNV from SNPs: a quick guide to rCNV">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">rCNV</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.9000</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item">
-  <a class="nav-link" href="../articles/rCNV.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="active nav-item"><a class="nav-link" href="../articles/rCNV.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/piyalkarum/rCNV/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/piyalkarum/rCNV/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -79,7 +60,7 @@
                         <h4 data-toc-skip class="author">Piyal
 Karunarathne</h4>
             
-            <h4 data-toc-skip class="date">Last updated: 26 July,
+            <h4 data-toc-skip class="date">Last updated: 16 September,
 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/piyalkarum/rCNV/blob/HEAD/vignettes/rCNV.Rmd" class="external-link"><code>vignettes/rCNV.Rmd</code></a></small>
@@ -145,14 +126,16 @@ imported vcf is stored as a data frame within a list.</div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#print the first 10 rows and columns of the imported VCF</span></span>
 <span><span class="va">vcf</span><span class="op">$</span><span class="va">vcf</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;    #CHROM   POS ID REF ALT      QUAL FILTER                 FORMAT</span></span>
-<span><span class="co">#&gt; 1:  MA_10 24959  .   A   C   4338.29   PASS GT:AD:DP:GQ:PGT:PID:PL</span></span>
-<span><span class="co">#&gt; 2:  MA_10 26811  .   C   T  33278.10   PASS         GT:AD:DP:GQ:PL</span></span>
-<span><span class="co">#&gt; 3:  MA_10 26860  .   A   G 273719.00   PASS GT:AD:DP:GQ:PGT:PID:PL</span></span>
-<span><span class="co">#&gt; 4:  MA_10 26874  .   T   C 374526.00   PASS GT:AD:DP:GQ:PGT:PID:PL</span></span>
-<span><span class="co">#&gt; 5:  MA_31 21911  .   C   G   2069.06   PASS         GT:AD:DP:GQ:PL</span></span>
-<span><span class="co">#&gt; 6:  MA_31 40129  .   A   T   6549.58   PASS         GT:AD:DP:GQ:PL</span></span>
+<pre><code><span><span class="co">#&gt;    #CHROM   POS     ID    REF    ALT      QUAL FILTER                 FORMAT</span></span>
+<span><span class="co">#&gt;    &lt;char&gt; &lt;int&gt; &lt;char&gt; &lt;char&gt; &lt;char&gt;     &lt;num&gt; &lt;char&gt;                 &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:  MA_10 24959      .      A      C   4338.29   PASS GT:AD:DP:GQ:PGT:PID:PL</span></span>
+<span><span class="co">#&gt; 2:  MA_10 26811      .      C      T  33278.10   PASS         GT:AD:DP:GQ:PL</span></span>
+<span><span class="co">#&gt; 3:  MA_10 26860      .      A      G 273719.00   PASS GT:AD:DP:GQ:PGT:PID:PL</span></span>
+<span><span class="co">#&gt; 4:  MA_10 26874      .      T      C 374526.00   PASS GT:AD:DP:GQ:PGT:PID:PL</span></span>
+<span><span class="co">#&gt; 5:  MA_31 21911      .      C      G   2069.06   PASS         GT:AD:DP:GQ:PL</span></span>
+<span><span class="co">#&gt; 6:  MA_31 40129      .      A      T   6549.58   PASS         GT:AD:DP:GQ:PL</span></span>
 <span><span class="co">#&gt;                              AT_PA_06_12</span></span>
+<span><span class="co">#&gt;                                   &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:             0/0:7,0:7:21:.:.:0,21,269</span></span>
 <span><span class="co">#&gt; 2:               0/0:18,0:18:22:0,22,576</span></span>
 <span><span class="co">#&gt; 3: 0/1:9,5:14:99:0|1:26860_A_G:183,0,775</span></span>
@@ -665,7 +648,11 @@ allele read-depth for heterozygote <em>i</em> at SNP <em>x</em>,
 statistics per sample per SNP is generated in the
 <code><a href="../reference/allele.info.html">allele.info()</a></code> output.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">A.info</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/allele.info.html">allele.info</a></span><span class="op">(</span>X<span class="op">=</span><span class="va">ADtable</span>,x.norm <span class="op">=</span> <span class="va">ADnorm</span>, plot.allele.cov <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># in the new version of the package allele.info() and dupGet() functions require Fis value for a more accurate detection of the deviants</span></span>
+<span><span class="co"># this is obtained by using the h.zygosity() function as below</span></span>
+<span><span class="va">hz</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/h.zygosity.html">h.zygosity</a></span><span class="op">(</span><span class="va">parrot</span>,verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co">#parrot is the filtered vcf file</span></span>
+<span><span class="va">Fis</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">hz</span><span class="op">$</span><span class="va">Fis</span>,na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">A.info</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/allele.info.html">allele.info</a></span><span class="op">(</span>X<span class="op">=</span><span class="va">ADtable</span>,x.norm <span class="op">=</span> <span class="va">ADnorm</span>, plot.allele.cov <span class="op">=</span> <span class="cn">TRUE</span>,Fis<span class="op">=</span><span class="va">Fis</span><span class="op">)</span></span>
 <span><span class="co"># X is the corrected non-normalized allele depth table and x.norm is the normalized allele depth table</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">A.info</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;       CHROM    POS     ID NHet    propHet  medRatio NHomRef NHomAlt propHomAlt</span></span>
@@ -708,6 +695,7 @@ test statistic to filter putative CNVs. The rCNV function
 deviant SNPs with a plotting option to visualize the detection.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run this code for a demonstration of the detection</span></span>
+<span><span class="co"># Fis is calculated as before using h.zygosity()</span></span>
 <span><span class="va">dvs</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.05"</span>,<span class="st">"chi.05"</span><span class="op">)</span>,Fis<span class="op">=</span><span class="fl">0.11</span><span class="op">)</span></span>
 <span><span class="co"># z score and chi-square values given p=0.05 is used here because the data is RADseq generated and probe-biase is neglegible</span></span>
 <span></span>
@@ -735,11 +723,7 @@ frequency (p: ) of the alternative allele based on the sequencing method
 and the probe bias therein. See our publication <a href="https://doi.org/10.1101/2022.10.14.512217" class="external-link uri">https://doi.org/10.1101/2022.10.14.512217</a> for more
 details on probe bias.</div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># in the new version of the package dupGet function requires Fis value for a more accurate detection of the deviants</span></span>
-<span><span class="co"># this is obtained by using the h.zygosity() function as below</span></span>
-<span><span class="va">hz</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/h.zygosity.html">h.zygosity</a></span><span class="op">(</span><span class="va">parrot</span>,verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co">#parrot is the filtered vcf file</span></span>
-<span><span class="va">Fis</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">hz</span><span class="op">$</span><span class="va">Fis</span>,na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">deviants</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,Fis<span class="op">=</span><span class="va">Fis</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.all"</span>,<span class="st">"chi.all"</span><span class="op">)</span>,plot<span class="op">=</span><span class="cn">TRUE</span>,verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">deviants</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dupGet.html">dupGet</a></span><span class="op">(</span><span class="va">alleleINF</span>,Fis<span class="op">=</span><span class="va">Fis</span>,test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"z.all"</span>,<span class="st">"chi.all"</span><span class="op">)</span>,plot<span class="op">=</span><span class="cn">TRUE</span>,verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">deviants</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;       CHROM    POS     ID NHet    propHet  medRatio NHomRef NHomAlt propHomAlt</span></span>
 <span><span class="co">#&gt; 7452     un 705339  67808    9 0.08653846 0.5000000      95       0 0.00000000</span></span>
@@ -818,14 +802,23 @@ dedicated to detecting regions enriched for deviant SNPs within a
 sliding window along a chromosome, scaffold, or a sequence of any given
 length.<br>
 ** This method is still under beta-testing **</p></li>
-<li><p>Variant fixation index (<span class="math inline">\(V_{ST}\)</span> : Redon et al. 2006) is analogous
-to population fixation index (<span class="math inline">\(F_{ST}\)</span>) and calculated as <span class="math inline">\(V_{ST} = V_S/V_T\)</span> where <span class="math inline">\(V_T\)</span> is the variance of normalized read
-depths among all individuals from the two populations and VS is the
-average of the variance within each population, weighed for population
-size; and used to identify distinct CNV groups between populations (See
-Dennis et al., 2017; Weir &amp; Cockerham, 1984) The function
-<code>vst</code> can be used to calculate the <span class="math inline">\(V_{ST}\)</span> values per population and plot
-genetic distance in a network qgraph.</p></li>
+<li><p>Variant fixation index
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mrow><mi>S</mi><mi>T</mi></mrow></msub><annotation encoding="application/x-tex">V_{ST}</annotation></semantics></math>
+: Redon et al. 2006) is analogous to population fixation index
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mrow><mi>S</mi><mi>T</mi></mrow></msub><annotation encoding="application/x-tex">F_{ST}</annotation></semantics></math>)
+and calculated as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mrow><mi>S</mi><mi>T</mi></mrow></msub><mo>=</mo><msub><mi>V</mi><mi>S</mi></msub><mi>/</mi><msub><mi>V</mi><mi>T</mi></msub></mrow><annotation encoding="application/x-tex">V_{ST} = V_S/V_T</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mi>T</mi></msub><annotation encoding="application/x-tex">V_T</annotation></semantics></math>
+is the variance of normalized read depths among all individuals from the
+two populations and VS is the average of the variance within each
+population, weighed for population size; and used to identify distinct
+CNV groups between populations (See Dennis et al., 2017; Weir &amp;
+Cockerham, 1984) The function <code>vst</code> can be used to calculate
+the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mrow><mi>S</mi><mi>T</mi></mrow></msub><annotation encoding="application/x-tex">V_{ST}</annotation></semantics></math>
+values per population and plot genetic distance in a network
+qgraph.</p></li>
 </ul>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># the dataset used here is from Dorrant et al. 2020 of American lobster populations in Gulf of St. Lawrence, Canada</span></span>
@@ -889,28 +882,26 @@ proportion of the heritability for human height. Nature Genetics, 42(7),
 </ul>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Piyal Karunarathne, Qiujie Zhou, Klaus Schliep, Pascal Milesi.</p>
+  <p>Developed by Piyal Karunarathne, Qiujie Zhou, Klaus Schliep, Pascal Milesi.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

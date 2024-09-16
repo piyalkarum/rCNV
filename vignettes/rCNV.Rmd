@@ -7,11 +7,12 @@ header-includes:
   -\usepackage{titling}
   - \pretitle{\begin{center}
     \includegraphics[width=2in,height=2in]{logo.png}\LARGE\\}
-  -\posttitle{\end{center}}
 vignette: >
   %\VignetteIndexEntry{rCNV}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 ---
 # rmarkdown::html_vignette
@@ -195,7 +196,11 @@ Where *N<sub>i</sub>* is the total depth for heterozygote *i* at SNP *x*, *N<sub
 In addition to the above a-e parameters several other important statistics per sample per SNP is generated in the `allele.info()` output.  
 
 ```{r,eval=FALSE}
-A.info<-allele.info(X=ADtable,x.norm = ADnorm, plot.allele.cov = TRUE)
+# in the new version of the package allele.info() and dupGet() functions require Fis value for a more accurate detection of the deviants
+# this is obtained by using the h.zygosity() function as below
+hz<-h.zygosity(parrot,verbose = FALSE) #parrot is the filtered vcf file
+Fis<-mean(hz$Fis,na.rm = TRUE)
+A.info<-allele.info(X=ADtable,x.norm = ADnorm, plot.allele.cov = TRUE,Fis=Fis)
 # X is the corrected non-normalized allele depth table and x.norm is the normalized allele depth table
 head(A.info)
 ```
@@ -212,6 +217,7 @@ The rCNV function `dupGet()` delivers easy to pick model selection to detect dev
 
 ```{r, eval=FALSE}
 # Run this code for a demonstration of the detection
+# Fis is calculated as before using h.zygosity()
 dvs<-dupGet(alleleINF,test = c("z.05","chi.05"),Fis=0.11)
 # z score and chi-square values given p=0.05 is used here because the data is RADseq generated and probe-biase is neglegible
 
@@ -229,10 +235,6 @@ As such, `dupGet()` function implements three methods to flag the deviant allele
 |   **NOTE: users can select the expected allele frequency (p: \code{test}) of the alternative allele based on the sequencing method and the probe bias therein. See our publication <https://doi.org/10.1101/2022.10.14.512217> for more details on probe bias.
 
 ```{r,eval=FALSE}
-# in the new version of the package dupGet function requires Fis value for a more accurate detection of the deviants
-# this is obtained by using the h.zygosity() function as below
-hz<-h.zygosity(parrot,verbose = FALSE) #parrot is the filtered vcf file
-Fis<-mean(hz$Fis,na.rm = TRUE)
 deviants<-dupGet(alleleINF,Fis=Fis,test = c("z.all","chi.all"),plot=TRUE,verbose = TRUE)
 head(deviants)
 ```

@@ -149,7 +149,27 @@ gg<-function(x){
 #' \dontrun{mf<-maf(ADtable)}
 #'
 #' @export
-maf<-function(h.table,AD=TRUE,verbose=TRUE,parallel=FALSE){
+maf <- function(h.table, AD = TRUE, verbose = TRUE, parallel = FALSE) {
+  htab <- h.table[, -c(1:4)]
+  if (parallel) {
+    numCores <- parallel::detectCores() - 1
+    cl <- parallel::makeCluster(numCores)
+    glt <- parallel::parApply(cl = cl, htab, 1, function(X) { process_snp(X, AD) })
+    parallel::stopCluster(cl)
+  } else {
+    if (verbose) {
+      glt <- apply_pb(htab, 1, function(X) { process_snp(X, AD) })
+    } else {
+      glt <- apply(htab, 1, function(X) { process_snp(X, AD) })
+    }
+  }
+  glt <- data.frame(h.table[, 1:4], t(glt))
+  colnames(glt) <- colnames(h.table)
+  return(glt)
+}
+
+
+maf_0<-function(h.table,AD=TRUE,verbose=TRUE,parallel=FALSE){
   htab<-h.table[,-c(1:4)]
   if(parallel){
     numCores<-detectCores()-1
@@ -168,7 +188,7 @@ maf<-function(h.table,AD=TRUE,verbose=TRUE,parallel=FALSE){
         if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
       })
     }else{
-      glt<-apply_pb(htab,1,function(X){
+      glt<-apply(htab,1,function(X){
         gg<-do.call(rbind,lapply(X,function(x){as.numeric(strsplit(x,",")[[1]])}))
         if(ncol(gg)>2)gg<-gg[,-which.min(colMeans(proportions(gg,1),na.rm=T))]
         if(AD){return(paste0(gg[,1],",",gg[,2]))}else{return(gg)}
@@ -253,7 +273,7 @@ hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", 
 
   h.table <- matrix(NA, nrow(xx), ncol(xx))
 
-  process_column <- function(i) {
+  process_column_0 <- function(i) {
     if (info.type == "AD-tot") {
       tmp <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
       tmp <- stringr::str_split_fixed(tmp, ",", 2L)
@@ -276,7 +296,7 @@ hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", 
     clusterExport(cl, varlist = c("xx", "max_adn", "ind", "info.type", "process_column"), envir = environment())
 
     results <- parLapply(cl, seq_len(ncol(xx)), function(i) {
-      res <- process_column(i)
+      res <- process_column_0(i)
       res
     })
     stopCluster(cl)
@@ -284,7 +304,7 @@ hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", 
     h.table <- do.call(cbind, results)
   } else {
     for (i in seq_len(ncol(xx))) {
-      h.table[, i] <- process_column(i)
+      h.table[, i] <- process_column_0(i)
       if (verbose) {
         setTxtProgressBar(pb, i)
       }
@@ -318,6 +338,71 @@ hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", 
   colnames(het.table) <- c("CHROM", colnames(vcf)[c(2, 3, 5, 10:ncol(vcf))])
   return(het.table)
 }
+
+
+
+hetTgen_cpp <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", "DP"), verbose = TRUE, parallel = FALSE) {
+  if (inherits(vcf, "list")) { vcf <- vcf$vcf }
+  if (inherits(vcf, "data.frame")) { vcf <- data.table::data.table(vcf) }
+  if (any(nchar(vcf$ALT) > 1)) {
+    warning("vcf file contains multi-allelic variants: \nonly bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps or drop minimum frequency alleles")
+  }
+
+  info.type <- match.arg(info.type)
+  itype <- substr(info.type, 1, 2)
+
+  adn <- sapply(strsplit(unlist(vcf[,"FORMAT"], use.names = FALSE), ":"), function(x) match(itype, x))
+  max_adn <- max(adn) + 1L
+  ind <- data.frame(cbind(seq_along(adn), adn))
+  xx <- data.frame(vcf[,-c(1:9)])
+
+  if (verbose & parallel==FALSE) {
+    message("generating table")
+  }
+
+  if (parallel) {
+    numCores <- detectCores() - 1
+    cl <- makeCluster(numCores)
+    clusterExport(cl, varlist = c("xx", "max_adn", "ind", "info.type", "process_column"), envir = environment())
+
+    h.table <- parAapply(cl, xx,2,process_column1,info_type = info.type,max_adn = max_adn,ind_adn = ind$adn)
+    stopCluster(cl)
+  } else {
+    if(verbose){
+      h.table <- rCNV:::apply_pb(xx,2,process_column1,info_type = info.type,max_adn = max_adn,ind_adn = ind$adn)
+    } else {
+      h.table <- apply(xx,2,process_column1,info_type = info.type,max_adn = max_adn,ind_adn = ind$adn)
+    }
+  }
+
+  if (info.type == "GT-012") {
+    h.table[h.table == "0/0"] <- 0
+    h.table[h.table == "1/1"] <- 1
+    h.table[h.table == "1/0" | h.table == "0/1"] <- 2
+    h.table[h.table == "./." | h.table == "."] <- NA
+  }
+  if (info.type == "GT-AB") {
+    h.table[h.table == "0/0"] <- "AA"
+    h.table[h.table == "1/1"] <- "BB"
+    h.table[h.table == "1/0" | h.table == "0/1"] <- "AB"
+    h.table[h.table == "./." | h.table == "."] <- -9
+  }
+  if (info.type == "AD") {
+    h.table[h.table == "./." | h.table == "." | is.na(h.table)] <- "0,0"
+  }
+  if (info.type == "DP") {
+    h.table[is.character(h.table)] <- 0
+    h.table[is.na(h.table)] <- 0
+  }
+
+  het.table <- as.data.frame(cbind(vcf[, c(1:3, 5)], h.table))
+  colnames(het.table) <- c("CHROM", colnames(vcf)[c(2, 3, 5, 10:ncol(vcf))])
+  return(het.table)
+}
+
+
+
+
 
 
 #' Get missingness of individuals in raw vcf
