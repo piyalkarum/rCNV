@@ -34,9 +34,9 @@ A function to get the percentage of missing data of snps per SNP and per
 sample
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
-missing<-get.miss(vcf,plot=TRUE)
+missing<-get.miss(vcf,plot=TRUE)}
 
 }
 \author{

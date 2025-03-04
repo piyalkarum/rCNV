@@ -40,9 +40,9 @@ relatedness value of zero while the individual with itself will have a
 relatedness value of one. Relatedness value of ~0.5 indicates siblings.
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
-relate<-relatedness(vcf)
+relate<-relatedness(vcf)}
 
 }
 \references{

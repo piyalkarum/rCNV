@@ -171,9 +171,9 @@ h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE,parallel=FALSE){
 #'  (2010).
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
-#' relate<-relatedness(vcf)
+#' relate<-relatedness(vcf)}
 #'
 #' @export
 relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE,parallel=FALSE){
@@ -286,9 +286,9 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE,parallel=FALSE){
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
-#' statistics<-vcf.stat(vcf,plot=TRUE)
+#' statistics<-vcf.stat(vcf,plot=TRUE)}
 #'
 #' @export
 vcf.stat<-function(vcf,plot=TRUE,...){

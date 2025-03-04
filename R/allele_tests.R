@@ -15,7 +15,7 @@
 #'
 #' @author Piyal Karunarathne
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
 #' het.table<-hetTgen(vcf,"GT")
 #' ad.table<-hetTgen(vcf,"AD")
@@ -24,7 +24,7 @@
 #' frQ<-allele.freq(het.table,f.typ="ind")
 #'
 #' #for population-wise and both allele depth and genotype tables
-#' \dontrun{frQ<-allele.freq(list(AD=ad.table,GT=het.table),f.typ="pop")}
+#' frQ<-allele.freq(list(AD=ad.table,GT=het.table),f.typ="pop")}
 #'
 #' @export
 allele.freq<-function(gtt,f.typ=c("pop","ind"),verbose=TRUE){

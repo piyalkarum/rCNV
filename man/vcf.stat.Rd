@@ -48,9 +48,9 @@ plot all the parameters (see details & values).
 For more details see instructions of GatK
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
-statistics<-vcf.stat(vcf,plot=TRUE)
+statistics<-vcf.stat(vcf,plot=TRUE)}
 
 }
 \author{

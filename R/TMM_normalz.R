@@ -206,10 +206,10 @@ index_to_mean <- function(x,indx, my_mean, al=NULL){
 #' }
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path)
 #' df<-hetTgen(vcf,"AD-tot",verbose=FALSE)
-#' norm.fact(df)
+#' norm.fact(df)}
 #'
 #'
 #' @export

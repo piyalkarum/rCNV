@@ -70,12 +70,10 @@ The significance of the deviation is tested with Z-score test
 and chi-square test (see references for more details on the method).
 }
 \examples{
-\dontrun{
+\dontrun{data(ADtable)
 hz<-h.zygosity(vcf,verbose=FALSE)
 Fis<-mean(hz$Fis,na.rm = TRUE)
-data(ADtable)
-AI<-allele.info(ADtable,x.norm=ADnorm,Fis=0.11)
-}
+AI<-allele.info(ADtable,x.norm=ADnorm,Fis=Fis)}
 
 }
 \references{

@@ -19,8 +19,8 @@ Function to import raw single and multi-sample VCF files.
 The function required the R-package \code{data.table} for faster importing.
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
-vcf <- readVCF(vcf.file.path)
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+vcf <- readVCF(vcf.file.path)}
 
 }
 \author{

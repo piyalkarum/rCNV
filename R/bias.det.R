@@ -104,12 +104,10 @@ get.pvals<-function(x,df,p.cal){
 #' }
 #'
 #' @examples
-#' \dontrun{
+#' \dontrun{data(ADtable)
 #' hz<-h.zygosity(vcf,verbose=FALSE)
 #' Fis<-mean(hz$Fis,na.rm = TRUE)
-#' data(ADtable)
-#' AI<-allele.info(ADtable,x.norm=ADnorm,Fis=0.11)
-#' }
+#' AI<-allele.info(ADtable,x.norm=ADnorm,Fis=Fis)}
 #'
 #' @export
 allele.info<-function(X,x.norm=NULL,Fis,method=c("MedR","QN","pca","TMM","TMMex"),logratioTrim = 0.3,sumTrim = 0.05,Weighting = TRUE,Acutoff = -1e+10,plot.allele.cov=TRUE,verbose = TRUE,parallel=FALSE,...){

@@ -49,10 +49,10 @@ QN - quantile normalization (see  Maza, Elie, et al. 2013 for a
 comparison of methods).
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path)
 df<-hetTgen(vcf,"AD-tot",verbose=FALSE)
-norm.fact(df)
+norm.fact(df)}
 
 
 }

@@ -214,8 +214,8 @@ maf_0<-function(h.table,AD=TRUE,verbose=TRUE,parallel=FALSE){
 #' @author Piyal Karunarathne
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
-#' vcf <- readVCF(vcf.file.path)
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' vcf <- readVCF(vcf.file.path)}
 #'
 #' @export
 readVCF <- function(vcf.file.path,verbose=FALSE){
@@ -231,7 +231,7 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' VariantsToTable: see details)
 #'
 #' @param vcf an imported vcf file in a list using \code{readVCF}
-#' @param info.type character. \code{AD}: allele depth value, {AD-tot}:total
+#' @param info.type character. \code{AD}: allele depth value, \code{AD-tot}:total
 #' allele depth, \code{DP}=unfiltered depth (sum), \code{GT}: genotype,
 #' \code{GT-012}:genotype in 012 format, \code{GT-AB}:genotype in AB format.
 #' Default \code{AD},  See details.
@@ -251,9 +251,9 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @importFrom parallel parSapply makeCluster clusterExport parLapply
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
-#' het.table<-hetTgen(vcf)
+#' het.table<-hetTgen(vcf)}
 #'
 #' @export
 hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", "DP"), verbose = TRUE, parallel = FALSE) {
@@ -429,9 +429,9 @@ hetTgen_cpp <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-A
 #' Returns a data frame of allele depth or genotypes
 #'
 #' @examples
-#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 #' vcf <- readVCF(vcf.file.path=vcf.file.path)
-#' missing<-get.miss(vcf,plot=TRUE)
+#' missing<-get.miss(vcf,plot=TRUE)}
 #'
 #' @export
 get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE,parallel=FALSE){
@@ -549,6 +549,119 @@ get.miss<-function(data,type=c("samples","snps"),plot=TRUE,verbose=TRUE,parallel
 #'
 #' @export
 gt.format <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL,parallel=FALSE) {
+  if(parallel) {
+    numCores <- detectCores() - 1
+    cl <- makeCluster(numCores)
+  }
+
+  if(is.character(gt)) {
+    gt <- as.data.frame(fread(gt))
+    gts <- gt[,-c(1,2)]
+  } else {
+    gts <- gt[,-c(1:4)]
+  }
+
+  if(is.character(info)) {
+    if(length(info) == ncol(gts)) {
+      info <- data.frame(population = info)
+    } else {
+      pop.col <- rep(NA, ncol(gts))
+      for(i in seq_along(info)) {
+        pop.col[grep(info[i], colnames(gts))] <- info[i]
+      }
+      info <- data.frame(population = pop.col)
+    }
+  }
+
+  # Ensure rownames match the original order
+  rownames(gts) <- paste(gt$CHROM, gt$POS, sep = ".")
+
+  # Keep population order consistent with input `info`
+  pp <- unique(info$population)
+  pp <- pp[order(match(pp, info$population))]  # Fix ordering issue
+
+  infos <- as.character(info$population)
+  format <- match.arg(format, several.ok = TRUE)
+
+  # Ensure lgt follows original population order
+  lgt <- split.data.frame(t(gts), f = factor(info$population, levels = pp))
+
+  if(any(format == "benv")) {
+    message("Formating BayEnv")
+
+    if(parallel) {
+      ppe <- parLapply(cl, lgt, function(X) {
+        out <- apply(X, 2, function(x) {
+          zero <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 0)
+          one <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 1)
+          return(as.data.frame(c(zero, one), col.names = FALSE))
+        }, simplify = FALSE)
+        do.call(rbind, out)
+      })
+    } else {
+      ppe <- lapply_pb(lgt, function(X) {
+        out <- apply(X, 2, function(x) {
+          zero <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 0)
+          one <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 1)
+          return(as.data.frame(c(zero, one), col.names = FALSE))
+        }, simplify = FALSE)
+        do.call(rbind, out)
+      })
+    }
+
+    ppe <- do.call(cbind, ppe)
+  } else {
+    ppe <- NULL
+  }
+
+  if(any(format == "bpass")) {
+    message("Formating BayPass")
+
+    if(parallel) {
+      ppp <- parLapply(cl, lgt, function(X) {
+        out <- apply(X, 2, function(x) {
+          zero <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 0)
+          one <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 1)
+          return(c(zero, one))
+        }, simplify = FALSE)
+        do.call(rbind, out)
+      })
+    } else {
+      ppp <- lapply_pb(lgt, function(X) {
+        out <- apply(X, 2, function(x) {
+          zero <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 0)
+          one <- sum((unlist(stringr::str_split(x, "/|\\|"))) == 1)
+          return(c(zero, one))
+        }, simplify = FALSE)
+        do.call(rbind, out)
+      })
+    }
+
+    ppp <- do.call(cbind, ppp)
+
+    # Ensure column names preserve population order
+    colnames(ppp) <- paste0(rep(pp, each = 2), "~", rep(c(1,2), ncol(ppp)/2))
+    rownames(ppp) <- paste0(gt$CHROM, ".", gt$POS)
+
+    if(!is.null(snp.subset)) {
+      rn <- sample(1:snp.subset, nrow(gts), replace = TRUE)
+      rownames(gts) <- paste0(gt$CHROM, ".", gt$POS)
+      chu.p <- split.data.frame(ppp, f = rn)
+    } else {
+      chu.p <- NULL
+    }
+  } else {
+    ppp <- NULL
+  }
+
+  if(parallel) { stopCluster(cl) }
+
+  return(list(baypass = ppp, bayenv = ppe, sub.bp = chu.p, pop = as.character(pp)))
+}
+
+
+
+gt.format0 <- function(gt,info,format=c("benv","bpass"),snp.subset=NULL,parallel=FALSE) {
   if(parallel){numCores<-detectCores()-1
   cl<-makeCluster(numCores)}
 

@@ -1,8 +1,8 @@
 Package: rCNV
 Type: Package
 Title: Detect Copy Number Variants from SNPs Data
-Version: 1.3.9000
-Date: 2024-04-30
+Version: 1.3.900
+Date: 2024-09-20
 Language: en-US
 Authors@R: c(person(given="Piyal",family="Karunarathne", email="piyalkarumail@yahoo.com", role = c("aut", "cre"),comment = c(ORCID = "0000-0002-1934-145X")),person(given="Qiujie",family="Zhou", email="qiujie.zhou@ebc.uu.se", role = c("aut"),comment = c(ORCID = "0000-0001-7351-2371")),person("Klaus", "Schliep", email="klaus.schliep@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0003-2941-0161")),person(given="Pascal", family="Milesi", role = "aut",comment = c(ORCID = "0000-0001-8580-4291")))
 Maintainer: Piyal Karunarathne <piyalkarumail@yahoo.com>
@@ -20,7 +20,7 @@ Suggests:
     knitr,
     testthat (>= 3.0.0),
     covr
-##VignetteBuilder: knitr
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 URL: https://piyalkarum.github.io/rCNV/, https://cran.r-project.org/package=rCNV

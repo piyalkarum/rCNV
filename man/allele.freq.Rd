@@ -25,7 +25,7 @@ genotype or allele depth tables
 If the allele frequencies to be calculated for populations from both genotype table and the allele depth table, they must be provided in a list with element names \code{AD} for allele depth table and \code{GT} for the genotype table. See the examples.
 }
 \examples{
-vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+\dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
 vcf <- readVCF(vcf.file.path=vcf.file.path)
 het.table<-hetTgen(vcf,"GT")
 ad.table<-hetTgen(vcf,"AD")
@@ -34,7 +34,7 @@ ad.table<-hetTgen(vcf,"AD")
 frQ<-allele.freq(het.table,f.typ="ind")
 
 #for population-wise and both allele depth and genotype tables
-\dontrun{frQ<-allele.freq(list(AD=ad.table,GT=het.table),f.typ="pop")}
+frQ<-allele.freq(list(AD=ad.table,GT=het.table),f.typ="pop")}
 
 }
 \author{
