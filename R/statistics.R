@@ -52,7 +52,37 @@ het.sity2 <- function(ind,eh){
 ##V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
 ##return(V)}
 
-gt2 <- function(x,gg,freq){
+gt2 <- function(x, gg, freq) {
+  one <- gg[, x[1]]
+  two <- gg[, x[2]]
+
+  valid <- !is.na(one) & !is.na(two) & freq > 0.05 & freq < 0.95
+
+  one <- one[valid]
+  two <- two[valid]
+  freq <- freq[valid]
+
+  if (length(freq) == 0) {
+    return(c(colnames(gg)[x[2]], colnames(gg)[x[1]], NA))
+  }
+
+  # Denominator
+  denom <- 2 * freq * (1 - freq)
+
+  # Numerator (Ajj or Ajk)
+  if (x[1] == x[2]) {
+    num <- (one - 2 * freq)^2
+  } else {
+    num <- (one - 2 * freq) * (two - 2 * freq)
+  }
+
+  Ajk <- sum(num / denom) / length(freq)
+  return(c(colnames(gg)[x[2]], colnames(gg)[x[1]], Ajk))
+}
+
+
+
+gt2_0 <- function(x,gg,freq){
   two<-gg[,x[1]]
   one<-gg[,x[2]]
   if(x[1]==x[2]){
@@ -67,6 +97,8 @@ gt2 <- function(x,gg,freq){
   V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
   return(V)
 }
+
+
 
 #' Determine per sample heterozygosity and inbreeding coefficient
 #'
@@ -191,11 +223,14 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE,parallel=FALSE){
     freq<-apply(gt,1,function(xx){aal<-stringr::str_split(xx,"/",simplify = T)
     return(sum(aal=="1")/(sum(aal=="0")+sum(aal=="1")))})
 
-    gg<-apply(gt,2,function(x){XX<-rep(NA,length(x))
-    XX[which(x=="0/0")]<-0
-    XX[which(x=="1/1")]<-2
-    XX[which(x=="1/0" | x=="0/1")]<-1
-    XX})
+    # Convert VCF-style genotypes to numeric format: 0, 1, 2, NA
+    gg <- apply(gt[, -c(1:4)], 2, function(x) {
+      XX <- rep(NA, length(x))
+      XX[x %in% c("0/0", "0|0")] <- 0
+      XX[x %in% c("0/1", "1/0", "0|1", "1|0")] <- 1
+      XX[x %in% c("1/1", "1|1")] <- 2
+      XX
+    })
 
     comb<-expand.grid(1:ncol(gg),1:ncol(gg))
    if(parallel){
