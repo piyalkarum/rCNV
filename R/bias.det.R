@@ -120,7 +120,7 @@ allele.info<-function(X,x.norm=NULL,Fis,method=c("MedR","QN","pca","TMM","TMMex"
 
   if(parallel){
     numCores<-detectCores()-1
-    cl<-makeCluster(cl)
+    cl<-makeCluster(numCores)
 
     p.cal<-parApply(cl=cl,x.norm[,-c(1:4)],1,function(snp1){
       if(is.character(unname(unlist(snp1[1])))){
@@ -259,5 +259,149 @@ allele.info<-function(X,x.norm=NULL,Fis,method=c("MedR","QN","pca","TMM","TMMex"
   pvals<-data.frame(pvals,eH.pval=ht[,"eH.pval"],eH.delta=ht[,"eH.delta"],cv=na.omit(p.cal[,"cv"]))
 
   return(pvals)
+}
+
+
+
+#' ClrCNV: multicopy detection for WGS
+#'
+#' This function is catered for detecting multicopy regions from whole genome sequences (WGS)
+#' using Likelihood Ratios
+#' @param ad allele depth table generated with \code{hetTgen}
+#' @param gt genotype table generated with \code{hetTgen}
+#' @param fis global inbreeding coefficient calculated with \code{h.zygosity}
+#' @param vcf if fis is not provided, vcf file imported using \code{readVCF}
+#' @param parallel logical. to parallelize over multiple cores
+#' @param numCores numeric. if parallel TRUE, number of cores to use; if NULL, use all cores
+#' @param ... other arguments passed to makeCluster
+#'
+#' @importFrom parallel detectCores makeCluster stopCluster
+#' @importFrom stats dnbinom lm predict rnbinom rnorm
+#' @importFrom MASS fitdistr
+#' @importFrom parallel parApply parLapply
+#'
+#' @author Qiujie Zhou, Pascal Milesi, Piyal Karunarathne
+#'
+#' @return Returns a data frame with likelihood ratios per SNP and duplication status
+#'
+#' @examples
+#' \dontrun{
+#' vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' vcf <- readVCF(vcf.file.path=vcf.file.path)
+#' ad<-hetTgen(vcf,"AD")
+#' gt<-hetTgen(vcf,"GT")
+#' hz<-h.zygosity(vcf,verbose=FALSE)
+#' Fis<-mean(hz$Fis,na.rm = TRUE)
+#' AI_WGS<-allele.info.WGS(ad,gt,Fis=Fis)}
+#'
+#' @export
+allele.info.WGS <- function(ad,gt,fis=NULL,vcf=NULL,parallel=FALSE,numCores=NULL,...) {
+  ll<-list(...)
+  message("step 1/5")
+  # run parallel if TRUE
+  if(parallel){ # <---per sample total depth
+    if(is.null(numCores)){
+      numCores<-detectCores()-1
+      cl<-makeCluster(cl)}
+    tot <- parApply(cl=cl,ad[,-(1:4)],2,FUN=function(x){
+      unlist(lapply(x,FUN=function(x){
+        sum(as.numeric(unlist(strsplit(x,split = ","))))
+      }))})
+  } else {
+    tot <- apply(ad[,-(1:4)],2,FUN=function(x){
+      unlist(lapply(x,FUN=function(x){
+        sum(as.numeric(unlist(strsplit(x,split = ","))))
+      }))})
+    }# <---
+
+  tot <- apply(tot, 2, as.numeric)
+  tot <- as.data.frame(tot)
+
+  # <--- global inbreeding coefficient
+  if(is.null(fis)){
+    if(is.null(vcf)){
+      stop("No fis (global inbreeding coefficient) or vcf provided \n
+           Either calculate fis using h.zygosity() function or provide a vcf")
+    } else {
+      fis <- h.zygosity(vcf)
+      fis <- mean(fis$Fis)
+    }
+  }
+  # <---
+
+  # <--- statistics for depth simulation, works only for WGS
+  colstat <- nb_stats(tot)
+
+  # <--- likelihood for observing the allele-specific depth under N = 2 and N = 4
+  message("step 2/5: calculating allele specific depth-likelihood")
+  if(parallel){
+    gene_prob <- t(parApply(ad[,-(1:4)], 1, FUN = cal_geno_lld2, inb = fis, nb_stat = colstat,cl=cl))
+  } else {
+    gene_prob <- t(apply(ad[,-(1:4)], 1, FUN = cal_geno_lld2, inb = fis, nb_stat = colstat))
+  }
+
+  # <--- likelihood for observing the total depth under N = 2 and N = 4
+  message("step 3/5: calculating total depth-specific likelihood")
+  if(parallel){
+    depth_prob <- parApply(tot, 2, FUN = cal_depth_lld_indi2,nb_stat = colstat,cl=cl)
+  } else {
+    depth_prob <- apply(tot, 2, FUN = cal_depth_lld_indi2,nb_stat = colstat)
+  }
+
+  # <--- likelihood ratio: N=4 against N=2 (allele-specific depth + total depth)
+  lhr <- 2 * (gene_prob +  depth_prob)
+  lhr[lhr < 0] <- 0  #### max(pN4,pN2)/pN2
+  lhr <- rowSums(lhr)
+
+  # <--- permutation test
+  message("step 4/5: performing permutation accross SNPs and samples")
+  # likelihood ratio for each SNP each individual
+  lld.ratio.geno <- na.omit(gene_prob[gt[,-(1:4)] == "0/1"]) # keep only heterozygotes
+  lld.ratio.geno[lld.ratio.geno < 0] <- 0
+  lld.ratio.dep <- depth_prob
+  lld.ratio.dep[lld.ratio.dep < 0] <- 0
+  # the 0.95 significant threshold considering both allelic ratio and depth by permutation,
+  # significant level can be adjusted
+  nhet <- rowSums(gt[,-(1:4)] == "0/1")
+  # 0.95 threshold
+  lld.ratio.dep.0.95 <- quantile(replicate(10000,sum(sample(lld.ratio.dep,ncol(tot)))),0.95)
+  if(parallel){
+    lld.ratio.geno.0.95 <- unlist(parLapply(cl=cl,unique(nhet),sample_and_quantile,
+                                            samples = sample(lld.ratio.geno,100000), nrep = 10000, quan = 0.95 ))
+  } else {
+    lld.ratio.geno.0.95 <- unlist(lapply(unique(nhet),sample_and_quantile,
+                                            samples = sample(lld.ratio.geno,100000), nrep = 10000, quan = 0.95 ))
+  }
+  thre0.95 <- 2*(lld.ratio.dep.0.95 + lld.ratio.geno.0.95)
+  names(thre0.95) <- unique(nhet)
+  # 0.99 threshold
+  lld.ratio.dep.0.99 <- quantile(replicate(10000,sum(sample(lld.ratio.dep,ncol(tot)))),0.99)
+  if(parallel){
+    lld.ratio.geno.0.99 <- unlist(parLapply(cl=cl,unique(nhet),sample_and_quantile,
+                                            samples = sample(lld.ratio.geno,100000), nrep = 10000, quan = 0.99 ))
+  } else {
+    lld.ratio.geno.0.99 <- unlist(lapply(unique(nhet),sample_and_quantile,
+                                            samples = sample(lld.ratio.geno,100000), nrep = 10000, quan = 0.99 ))
+  }
+  thre0.99 <- 2*(lld.ratio.dep.0.99 + lld.ratio.geno.0.99)
+  names(thre0.99) <- unique(nhet)
+  # <---
+
+  if(parallel){
+    stopCluster(cl)
+  }
+
+  # <--- create output info table
+  message("step 5/5: finishing....")
+  info <- data.frame(ad[,1:4],
+                     mdep = rowMeans(tot),
+                     Nhet = nhet,
+                     lhr = lhr,
+                     perm.95 = thre0.95[as.character(nhet)],
+                     perm.99 = thre0.99[as.character(nhet)])
+
+  info$dup.stat <- info$lhr > info$perm.95
+  info$dup.stat<-ifelse(info$dup.stat,"duplicated","non-duplicated")
+  return(info)
 }
 
