@@ -24,7 +24,7 @@ ease.
 <img src="vignettes/dup.plot.parrotfish.png" width="400" />
 
 ***For a comprehensive tutorial on the package, go to
-<https://piyalkarum.github.io/rCNV/> and navigate to “Get started” where
+<https://piyalkarum.github.io/rCNV/> and navigate to "Get started" where
 all the functions and usage are explained with ample examples.***
 
 ## NEWS 
