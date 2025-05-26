@@ -29,7 +29,7 @@ all the functions and usage are explained with ample examples.***
 
 ## NEWS 
 rCNV is currently developing methods to detect multicopy regions from whole genome sequencing (WGS) data using maximum likelihood ratios. 
-*For a sneak peek, go to the section 2.4 at <https://piyalkarum.github.io/rCNV/>*
+**For a sneak peek, go to the section 2.4 at <https://piyalkarum.github.io/rCNV/>**
 
 ## Installation
 
@@ -48,7 +48,7 @@ rCNV is currently developing methods to detect multicopy regions from whole geno
             install.packages("devtools") 
         devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
 
-Please don’t forget to cite us if you use the package.
+Please don't forget to cite us if you use the package.
 
 ## How to cite
 

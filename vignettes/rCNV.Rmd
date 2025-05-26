@@ -176,7 +176,7 @@ Compare the allele depth values between tables 1.4.0 and 1.4.1.
 In this step, all the statistics necessary for detecting duplicates are calculated. They include the following:
 a. Allele ratios (across all samples), b. Proportions of homo-/hetero-zygotes per SNP, c. Depth ratios (alternative/sum), d. Z-score, e. Chi-square significance, and f. excess of heterozygosity. 
 
-*[see section 2.4 for alternative detection statistics for whole genome sequencing (WGS) data]*
+`r rCNV:::colorize("[see section 2.4 for alternative detection statistics for whole genome sequencing (WGS) data]","red")`
 
 Alternative allele ratio is calculated across all the samples from depth values; Proportion of homo/hetero-zygotes are also calculated across all the samples per SNP; Depth ratio is calculated per individual per SNP by dividing the alternative allele depth value by the total depth value of both alleles. This is calculated for both heterozygotes and homozygotes;  the Z-score per SNP is calculated according to the following equation:
 
@@ -268,8 +268,8 @@ table(deviants$dup.stat)
 table(CV$dup.stat)
 ```
 
-### 2.4 Detection of multicopy regions of WGS data
-**rCNV is currently developing methods to detect multicopy regions specifically dedicated to whole genome sequencing data using maximum likelihood ratios.** The following script demonstrates how this method can be used using SNP datasets of WGS data. *Stay tuned for more updates and a full description of the complete WGS CNV detection process.*
+### 2.4 Detection of multicopy regions from WGS data
+**rCNV is currently developing methods to detect multicopy regions specifically dedicated to whole genome sequencing data using maximum likelihood ratios.** The following script demonstrates how this method can be used using SNP data sets of WGS data. *Stay tuned for more updates and a full description of the complete WGS CNV detection process.*
 
 ```{r eval=FALSE, echo=TRUE}
 vcf<-readVCF("path/to/wgs/data.vcf")
