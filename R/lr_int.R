@@ -1,19 +1,27 @@
 ##### internal functions of likelihood ratio calculations ######
-nb_stats <- function(tot.tab,cl=cl){
+nb_stats <- function(tot.tab,cl = NULL){
   ##### correlation between mean depth and sd, calculate parameter for nb distribution
-  colstat <- parApply(tot.tab, 2, FUN = function(x){
-    mean <- mean(x[x> quantile(x,0.05) & x < quantile(x,0.95)])
-    sd <- sd(x[x> quantile(x,0.05) & x < quantile(x,0.95)])
-    size <- fitdistr(x, "Negative Binomial")$estimate["size"]
-    return(data.frame(mean,sd,size))
-  },cl=cl)
+  if (is.null(cl)){
+    colstat <- apply(tot.tab, 2, FUN = function(x){
+      mean <- mean(x[x> quantile(x,0.05) & x < quantile(x,0.95)])
+      sd <- sd(x[x> quantile(x,0.05) & x < quantile(x,0.95)])
+      size <- MASS::fitdistr(x, "Negative Binomial")$estimate["size"]
+      return(data.frame(mean,sd,size))
+    })
+  }else {
+    colstat <- parApply(tot.tab, 2, FUN = function(x){
+      mean <- mean(x[x> quantile(x,0.05) & x < quantile(x,0.95)])
+      sd <- sd(x[x> quantile(x,0.05) & x < quantile(x,0.95)])
+      size <- MASS::fitdistr(x, "Negative Binomial")$estimate["size"]
+      return(data.frame(mean,sd,size))
+    },cl=cl)
+  }
 
   par(mfrow =c(4,5))
   colstat <- do.call(rbind,colstat)
   plot(colstat$mean,colstat$sd,xlab = "mean",ylab = "sd") ## check correlation
 
 
-  par(mfrow =c(4,5))
   fit <- lm(sd~mean,data = colstat)
   colstat$mean2 <- 2*colstat$mean              ## expected mean and depth for N=4
   colstat$sd2 <- predict(fit,newdata = data.frame(mean = colstat$mean2))
@@ -49,7 +57,6 @@ cal_depth_lld_indi2 <- function(tot.tab,nb_stat){
 ###### calculate likelihood ratio based on allelic ratio
 cal_geno_lld2 <- function(ad.tab,inb,nb_stat){
   y <- do.call(rbind,lapply(ad.tab,FUN=function(geno){
-    print(geno)
     tem <- as.numeric(unlist(strsplit(geno,split = ",")))
     if(any(tem==1) & abs(tem[1]-tem[2]) >10) {
       tem[tem==1] <- 0
@@ -60,14 +67,14 @@ cal_geno_lld2 <- function(ad.tab,inb,nb_stat){
     if (tem[1] == 0 & tem[2]==0 ) tem[3] = -9
     return(tem)
   }))
-
+  y <- as.data.frame(y)
   #### n=2
   p.alt <- sum(y[,3][y[,3]!= -9])/2/sum(y[,3]!= -9)
   p.ref <- 1- p.alt
   pG.alt.hom <- p.alt^2*(1-inb) + p.alt*inb   #### consider apply population info
   pG.ref.hom <- p.ref^2*(1-inb) + p.ref*inb
   pG.het <- 2*p.alt*p.ref*(1-inb)
-  lld2 <- apply(y[,1:2], 1, FUN = function(dep) {
+  lld2 <- apply(y, 1, FUN = function(dep) {
     if(sum(dep) == 0 ){ lld = 1} else{
       ##### genotype likelihood p(D|G), choose(sum(dep),dep[1]) is going to be cancel out
       sampling <- choose(sum(dep),dep[1])
@@ -104,7 +111,7 @@ cal_geno_lld2 <- function(ad.tab,inb,nb_stat){
   pG.AAaa <- 6*p.ref^2*p.alt^2*(1-inb)
   pG.AAAa <- 4*p.ref^3*p.alt*(1-inb)
   pG.AAAA <- p.ref^4*(1-inb) + p.ref*inb
-  lld4 <- apply(y[,1:2], 1, FUN = function(dep) {
+  lld4 <- apply(y, 1, FUN = function(dep) {
     if(sum(dep) == 0 ){ lld = 1} else{
       ##### genotype likelihood P(D|G)
       sampling <- choose(sum(dep),dep[1])

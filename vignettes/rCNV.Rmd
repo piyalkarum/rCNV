@@ -273,9 +273,10 @@ table(CV$dup.stat)
 
 ```{r eval=FALSE, echo=TRUE}
 vcf<-readVCF("path/to/wgs/data.vcf")
-fis<-h.zygosity(vcf)$Fis
+fis<-mean(h.zygosity(vcf)$Fis)
 gt<-hetTgen(vcf,"GT")
 ad<-hetTgen(vcf,"AD")
+ad[ad==""] <- "0,0"
 
 out<-allele.info.WGS(ad,gt,fis)
 # out is a data frame with duplication status of each snp, and other stats.

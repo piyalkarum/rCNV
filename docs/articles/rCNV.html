@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">Piyal
 Karunarathne</h4>
             
-            <h4 data-toc-skip class="date">Last updated: 26 May,
+            <h4 data-toc-skip class="date">Last updated: 27 May,
 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/piyalkarum/rCNV/blob/HEAD/vignettes/rCNV.Rmd" class="external-link"><code>vignettes/rCNV.Rmd</code></a></small>
@@ -800,9 +800,10 @@ tuned for more updates and a full description of the complete WGS CNV
 detection process.</em></p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vcf</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/readVCF.html">readVCF</a></span><span class="op">(</span><span class="st">"path/to/wgs/data.vcf"</span><span class="op">)</span></span>
-<span><span class="va">fis</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/h.zygosity.html">h.zygosity</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span><span class="op">$</span><span class="va">Fis</span></span>
+<span><span class="va">fis</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="../reference/h.zygosity.html">h.zygosity</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span><span class="op">$</span><span class="va">Fis</span><span class="op">)</span></span>
 <span><span class="va">gt</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/hetTgen.html">hetTgen</a></span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"GT"</span><span class="op">)</span></span>
 <span><span class="va">ad</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/hetTgen.html">hetTgen</a></span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"AD"</span><span class="op">)</span></span>
+<span><span class="va">ad</span><span class="op">[</span><span class="va">ad</span><span class="op">==</span><span class="st">""</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"0,0"</span></span>
 <span></span>
 <span><span class="va">out</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/allele.info.WGS.html">allele.info.WGS</a></span><span class="op">(</span><span class="va">ad</span>,<span class="va">gt</span>,<span class="va">fis</span><span class="op">)</span></span>
 <span><span class="co"># out is a data frame with duplication status of each snp, and other stats.</span></span></code></pre></div>
