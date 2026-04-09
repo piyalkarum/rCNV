@@ -260,51 +260,132 @@ readVCF <- function(vcf.file.path,verbose=FALSE){
 #' het.table<-hetTgen(vcf)}
 #'
 #' @export
-hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", "DP"), verbose = TRUE, parallel = FALSE) {
-  if (inherits(vcf, "list")) { vcf <- vcf$vcf }
-  if (inherits(vcf, "data.frame")) { vcf <- data.table::data.table(vcf) }
-  if (any(nchar(vcf$ALT) > 1)) {
-    warning("vcf file contains multi-allelic variants: \nonly bi-allelic SNPs allowed\nUse maf() to remove non-bi-allilic snps or drop minimum frequency alleles")
-  }
+hetTgen <- function(vcf,
+                     info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", "DP"),
+                     verbose = TRUE,
+                     parallel = FALSE) {
 
   info.type <- match.arg(info.type)
-  itype <- substr(info.type, 1, 2)
 
-  adn <- sapply(strsplit(unlist(vcf[,"FORMAT"], use.names = FALSE), ":"), function(x) match(itype, x))
-  max_adn <- max(adn) + 1L
-  ind <- cbind(seq_along(adn), adn)
-  xx <- data.frame(vcf[,-c(1:9)])
+  if (inherits(vcf, "list")) {
+    vcf <- vcf$vcf
+  }
+  if (inherits(vcf, "data.frame")) {
+    vcf <- data.table::data.table(vcf)
+  }
 
+  # Only bi-allelic SNPs are allowed for CATG -> AD conversion
+  if (any(nchar(vcf$ALT) > 1 | nchar(vcf$REF) > 1)) {
+    warning("vcf file contains non-SNP or multi-allelic variants:\n",
+            "only bi-allelic SNPs are supported for AD/CATG extraction.\n",
+            "Use maf() to remove non-bi-allelic SNPs or drop minimum frequency alleles")
+  }
+
+  xx <- data.frame(vcf[, -c(1:9)])
   h.table <- matrix(NA, nrow(xx), ncol(xx))
 
-  process_column_0 <- function(i) {
-    if (info.type == "AD-tot") {
-      tmp <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
-      tmp <- stringr::str_split_fixed(tmp, ",", 2L)
-      as.numeric(tmp[,1]) + as.numeric(tmp[,2])
-    } else {
-      tmp <- stringr::str_split_fixed(xx[,i], ":", max_adn)[ind]
-      if(info.type!="DP"){tmp[is.na(tmp) | tmp==".,."] <- "./."}
-      tmp
+  # FORMAT parsing
+  format_split <- strsplit(as.character(vcf$FORMAT), ":", fixed = TRUE)
+
+  # which tag should be used
+  # if requesting AD / AD-tot and AD is absent but CATG exists, use CATG
+  target_tag <- switch(info.type,
+                       "AD"     = "AD",
+                       "AD-tot" = "AD",
+                       "GT"     = "GT",
+                       "GT-012" = "GT",
+                       "GT-AB"  = "GT",
+                       "DP"     = "DP")
+
+  has_ad   <- sapply(format_split, function(x) "AD"   %in% x)
+  has_catg <- sapply(format_split, function(x) "CATG" %in% x)
+
+  use_catg <- FALSE
+  if (info.type %in% c("AD", "AD-tot")) {
+    if (!any(has_ad) && any(has_catg)) {
+      use_catg <- TRUE
+      target_tag <- "CATG"
+      if (verbose) {
+        message("AD field not found; using CATG field to reconstruct ref/alt depths.")
+      }
     }
   }
 
-  if (verbose & parallel==FALSE) {
+  tag_index <- sapply(format_split, function(x) match(target_tag, x))
+
+  if (all(is.na(tag_index))) {
+    stop("Requested field ('", info.type, "') not found in FORMAT column.")
+  }
+
+  max_fields <- max(lengths(format_split))
+  ind <- cbind(seq_along(tag_index), tag_index)
+
+  # iPyrad CATG order
+  catg_index <- c(C = 1L, A = 2L, T = 3L, G = 4L)
+
+  process_column_0 <- function(i) {
+    # split sample strings into FORMAT components
+    tmp_field <- stringr::str_split_fixed(xx[, i], ":", max_fields)[ind]
+
+    # handle missing tag for some rows
+    tmp_field[is.na(tag_index)] <- NA
+
+    # ----- AD / AD-tot from CATG -----
+    if (use_catg) {
+      # split CATG counts into 4 columns: C,A,T,G
+      catg_mat <- stringr::str_split_fixed(tmp_field, ",", 4L)
+      catg_mat[catg_mat == "" | is.na(catg_mat)] <- NA
+
+      ref_idx <- catg_index[toupper(vcf$REF)]
+      alt_idx <- catg_index[toupper(vcf$ALT)]
+
+      ref_counts <- suppressWarnings(as.numeric(catg_mat[cbind(seq_len(nrow(catg_mat)), ref_idx)]))
+      alt_counts <- suppressWarnings(as.numeric(catg_mat[cbind(seq_len(nrow(catg_mat)), alt_idx)]))
+
+      ref_counts[is.na(ref_counts)] <- 0
+      alt_counts[is.na(alt_counts)] <- 0
+
+      if (info.type == "AD-tot") {
+        return(ref_counts + alt_counts)
+      } else {
+        return(paste0(ref_counts, ",", alt_counts))
+      }
+    }
+
+    # ----- Standard AD handling -----
+    if (info.type == "AD-tot") {
+      tmp_ad <- stringr::str_split_fixed(tmp_field, ",", 2L)
+      out <- suppressWarnings(as.numeric(tmp_ad[, 1]) + as.numeric(tmp_ad[, 2]))
+      out[is.na(out)] <- 0
+      return(out)
+    }
+
+    # ----- Standard field extraction (GT / DP / AD) -----
+    if (info.type != "DP") {
+      tmp_field[is.na(tmp_field) | tmp_field == ".,."] <- "./."
+    }
+
+    tmp_field
+  }
+
+  if (verbose && !parallel) {
     message("generating table")
     pb <- txtProgressBar(min = 0, max = ncol(xx), style = 3, width = 50, char = "=")
   }
 
   if (parallel) {
-    numCores <- detectCores() - 1
-    cl <- makeCluster(numCores)
-    clusterExport(cl, varlist = c("xx", "max_adn", "ind", "info.type", "process_column"), envir = environment())
-
-    results <- parLapply(cl, seq_len(ncol(xx)), function(i) {
-      res <- process_column_0(i)
-      res
+    numCores <- parallel::detectCores() - 1
+    cl <- parallel::makeCluster(numCores)
+    parallel::clusterExport(
+      cl,
+      varlist = c("xx", "max_fields", "ind", "tag_index", "info.type",
+                  "use_catg", "vcf", "catg_index", "process_column_0"),
+      envir = environment()
+    )
+    results <- parallel::parLapply(cl, seq_len(ncol(xx)), function(i) {
+      process_column_0(i)
     })
-    stopCluster(cl)
-
+    parallel::stopCluster(cl)
     h.table <- do.call(cbind, results)
   } else {
     for (i in seq_len(ncol(xx))) {
@@ -315,31 +396,38 @@ hetTgen <- function(vcf, info.type = c("AD", "AD-tot", "GT", "GT-012", "GT-AB", 
     }
   }
 
-  if (verbose) {
+  if (verbose && !parallel) {
     close(pb)
   }
+
+  # post-processing
   if (info.type == "GT-012") {
-    h.table[h.table == "0/0"] <- 0
-    h.table[h.table == "1/1"] <- 1
-    h.table[h.table == "1/0" | h.table == "0/1"] <- 2
-    h.table[h.table == "./." | h.table == "."] <- NA
+    h.table[h.table %in% c("0/0", "0|0")] <- 0
+    h.table[h.table %in% c("1/1", "1|1")] <- 1
+    h.table[h.table %in% c("1/0", "0/1", "1|0", "0|1")] <- 2
+    h.table[h.table %in% c("./.", ".", ".|.")] <- NA
   }
+
   if (info.type == "GT-AB") {
-    h.table[h.table == "0/0"] <- "AA"
-    h.table[h.table == "1/1"] <- "BB"
-    h.table[h.table == "1/0" | h.table == "0/1"] <- "AB"
-    h.table[h.table == "./." | h.table == "."] <- -9
+    h.table[h.table %in% c("0/0", "0|0")] <- "AA"
+    h.table[h.table %in% c("1/1", "1|1")] <- "BB"
+    h.table[h.table %in% c("1/0", "0/1", "1|0", "0|1")] <- "AB"
+    h.table[h.table %in% c("./.", ".", ".|.")] <- -9
   }
+
   if (info.type == "AD") {
-    h.table[h.table == "./." | h.table == "." | is.na(h.table)] <- "0,0"
+    h.table[h.table %in% c("./.", ".", NA)] <- "0,0"
   }
+
   if (info.type == "DP") {
-    h.table[is.character(h.table)] <- 0
+    h.table[is.na(h.table)] <- 0
+    suppressWarnings(storage.mode(h.table) <- "numeric")
     h.table[is.na(h.table)] <- 0
   }
 
   het.table <- as.data.frame(cbind(vcf[, c(1:3, 5)], h.table))
   colnames(het.table) <- c("CHROM", colnames(vcf)[c(2, 3, 5, 10:ncol(vcf))])
+
   return(het.table)
 }
 
