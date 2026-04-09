@@ -39,7 +39,7 @@ rCNV is currently developing methods to detect multicopy regions from whole geno
 
     install.packages("rCNV")
 
--   You can install the development version of rCNV from
+-   [RECOMMENDED] You can install the development version of rCNV from
     [GitHub](https://github.com/) with:
 
 <!-- -->
