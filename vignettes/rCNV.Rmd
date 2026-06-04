@@ -310,8 +310,9 @@ out <- allele.info.WGS.GCcor(
 Output is a data.frame with one row per SNP, carrying duplication (and optionally deletion) status alongside likelihood ratios, permutation thresholds, depth, and allele-frequency stats. See `allele.info.WGS.GCcor` and `allele.info.WGS3` for full column descriptions.
 
 
+**Use the following script if the above two fail with your data**
 
-```{r eval=FALSE, echo=FALSE}
+```{r eval=FALSE, echo=TRUE}
 vcf<-readVCF("path/to/wgs/data.vcf")
 fis<-mean(h.zygosity(vcf)$Fis)
 gt<-hetTgen(vcf,"GT")
@@ -319,8 +320,8 @@ ad<-hetTgen(vcf,"AD")
 ad[ad==""] <- "0,0"
 
 out<-allele.info.WGS(ad,gt,fis)
-# out is a data frame with duplication status of each snp, and other stats.
-
+# out is a data frame with duplication status of each snp, and other stats, can be used directly with cnv()
+cv<-cnv(out,fis=fis)
 ```
 
 
