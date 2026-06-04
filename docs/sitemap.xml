@@ -10,7 +10,9 @@
 <url><loc>/reference/ADtable.html</loc></url>
 <url><loc>/reference/ad.correct.html</loc></url>
 <url><loc>/reference/allele.freq.html</loc></url>
+<url><loc>/reference/allele.info.WGS.GCcor.html</loc></url>
 <url><loc>/reference/allele.info.WGS.html</loc></url>
+<url><loc>/reference/allele.info.WGS3.html</loc></url>
 <url><loc>/reference/allele.info.html</loc></url>
 <url><loc>/reference/alleleINF.html</loc></url>
 <url><loc>/reference/cnv.html</loc></url>
@@ -28,6 +30,7 @@
 <url><loc>/reference/maf.html</loc></url>
 <url><loc>/reference/norm.fact.html</loc></url>
 <url><loc>/reference/power.bias.html</loc></url>
+<url><loc>/reference/rCNV-package.html</loc></url>
 <url><loc>/reference/readVCF.html</loc></url>
 <url><loc>/reference/relatedness.html</loc></url>
 <url><loc>/reference/sig.hets.html</loc></url>

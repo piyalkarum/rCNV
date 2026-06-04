@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Detecting CNV from SNPs: a quick guide to rCNV">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rCNV</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.900</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,8 +59,8 @@
                         <h4 data-toc-skip class="author">Piyal
 Karunarathne</h4>
             
-            <h4 data-toc-skip class="date">Last updated: 27 May,
-2025</h4>
+            <h4 data-toc-skip class="date">Last updated: 04 June,
+2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/piyalkarum/rCNV/blob/HEAD/vignettes/rCNV.Rmd" class="external-link"><code>vignettes/rCNV.Rmd</code></a></small>
       <div class="d-none name"><code>rCNV.Rmd</code></div>
@@ -794,11 +794,60 @@ Heterozygotes with putative duplicates</div>
 </h4>
 <p><strong>rCNV is currently developing methods to detect multicopy
 regions specifically dedicated to whole genome sequencing data using
-maximum likelihood ratios.</strong> The following script demonstrates
-how this method can be used using SNP data sets of WGS data. <em>Stay
+maximum likelihood ratios.</strong> The following script is a sneak-peak
+of how this method can be used using SNP data sets of WGS data. <em>Stay
 tuned for more updates and a full description of the complete WGS CNV
 detection process.</em></p>
+<p>rCNV detects multicopy regions in whole-genome sequencing data using
+maximum-likelihood ratios on joint genotype + depth signals. Two
+variants are provided:</p>
+<ul>
+<li>allele.info.WGS3() — fast, no reference required.</li>
+<li>allele.info.WGS.GCcor() — corrects for GC-driven depth bias using
+SNP-centred windows.</li>
+</ul>
+<p>Both functions accept either a VCF path or an already-loaded VCF
+using <code><a href="../reference/readVCF.html">readVCF()</a></code> function, return a single merged data.frame
+with per-SNP duplication status (and optionally deletion status with
+deletion = TRUE), and support restricting analysis to a subset of
+chromosomes (chroms = c(“chr1”,“chr2”)) or to regions in a BED file (bed
+= “regions.bed”).</p>
+<ol style="list-style-type: decimal">
+<li><strong>Without GC correction</strong></li>
+</ol>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/allele.info.WGS3.html">allele.info.WGS3</a></span><span class="op">(</span>vcf <span class="op">=</span> <span class="st">"path/to/wgs/data.vcf"</span><span class="op">)</span></span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>i <strong>With GC correction (requires reference
+FASTA)</strong>
+</li>
+</ol>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/allele.info.WGS.GCcor.html">allele.info.WGS.GCcor</a></span><span class="op">(</span></span>
+<span>  vcf <span class="op">=</span> <span class="st">"path/to/wgs/data.vcf"</span>,</span>
+<span>  ref <span class="op">=</span> <span class="st">"path/to/genome.fa"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>ii <strong>Restrict to specific chromosomes or BED regions, also
+test deletions</strong>
+</li>
+</ol>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/allele.info.WGS.GCcor.html">allele.info.WGS.GCcor</a></span><span class="op">(</span></span>
+<span>  vcf      <span class="op">=</span> <span class="st">"path/to/wgs/data.vcf"</span>,</span>
+<span>  ref      <span class="op">=</span> <span class="st">"path/to/genome.fa"</span>,</span>
+<span>  chroms   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"chr1"</span>, <span class="st">"chr2"</span><span class="op">)</span>,     <span class="co"># OR: bed = "regions.bed"</span></span>
+<span>  deletion <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>, numCores <span class="op">=</span> <span class="fl">8</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Output is a data.frame with one row per SNP, carrying duplication
+(and optionally deletion) status alongside likelihood ratios,
+permutation thresholds, depth, and allele-frequency stats. See
+<code>allele.info.WGS.GCcor</code> and <code>allele.info.WGS3</code> for
+full column descriptions.</p>
+<p><strong>Use the following script if the above two fail with your
+data</strong></p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vcf</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/readVCF.html">readVCF</a></span><span class="op">(</span><span class="st">"path/to/wgs/data.vcf"</span><span class="op">)</span></span>
 <span><span class="va">fis</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="../reference/h.zygosity.html">h.zygosity</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span><span class="op">$</span><span class="va">Fis</span><span class="op">)</span></span>
 <span><span class="va">gt</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/hetTgen.html">hetTgen</a></span><span class="op">(</span><span class="va">vcf</span>,<span class="st">"GT"</span><span class="op">)</span></span>
@@ -806,7 +855,8 @@ detection process.</em></p>
 <span><span class="va">ad</span><span class="op">[</span><span class="va">ad</span><span class="op">==</span><span class="st">""</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"0,0"</span></span>
 <span></span>
 <span><span class="va">out</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/allele.info.WGS.html">allele.info.WGS</a></span><span class="op">(</span><span class="va">ad</span>,<span class="va">gt</span>,<span class="va">fis</span><span class="op">)</span></span>
-<span><span class="co"># out is a data frame with duplication status of each snp, and other stats.</span></span></code></pre></div>
+<span><span class="co"># out is a data frame with duplication status of each snp, and other stats, can be used directly with cnv()</span></span>
+<span><span class="va">cv</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/cnv.html">cnv</a></span><span class="op">(</span><span class="va">out</span>,fis<span class="op">=</span><span class="va">fis</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -848,7 +898,7 @@ the
 values per population and plot genetic distance in a network
 qgraph.</p></li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># the dataset used here is from Dorrant et al. 2020 of American lobster populations in Gulf of St. Lawrence, Canada</span></span>
 <span><span class="va">vdata</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"../testDATA/lobster_data4Vst.rds"</span><span class="op">)</span></span>
 <span><span class="co"># get the total depth values of the duplicated snps</span></span>
@@ -857,7 +907,7 @@ qgraph.</p></li>
 <span><span class="va">pops</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">dd</span><span class="op">)</span>,<span class="fl">1</span>,<span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">dd</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">vdata</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>,<span class="va">dd</span><span class="op">)</span></span>
 <span><span class="va">Vs</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/vst.html">vst</a></span><span class="op">(</span><span class="va">dd</span>,pops<span class="op">=</span><span class="va">pops</span><span class="op">)</span></span></code></pre></div>
-<p><img src="rCNV_files/figure-html/unnamed-chunk-25-1.png" width="700">
+<p><img src="rCNV_files/figure-html/unnamed-chunk-28-1.png" class="r-plt" alt="" width="700">
 Fig. 3.1. Vst network qgraph generated from the Vst values for each
 lobster population. Circles represent populations and the green arrows
 show similarity and the direction.See <code>qgraph</code> help for the
@@ -921,7 +971,7 @@ proportion of the heritability for human height. Nature Genetics, 42(7),
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

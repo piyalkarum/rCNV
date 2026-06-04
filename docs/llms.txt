@@ -1,0 +1,126 @@
+# rCNV
+
+# rCNV: An R package for detecting copy number variants from SNPs data
+
+Piyal Karunarathne, Qiujie Zhou, Klaus Schliep, and Pascal Milesi
+
+**rCNV** was designed to identify duplicates (CNV) from SNPs data with
+ease.
+
+![](articles/dup.plot.parrotfish.png)
+
+***For a comprehensive tutorial on the package, go to
+<https://piyalkarum.github.io/rCNV/> and navigate to “Get started” where
+all the functions and usage are explained with ample examples.***
+
+## NEWS
+
+rCNV is currently developing methods to detect multicopy regions from
+whole genome sequencing (WGS) data using maximum likelihood ratios.
+**For a sneak peek, go to the section 2.4 at
+<https://piyalkarum.github.io/rCNV/>**
+
+## Installation
+
+- CRAN link <https://cran.r-project.org/package=rCNV>
+
+``` R
+install.packages("rCNV")
+```
+
+- \[RECOMMENDED\] You can install the development version of rCNV from
+  [GitHub](https://github.com/) with:
+
+``` R
+    if (!requireNamespace("devtools", quietly = TRUE)) 
+        install.packages("devtools") 
+    devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
+```
+
+> **Note:** The WGS functions (`allele.info.WGS3` and
+> `allele.info.WGS.GCcor`) depend on several Bioconductor packages that
+> are not available on CRAN. If you encounter installation errors,
+> install these first:
+>
+> ``` R
+> if (!requireNamespace("BiocManager", quietly = TRUE))
+>     install.packages("BiocManager")
+> BiocManager::install(c("Rsamtools", "Biostrings", "GenomicRanges",
+>                        "GenomeInfoDb", "BiocGenerics", "IRanges",
+>                        "S4Vectors", "rtracklayer"))
+> ```
+>
+> Then re-run the `install_github` command above.
+
+Please don’t forget to cite us if you use the package.
+
+## How to cite
+
+- Karunarathne P, Zhou Q, Schliep K, Milesi P. A comprehensive framework
+  for detecting copy number variants from single nucleotide polymorphism
+  data: ‘rCNV’, a versatile r package for paralogue and CNV detection.
+  Mol Ecol Resour. 2023 Jul 29.
+  doi:<http://doi.org/10.1111/1755-0998.13843>
+
+- Karunarathne, P., Zhou, Q., Schliep, K., & Milesi, P. (2022). A new
+  framework for detecting copy number variants from single nucleotide
+  polymorphism data: ‘rCNV’, a versatile R package for paralogs and CNVs
+  detection. BioRxiv, 2022.10.14.512217.
+  doi:<http://doi.org/10.1101/2022.10.14.512217>
+
+# Package index
+
+## All functions
+
+- [`ADnorm`](ADnorm.md) : Normalized allele depth example data
+- [`ADtable`](ADtable.md) : Allele Depth (AD) example data
+- [`ad.correct()`](ad.correct.md) : Correct allele depth values
+- [`allele.freq()`](allele.freq.md) : Generate allele frequency table
+  for individuals or populations
+- [`allele.info()`](allele.info.md) : Get allele information for
+  duplicate detection
+- [`allele.info.WGS.GCcor()`](allele.info.WGS.GCcor.md) : Allele
+  Information with GC-Bias Correction for WGS Data
+- [`allele.info.WGS()`](allele.info.WGS.md) : ClrCNV: multicopy
+  detection for WGS
+- [`allele.info.WGS3()`](allele.info.WGS3.md) : Allele Information for
+  WGS Data (No GC Correction)
+- [`alleleINF`](alleleINF.md) : Allele info example data
+- [`cnv()`](cnv.md) : Find CNVs from deviants
+- [`cpm.normal()`](cpm.normal.md) : Calculate normalized depth for
+  alleles
+- [`depthVsSample()`](depthVsSample.md) : Simulate median allele ratios
+  for varying number of samples and depth values
+- [`dup.plot()`](dup.plot.md) : Plot classified SNPs into deviants/CNVs
+  and non-deviants/non-CNVs
+- [`dup.validate()`](dup.validate.md) : Validate detected deviants/cnvs
+- [`dupGet()`](dupGet.md) : Detect deviants from SNPs; classify SNPs
+- [`exportVCF()`](exportVCF.md) : Export VCF files
+- [`get.miss()`](get.miss.md) : Get missingness of individuals in raw
+  vcf
+- [`gt.format()`](gt.format.md) : Format genotype for BayEnv and BayPass
+- [`h.zygosity()`](h.zygosity.md) : Determine per sample heterozygosity
+  and inbreeding coefficient
+- [`hetTgen()`](hetTgen.md) : Generate allele depth or genotype table
+- [`maf()`](maf.md) : Remove MAF allele
+- [`norm.fact()`](norm.fact.md) : Calculate normalization factor for
+  each sample
+- [`power.bias()`](power.bias.md) : Simulate and plot detection power of
+  bias in allele ratios
+- [`rCNV`](rCNV-package.md) [`rCNV-package`](rCNV-package.md) : rCNV:
+  Detect Copy Number Variants from SNP Data
+- [`readVCF()`](readVCF.md) : Import VCF file
+- [`relatedness()`](relatedness.md) : Determine pairwise relatedness
+- [`sig.hets()`](sig.hets.md) : Identify significantly different
+  heterozygotes from SNPs data
+- [`sim.als()`](sim.als.md) : Simulate Allele Frequencies
+- [`vcf.stat()`](vcf.stat.md) : Get sequencing quality statistics of raw
+  VCF files (with GatK generated vcf files only)
+- [`vst()`](vst.md) : Calculate population-wise Vst
+- [`vstPermutation()`](vstPermutation.md) : Run permutation on Vst
+
+# Articles
+
+### All vignettes
+
+- [Detecting CNV from SNPs: a quick guide to rCNV](rCNV.md):
