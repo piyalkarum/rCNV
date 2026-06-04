@@ -268,10 +268,50 @@ table(deviants$dup.stat)
 table(CV$dup.stat)
 ```
 
+
 ### 2.4 Detection of multicopy regions from WGS data
-**rCNV is currently developing methods to detect multicopy regions specifically dedicated to whole genome sequencing data using maximum likelihood ratios.** The following script demonstrates how this method can be used using SNP data sets of WGS data. *Stay tuned for more updates and a full description of the complete WGS CNV detection process.*
+**rCNV is currently developing methods to detect multicopy regions specifically dedicated to whole genome sequencing data using maximum likelihood ratios.** The following script is a sneak-peak of how this method can be used using SNP data sets of WGS data. *Stay tuned for more updates and a full description of the complete WGS CNV detection process.*
+
+
+rCNV detects multicopy regions in whole-genome sequencing data using maximum-likelihood ratios on joint genotype + depth signals. Two variants are provided:
+
+* allele.info.WGS3() — fast, no reference required.
+* allele.info.WGS.GCcor() — corrects for GC-driven depth bias using SNP-centred windows.  
+
+Both functions accept either a VCF path or an already-loaded VCF using `readVCF()` function, return a single merged data.frame with per-SNP duplication status (and optionally deletion status with deletion = TRUE), and support restricting analysis to a subset of chromosomes (chroms = c("chr1","chr2")) or to regions in a BED file (bed = "regions.bed").
+
+1.   **Without GC correction**
 
 ```{r eval=FALSE, echo=TRUE}
+out <- allele.info.WGS3(vcf = "path/to/wgs/data.vcf")
+```
+
+2.   i **With GC correction (requires reference FASTA)**
+
+```{r eval=FALSE, echo=TRUE}
+out <- allele.info.WGS.GCcor(
+  vcf = "path/to/wgs/data.vcf",
+  ref = "path/to/genome.fa"
+)
+```
+
+2.   ii **Restrict to specific chromosomes or BED regions, also test deletions**
+
+```{r eval=FALSE, echo=TRUE}
+out <- allele.info.WGS.GCcor(
+  vcf      = "path/to/wgs/data.vcf",
+  ref      = "path/to/genome.fa",
+  chroms   = c("chr1", "chr2"),     # OR: bed = "regions.bed"
+  deletion = TRUE,
+  parallel = TRUE, numCores = 8
+)
+```
+
+Output is a data.frame with one row per SNP, carrying duplication (and optionally deletion) status alongside likelihood ratios, permutation thresholds, depth, and allele-frequency stats. See `allele.info.WGS.GCcor` and `allele.info.WGS3` for full column descriptions.
+
+
+
+```{r eval=FALSE, echo=FALSE}
 vcf<-readVCF("path/to/wgs/data.vcf")
 fis<-mean(h.zygosity(vcf)$Fis)
 gt<-hetTgen(vcf,"GT")

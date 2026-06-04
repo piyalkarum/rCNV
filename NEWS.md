@@ -1,3 +1,10 @@
+# rCNV 1.5.0 (fifth update)
+* new likelihood ratio based WGS method added
+* WGS cnv detection optimized functions added
+* bugs with heterozygosity fixed
+* parallelization improved
+
+
 # rCNV 1.3.0 (third update)
 * parallelization enabled
 * dupValidate function revised

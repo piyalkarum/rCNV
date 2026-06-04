@@ -4,7 +4,7 @@
 \alias{h.zygosity}
 \title{Determine per sample heterozygosity and inbreeding coefficient}
 \usage{
-h.zygosity(vcf, plot = FALSE, pops = NA, verbose = TRUE, parallel = FALSE)
+h.zygosity(vcf, plot = FALSE, pops = NA, verbose = TRUE, cl = NULL)
 }
 \arguments{
 \item{vcf}{an imported vcf file in in a list using
@@ -19,7 +19,8 @@ order as the number of samples in the vcf}
 
 \item{verbose}{logical. Show progress}
 
-\item{parallel}{logical. Parallelize the process}
+\item{cl}{Optional parallel cluster object from \code{parallel::makeCluster()}.
+If \code{NULL} (default), runs serially.}
 }
 \value{
 Returns a data frame of expected \dQuote{E(Hom)} and observed

@@ -48,6 +48,18 @@ rCNV is currently developing methods to detect multicopy regions from whole geno
             install.packages("devtools") 
         devtools::install_github("piyalkarum/rCNV", build_vignettes = TRUE)
 
+> **Note:** The WGS functions (`allele.info.WGS3` and `allele.info.WGS.GCcor`) depend on
+> several Bioconductor packages that are not available on CRAN. If you encounter
+> installation errors, install these first:
+>
+>     if (!requireNamespace("BiocManager", quietly = TRUE))
+>         install.packages("BiocManager")
+>     BiocManager::install(c("Rsamtools", "Biostrings", "GenomicRanges",
+>                            "GenomeInfoDb", "BiocGenerics", "IRanges",
+>                            "S4Vectors", "rtracklayer"))
+>
+> Then re-run the `install_github` command above.
+
 Please don't forget to cite us if you use the package.
 
 ## How to cite

@@ -27,31 +27,108 @@ het.sity2 <- function(ind,eh){
   FF <-(O-E)/(N-E)
   return(c(O,E,N,FF))
 }
-#2 relatedness (according to Yang et al. 2010 equation no. 6 in the paper)
-#1. get alt allele freq for all snps
-#2. get genotype at each snp per individual  gt=genotype1+genotype2 [1/0]  >> aa=0,Aa=1, AA=2
-#     denominator div = 1.0/(2.0*freq*(1.0-freq))
-#3. calculate Ajk pairwise
-#     if j=k >> Ajk[ui][ui] += (x[ui]*x[ui] - (1 + 2.0*freq)*x[ui] + 2.0*freq*freq) * div
-#     if j!=k >> Ajk[ui][uj] += (x[ui] - 2.0*freq) * (x[uj] - 2.0*freq) * div
-##gt2<-function(x,gg,freq){two<-gg[,x[1]];one<-gg[,x[2]]
-##vp<-NULL
-##if(x[1]==x[2]){
-##  for(i in seq_along(one)){
-##    vp[i]<-((one[i]*one[i])-((1+(2*freq[i]))*one[i])+(2*freq[i]*freq[i]))/(2*freq[i]*(1-freq[i]))
-##  }
-##  vp<-na.omit(vp)
-##  Ajk<-((sum(vp))/length(vp))+1
-##} else {
-##  for(i in seq_along(one)){
-##    vp[i]<-((one[i]-(2*freq[i]))*(two[i]-(2*freq[i])))/(2*freq[i]*(1-freq[i]))
-##  }
-##  vp<-na.omit(vp)
-##  Ajk<-sum(vp)/length(vp)
-##}
-##V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
-##return(V)}
 
+
+#' Determine per sample heterozygosity and inbreeding coefficient
+#'
+#' This function will calculate the heterozygosity on a per-sample basis from
+#' vcf files (snps), and most importantly inbreeding coefficient which is used
+#'  to filter out the samples with bad mapping quality.
+#' @param vcf an imported vcf file in in a list using
+#' \code{readVCF} or a data frame of genotypes generated using
+#' \code{hetTgen}
+#' @param plot logical. Whether to plot a boxplot of inbreeding coefficients
+#' for populations. A list of populations must be provided
+#' @param pops character. A list of population names with the same length and
+#' order as the number of samples in the vcf
+#' @param cl Optional parallel cluster object from \code{parallel::makeCluster()}.
+#'   If \code{NULL} (default), runs serially.
+#' @param verbose logical. Show progress
+#' @importFrom graphics boxplot
+#' @return Returns a data frame of expected \dQuote{E(Hom)} and observed
+#' \dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
+#'
+#' @author Piyal Karunarathne, Pascal Milesi, Klaus Schliep
+#'
+#' @examples
+#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
+#' vcf <- readVCF(vcf.file.path=vcf.file.path)
+#' pp<-substr(colnames(vcf$vcf)[-c(1:9)],1,8)
+#' hzygots<-h.zygosity(vcf,plot=TRUE,pops=pp)}
+#'
+#' @export
+h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE,cl = NULL){
+  if(inherits(vcf,"list")) {
+    vcf<-vcf$vcf
+    gtt<-hetTgen(vcf,"GT",verbose=verbose)
+  } else {
+    if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
+    else {gtt <-vcf}
+  }
+
+  if (!is.null(cl)) {
+    parallel::clusterExport(cl, c("het.sity1","het.sity2"), envir = environment())
+    eh <- unlist(parallel::parApply(cl, gtt[,-c(1:4)], 1, het.sity1))
+    hh <- t(parallel::parApply(cl, gtt[,-c(1:4)], 2, het.sity2, eh = eh))
+  } else {
+    eh <- apply(gtt[,-c(1:4)], 1, het.sity1)
+    hh <- t(apply(gtt[,-c(1:4)], 2, het.sity2, eh = eh))
+  }
+
+  if(!is.na(pops[1])){
+    if(verbose){
+      message("assessing per sample homozygosity")
+    }
+    if (!is.null(cl)) {
+      parallel::clusterExport(cl, c("het.sity1","het.sity2"), envir = environment())
+      eh<-t(parApply(cl=cl,gtt[,-c(1:4)],1, function(x,poplist){
+        tapply(x, poplist, het.sity1)
+      },poplist = pops ))
+      hh <- do.call(rbind,lapply(colnames(eh), function(x){
+        t(parApply(cl=cl,gtt[,which(pops %in% x) + 4],2,het.sity2,eh=eh[,x]))
+      }))
+    } else {
+      eh<-t(apply(gtt[,-c(1:4)],1, function(x,poplist){
+        tapply(x, poplist, het.sity1)
+      },poplist = pops ))
+      hh <- do.call(rbind,lapply(colnames(eh), function(x){
+        t(apply(gtt[,which(pops %in% x) + 4],2,het.sity2,eh=eh[,x]))
+      }))
+    }
+  } else {
+    if(verbose){
+      message("assessing per sample homozygosity")
+    }
+    if (!is.null(cl)) {
+      parallel::clusterExport(cl, c("het.sity1","het.sity2"), envir = environment())
+      eh <- unlist(parallel::parApply(cl, gtt[,-c(1:4)], 1, het.sity1))
+      hh <- t(parallel::parApply(cl, gtt[,-c(1:4)], 2, het.sity2, eh = eh))
+    } else {
+      eh <- apply(gtt[,-c(1:4)], 1, het.sity1)
+      hh <- t(apply(gtt[,-c(1:4)], 2, het.sity2, eh = eh))
+    }
+  }
+  hh<-data.frame(rownames(hh),hh)
+  colnames(hh)<-c("ind","O(Hom)","E(Hom)","total","Fis")
+  rownames(hh)<-NULL
+  if(plot){
+    if(is.na(pops[1])){
+      warning("Please provide a population list")
+    } else {
+      hh$pop<-pops
+      if(length(unique(hh$pop))<=1){
+        warning("individuals must come from at least two populations")
+      }
+      boxplot(hh$Fis~hh$pop,ann=F)
+    }
+  }
+  return(hh)
+}
+
+
+
+
+# 2. Calculate Relatedness
 gt2 <- function(x, gg, freq) {
   one <- gg[, x[1]]
   two <- gg[, x[2]]
@@ -78,96 +155,6 @@ gt2 <- function(x, gg, freq) {
 
   Ajk <- sum(num / denom) / length(freq)
   return(c(colnames(gg)[x[2]], colnames(gg)[x[1]], Ajk))
-}
-
-
-
-gt2_0 <- function(x,gg,freq){
-  two<-gg[,x[1]]
-  one<-gg[,x[2]]
-  if(x[1]==x[2]){
-    vp<-((one*one)-((1+(2*freq))*one)+(2*freq*freq))/(2*freq*(1-freq))
-    vp<-na.omit(vp)
-    Ajk<-((sum(vp))/length(vp))+1
-  } else {
-    vp<-((one-(2*freq))*(two-(2*freq)))/(2*freq*(1-freq))
-    vp<-na.omit(vp)
-    Ajk<-sum(vp)/length(vp)
-  }
-  V<-c(colnames(gg)[x[2]],colnames(gg)[x[1]],Ajk)
-  return(V)
-}
-
-
-
-#' Determine per sample heterozygosity and inbreeding coefficient
-#'
-#' This function will calculate the heterozygosity on a per-sample basis from
-#' vcf files (snps), and most importantly inbreeding coefficient which is used
-#'  to filter out the samples with bad mapping quality.
-#' @param vcf an imported vcf file in in a list using
-#' \code{readVCF} or a data frame of genotypes generated using
-#' \code{hetTgen}
-#' @param plot logical. Whether to plot a boxplot of inbreeding coefficients
-#' for populations. A list of populations must be provided
-#' @param pops character. A list of population names with the same length and
-#' order as the number of samples in the vcf
-#' @param verbose logical. Show progress
-#' @param parallel logical. Parallelize the process
-#' @importFrom graphics boxplot
-#' @importFrom parallel parApply detectCores parLapply stopCluster makeCluster
-#' @return Returns a data frame of expected \dQuote{E(Hom)} and observed
-#' \dQuote{O(Hom)} homozygotes with their inbreeding coefficients.
-#'
-#' @author Piyal Karunarathne, Pascal Milesi, Klaus Schliep
-#'
-#' @examples
-#' \dontrun{vcf.file.path <- paste0(path.package("rCNV"), "/example.raw.vcf.gz")
-#' vcf <- readVCF(vcf.file.path=vcf.file.path)
-#' pp<-substr(colnames(vcf$vcf)[-c(1:9)],1,8)
-#' hzygots<-h.zygosity(vcf,plot=TRUE,pops=pp)}
-#'
-#' @export
-h.zygosity<-function(vcf,plot=FALSE,pops=NA,verbose=TRUE,parallel=FALSE){
-  if(inherits(vcf,"list")) {
-    vcf<-vcf$vcf
-    gtt<-hetTgen(vcf,"GT",verbose=verbose)
-  } else {
-    if(any(colnames(vcf)=="REF")){gtt<-hetTgen(vcf,"GT",verbose=verbose)}
-    else {gtt <-vcf}
-  }
-  if(parallel){
-    numCores<-detectCores()-1
-    cl<-makeCluster(numCores)
-    clusterExport(cl, c("het.sity1","het.sity2"))
-    eh<-unlist(t(parApply(cl=cl,gtt[,-c(1:4)],1,het.sity1)))
-    hh<-t(parApply(cl=cl,gtt[,-c(1:4)],2,het.sity2,eh=eh))
-    stopCluster(cl)
-  } else {
-    if(verbose){
-      message("assessing per sample homozygosity")
-      eh<-unlist(apply_pb(gtt[,-c(1:4)],1,het.sity1))
-      hh<-t(apply_pb(gtt[,-c(1:4)],2,het.sity2,eh=eh))
-    } else {
-      eh<-unlist(t(apply(gtt[,-c(1:4)],1,het.sity1)))
-      hh<-t(apply(gtt[,-c(1:4)],2,het.sity2,eh=eh))
-    }
-  }
-  hh<-data.frame(rownames(hh),hh)
-  colnames(hh)<-c("ind","O(Hom)","E(Hom)","total","Fis")
-  rownames(hh)<-NULL
-  if(plot){
-    if(is.na(pops[1])){
-      warning("Please provide a population list")
-    } else {
-      hh$pop<-pops
-      if(length(unique(hh$pop))<=1){
-        warning("individuals must come from at least two populations")
-      }
-      boxplot(hh$Fis~hh$pop,ann=F)
-    }
-  }
-  return(hh)
 }
 
 
@@ -277,6 +264,8 @@ relatedness<-function(vcf,plot=TRUE,threshold=0.5,verbose=TRUE,parallel=FALSE){
   }
   return(T2)
 }
+
+# 3. VCF stats
 
 #' Get sequencing quality statistics of raw VCF files
 #' (with GatK generated vcf files only)

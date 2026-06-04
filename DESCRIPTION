@@ -1,17 +1,41 @@
 Package: rCNV
 Type: Package
 Title: Detect Copy Number Variants from SNPs Data
-Version: 1.4.900
-Date: 2025-05-25
+Version: 1.5.900
+Date: 2026-06-03
 Language: en-US
 Authors@R: c(person(given="Piyal",family="Karunarathne", email="piyalkarumail@yahoo.com", role = c("aut", "cre"),comment = c(ORCID = "0000-0002-1934-145X")),person(given="Qiujie",family="Zhou", email="qiujie.zhou@ebc.uu.se", role = c("aut"),comment = c(ORCID = "0000-0001-7351-2371")),person("Klaus", "Schliep", email="klaus.schliep@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0003-2941-0161")),person(given="Pascal", family="Milesi", role = "aut",comment = c(ORCID = "0000-0001-8580-4291")))
 Maintainer: Piyal Karunarathne <piyalkarumail@yahoo.com>
 Description: Functions in this package will import filtered variant call format (VCF) files of SNPs data and generate data sets to detect copy number variants, visualize them and do downstream analyses with copy number variants(e.g. Environmental association analyses).
 License: AGPL (>= 3)
-Imports: data.table, graphics, colorspace, R.utils, qgraph, stringr, MASS, parallel
+Imports:
+    data.table,
+    graphics,
+    colorspace,
+    R.utils,
+    qgraph,
+    stringr,
+    MASS,
+    parallel,
+    stats,
+    methods,
+    utils,
+    pbapply,
+    stringi,
+    extraDistr,
+    fitdistrplus,
+    Rsamtools,
+    Biostrings,
+    GenomicRanges,
+    GenomeInfoDb,
+    BiocGenerics,
+    IRanges,
+    S4Vectors,
+    rtracklayer
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.3
+RoxygenNote: 7.3.2
+biocViews: GenomicVariation, Sequencing, CopyNumberVariation
 Depends: 
     R (>= 3.6.0)
 Suggests: 
@@ -23,5 +47,6 @@ VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 URL: https://piyalkarum.github.io/rCNV/, https://cran.r-project.org/package=rCNV
+Additional_repositories: https://bioconductor.org/packages/release/bioc
 BugReports: https://github.com/piyalkarum/rCNV/issues
 Packaged: 2022-10-26 16:35:40 UTC; piyalkarunarathne
